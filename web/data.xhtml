@@ -88,7 +88,7 @@
                     </div>
                     
                     
-                   <!--
+                   
                     <div class="card">
                         <h1>PickList</h1>
                         <p:pickList id="pickList" value="#{carcontroller.citiesDual}" var="cities" itemLabel="#{cities}" itemValue="#{cities}"
@@ -97,7 +97,7 @@
                             <f:facet name="targetCaption">To</f:facet>
                         </p:pickList>
                     </div>
-                    -->
+                    
                     
                     <div class="card">
                         <h1>OrderList</h1>
@@ -141,15 +141,15 @@
                     </div>
                     
                     
-                    <!--
+                    
                     <div class="card">
                         <h1>DataList - Paginator</h1>
-                        <p:dataList value="#{dataListView.cars3}" var="car" type="unordered" itemType="none" paginator="true" rows="7" styleClass="paginated">
+                        <p:dataList value="#{carcontroller.cars3}" var="car" type="unordered" itemType="none" paginator="true" rows="7" styleClass="paginated">
                             <f:facet name="header">
                                 Cars For Sale
                             </f:facet>
                             <p:commandLink update=":form:carDetail" oncomplete="PF('carDialog2').show()" title="View Detail" styleClass="" style="margin-right:10px;">
-                                <f:setPropertyActionListener value="#{car}" target="#{dataListView.selectedCar}" />
+                                <f:setPropertyActionListener value="#{car}" target="#{carcontroller.selectedCar}" />
                                 <i class="fa fa-table gray Fs18" style="margin-top:5px;"></i>
                             </p:commandLink>
 
@@ -158,22 +158,22 @@
 
                         <p:dialog header="Car Info" widgetVar="carDialog2" responsive="true" modal="true" showEffect="blind" hideEffect="explode" resizable="false">
                             <p:outputPanel id="carDetail" style="text-align:center;">
-                                <p:panelGrid  columns="2" rendered="#{not empty dataListView.selectedCar}" columnClasses="label,value">
+                                <p:panelGrid  columns="2" rendered="#{not empty carcontroller.selectedCar}" columnClasses="label,value">
                                     <f:facet name="header">
-                                        <p:graphicImage name="demo/images/car/#{dataListView.selectedCar.brand}-big.gif"/> 
+                                        <p:graphicImage name="demo/images/car/#{carcontroller.selectedCar.brand}-big.gif"/> 
                                     </f:facet>
 
                                     <h:outputText value="Id:" />
-                                    <h:outputText value="#{dataListView.selectedCar.id}" />
+                                    <h:outputText value="#{carcontroller.selectedCar.id}" />
 
                                     <h:outputText value="Year" />
-                                    <h:outputText value="#{dataListView.selectedCar.year}" />
+                                    <h:outputText value="#{carcontroller.selectedCar.year}" />
 
                                     <h:outputText value="Color:" />
-                                    <h:outputText value="#{dataListView.selectedCar.color}" style="color:#{dataListView.selectedCar.color}"/>
+                                    <h:outputText value="#{carcontroller.selectedCar.color}" style="color:#{carcontroller.selectedCar.color}"/>
 
                                     <h:outputText value="Price" />
-                                    <h:outputText value="\$#{dataListView.selectedCar.price}" />
+                                    <h:outputText value="\$#{carcontroller.selectedCar.price}" />
                                 </p:panelGrid>
                             </p:outputPanel>
                         </p:dialog>
@@ -181,7 +181,7 @@
                     
                     <div class="card">
                         <h1>Carousel</h1>
-                        <p:carousel value="#{carouselView.cars}" headerText="Carousel" var="car" itemStyleClass="carItem" itemStyle="width:160px;height:150px;text-align:center" responsive="true">
+                        <p:carousel value="#{carcontroller.cars}" headerText="Carousel" var="car" itemStyleClass="carItem" itemStyle="width:160px;height:150px;text-align:center" responsive="true">
                             <p:panelGrid columns="2" style="width:100%" styleClass="ui-panelgrid-blank">
                                 <h:outputText value="Id:" />
                                 <h:outputText value="#{car.id}" />
@@ -202,9 +202,11 @@
                         </p:carousel>
                     </div>
                     
+                    
+                    
                     <div class="card">
                         <h1>Tree Single</h1>
-                        <p:tree value="#{treeSelectionView.root1}" var="doc"
+                        <p:tree value="#{carcontroller.rootDoc}" var="doc"
                                 selectionMode="single">
                             <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
                                 <h:outputText value="#{doc.name}"/>
@@ -226,7 +228,7 @@
                     
                     <div class="card">
                         <h1>Tree Checkbox</h1>
-                        <p:tree value="#{treeSelectionView.root2}" var="doc"
+                        <p:tree value="#{carcontroller.rootDoc}" var="doc"
                                 selectionMode="checkbox">
                             <p:treeNode icon="ui-icon-note">
                                 <h:outputText value="#{doc.name}"/>
@@ -246,14 +248,14 @@
                         </p:tree>
                     </div>
                     
-                    -->
+                    
                     
                 </div>
-                <!--
+                
                 <div class="ui-g-12">
                     <div class="card">
                         <h1>Horizontal Tree</h1>
-                        <p:tree value="#{treeSelectionView.root1}" var="doc" orientation="horizontal">
+                        <p:tree value="#{carcontroller.rootDoc}" var="doc" orientation="horizontal">
                             <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
                                 <h:outputText value="#{doc.name}"/>
                             </p:treeNode>
@@ -268,12 +270,14 @@
                             </p:treeNode>
                         </p:tree>
                     </div>
+                    <!--
                     <div class="card">
                         <h1>Schedule</h1>
                         <p:schedule id="schedule" value="#{scheduleJava8View.eventModel}"/>
                     </div>
+                    -->
                 </div>
-               -->
+               
             </div>
             
         </h:form>

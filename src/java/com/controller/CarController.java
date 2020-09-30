@@ -30,6 +30,7 @@ public class CarController {
     
     private List<Car> cars = new ArrayList<>();
     private List<Car> cars1 = new ArrayList<>();
+    private List<Car> cars3 = new ArrayList<>();
     private List<Car> cars6 = new ArrayList<>();
     private List<String> cities = new ArrayList<>();
     private DualListModel<String> citiesDual;
@@ -53,7 +54,7 @@ public class CarController {
         citiesSource.add("Ciudad 3");
         citiesSource.add("Ciudad 4");
         
-        this.citiesDual = new DualListModel<String>(citiesSource,citiesTarget);
+        this.citiesDual = new DualListModel<>(citiesSource,citiesTarget);
         
         this.rootDoc = rootLoad();
         this.cities.add("Managua");
@@ -63,9 +64,14 @@ public class CarController {
         this.cars.add(new Car(1, 2, "Blue",789,"Audi"));
         this.cars.add(new Car(2, 3, "Red",789,"Jaguar"));
         this.cars.add(new Car(3, 4, "Green",789,"Fiat"));
+        this.cars.add(new Car(4, 5, "Yellow",789,"Ford"));
+        this.cars.add(new Car(5, 6, "Brown",789,"Volvo"));
+        this.cars.add(new Car(6, 7, "Brown",789,"Honda"));
+        this.cars.add(new Car(7, 8, "Brown",789,"Renault"));
         
         this.cars6 = this.cars;
         this.cars1 = this.cars6;
+        this.cars3 = this.cars6;
     }
     
     public TreeNode rootLoad(){
@@ -163,9 +169,17 @@ public class CarController {
     public void setCitiesDual(DualListModel<String> citiesDual) {
         this.citiesDual = citiesDual;
     }
+
+    public List<Car> getCars3() {
+        return cars3;
+    }
+
+    public void setCars3(List<Car> cars3) {
+        this.cars3 = cars3;
+    }
     
  
-   
+    
 
     
     

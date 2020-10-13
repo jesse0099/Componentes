@@ -9,10 +9,12 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.swing.SwingWorker;
 import org.primefaces.event.TransferEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.DualListModel;
 import org.primefaces.model.TreeNode;
+
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -26,7 +28,7 @@ import org.primefaces.model.TreeNode;
  */
 @ManagedBean(name = "carcontroller")
 @SessionScoped
-public class CarController {
+public class CarController extends SwingWorker<Void, Integer>{
     
     private List<Car> cars = new ArrayList<>();
     private List<Car> cars1 = new ArrayList<>();
@@ -176,6 +178,11 @@ public class CarController {
 
     public void setCars3(List<Car> cars3) {
         this.cars3 = cars3;
+    }
+
+    @Override
+    protected Void doInBackground() throws Exception {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
  

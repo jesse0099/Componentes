@@ -50,9 +50,9 @@ public class UploadTask extends SwingWorker<Void, Integer>{
             inputStream.close();
             util.finish();
         } catch (IOException ex) {       
-            ex.printStackTrace();
+            //ex.printStackTrace();
             setProgress(0);
-            cancel(true);
+            //cancel(true);
         }
  
         return null;

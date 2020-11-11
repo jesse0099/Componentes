@@ -15,15 +15,22 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.context.FacesContext;
+import org.primefaces.event.ScheduleEntryMoveEvent;
+import org.primefaces.event.ScheduleEntryResizeEvent;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 /**
  *
  * @author Nvidi
  */
-@Named
+@ManagedBean(name = "scheduleJava8View")
 @ViewScoped
 public class ScheduleJava8View  implements Serializable{
     
@@ -48,25 +55,24 @@ public class ScheduleJava8View  implements Serializable{
 	private String clientTimeZone="local";
 	private String columnHeaderFormat="";
 
-//    @PostConstruct
-//	public void init() {
-//		eventModel = new DefaultScheduleModel();
-//
-//		DefaultScheduleEvent event =  new DefaultScheduleEvent(
-//				"Champions League Match",
-//				Date.from(previousDay8Pm().toInstant(ZoneOffset.UTC)),
-//				Date.from(previousDay11Pm().toInstant(ZoneOffset.UTC)),
-//				"Team A vs. Team B");
-//		eventModel.addEvent(event);
-//
-//		event = new DefaultScheduleEvent(
-//				"party time",
-//				Date.from(today1Pm().toInstant(ZoneOffset.UTC)),
-//				Date.from(today6Pm().toInstant(ZoneOffset.UTC)),
-//				true);
-//				
-//		eventModel.addEvent(event);
-//
+    @PostConstruct
+	public void init() {
+		eventModel = new DefaultScheduleModel();
+		DefaultScheduleEvent event =  new DefaultScheduleEvent(
+				"Champions League Match",
+				Date.from(previousDay8Pm().toInstant(ZoneOffset.UTC)),
+				Date.from(previousDay11Pm().toInstant(ZoneOffset.UTC)),
+				"Team A vs. Team B");
+		eventModel.addEvent(event);
+
+		event = new DefaultScheduleEvent(
+				"party time",
+				Date.from(today1Pm().toInstant(ZoneOffset.UTC)),
+				Date.from(today6Pm().toInstant(ZoneOffset.UTC)),
+				true);
+				
+		eventModel.addEvent(event);
+
 //		event = DefaultScheduleEvent.builder()
 //				.title("Breakfast at Tiffanys")
 //				.startDate(nextDay9Am())
@@ -75,102 +81,86 @@ public class ScheduleJava8View  implements Serializable{
 //				.overlapAllowed(true)
 //				.build();
 //		eventModel.addEvent(event);
-//
-//		event = DefaultScheduleEvent.builder()
-//				.title("Plant the new garden stuff")
-//				.startDate(theDayAfter3Pm())
-//				.endDate(fourDaysLater3pm())
-//				.description("Trees, flowers, ...")
-//				.build();
-//		eventModel.addEvent(event);
-//
-//		DefaultScheduleEvent scheduleEventAllDay=DefaultScheduleEvent.builder()
-//				.title("Holidays (AllDay)")
-//				.startDate(sevenDaysLater0am())
-//				.endDate(eightDaysLater0am())
-//				.description("sleep as long as you want")
-//				.allDay(true)
-//				.build();
-//		eventModel.addEvent(scheduleEventAllDay);
-//
+
+
 //		lazyEventModel = new LazyScheduleModel() {
 //			
 //			@Override
 //			public void loadEvents(LocalDateTime start, LocalDateTime end) {
-//				for (int i=1; i<=5; i++) {
+//				for (int i=1; i<=2; i++) {
 //					LocalDateTime random = getRandomDateTime(start);
 //					addEvent(DefaultScheduleEvent.builder().title("Lazy Event " + i).startDate(random).endDate(random.plusHours(3)).build());
 //				}
 //			}
 //		};
-//	}
-//	
-//	public LocalDateTime getRandomDateTime(LocalDateTime base) {
-//		LocalDateTime dateTime = base.withMinute(0).withSecond(0).withNano(0);
-//		return dateTime.plusDays(((int) (Math.random()*30)));
-//	}
-//	
-//
-//	public ScheduleModel getEventModel() {
-//		return eventModel;
-//	}
-//	
-//	public ScheduleModel getLazyEventModel() {
-//		return lazyEventModel;
-//	}
-//
-//	private LocalDateTime previousDay8Pm() {
-//    	return LocalDateTime.now().minusDays(1).withHour(20).withMinute(0).withSecond(0).withNano(0);
-//	}
-//	
-//	private LocalDateTime previousDay11Pm() {
-//		return LocalDateTime.now().minusDays(1).withHour(23).withMinute(0).withSecond(0).withNano(0);
-//	}
-//	
-//	private LocalDateTime today1Pm() {
-//		return LocalDateTime.now().withHour(13).withMinute(0).withSecond(0).withNano(0);
-//	}
-//	
-//	private LocalDateTime theDayAfter3Pm() {
-//		return LocalDateTime.now().plusDays(1).withHour(15).withMinute(0).withSecond(0).withNano(0);
-//	}
-//
-//	private LocalDateTime today6Pm() {
-//		return LocalDateTime.now().withHour(18).withMinute(0).withSecond(0).withNano(0);
-//	}
-//	
-//	private LocalDateTime nextDay9Am() {
-//		return LocalDateTime.now().plusDays(1).withHour(9).withMinute(0).withSecond(0).withNano(0);
-//	}
-//	
-//	private LocalDateTime nextDay11Am() {
-//		return LocalDateTime.now().plusDays(1).withHour(11).withMinute(0).withSecond(0).withNano(0);
-//	}
-//	
-//	private LocalDateTime fourDaysLater3pm() {
-//		return LocalDateTime.now().plusDays(4).withHour(15).withMinute(0).withSecond(0).withNano(0);
-//	}
-//
-//	private LocalDateTime sevenDaysLater0am() {
-//		return LocalDateTime.now().plusDays(7).withHour(0).withMinute(0).withSecond(0).withNano(0);
-//	}
-//
-//	private LocalDateTime eightDaysLater0am() {
-//		return LocalDateTime.now().plusDays(7).withHour(0).withMinute(0).withSecond(0).withNano(0);
-//	}
-//	
-//	public LocalDate getInitialDate() {
-//		return LocalDate.now().plusDays(1);
-//	}
-//
-//	public ScheduleEvent getEvent() {
-//		return event;
-//	}
-//
-//	public void setEvent(ScheduleEvent event) {
-//		this.event = event;
-//	}
-//	
+	}
+	
+	public LocalDateTime getRandomDateTime(LocalDateTime base) {
+		LocalDateTime dateTime = base.withMinute(0).withSecond(0).withNano(0);
+		return dateTime.plusDays(((int) (Math.random()*30)));
+	}
+	
+
+	public ScheduleModel getEventModel() {
+		return eventModel;
+	}
+	
+	public ScheduleModel getLazyEventModel() {
+		return lazyEventModel;
+	}
+
+	private LocalDateTime previousDay8Pm() {
+    	return LocalDateTime.now().minusDays(1).withHour(20).withMinute(0).withSecond(0).withNano(0);
+	}
+	
+	private LocalDateTime previousDay11Pm() {
+		return LocalDateTime.now().minusDays(1).withHour(23).withMinute(0).withSecond(0).withNano(0);
+	}
+	
+	private LocalDateTime today1Pm() {
+		return LocalDateTime.now().withHour(13).withMinute(0).withSecond(0).withNano(0);
+	}
+	
+	private LocalDateTime theDayAfter3Pm() {
+		return LocalDateTime.now().plusDays(1).withHour(15).withMinute(0).withSecond(0).withNano(0);
+	}
+
+	private LocalDateTime today6Pm() {
+		return LocalDateTime.now().withHour(18).withMinute(0).withSecond(0).withNano(0);
+	}
+	
+	private LocalDateTime nextDay9Am() {
+		return LocalDateTime.now().plusDays(1).withHour(9).withMinute(0).withSecond(0).withNano(0);
+	}
+	
+	private LocalDateTime nextDay11Am() {
+		return LocalDateTime.now().plusDays(1).withHour(11).withMinute(0).withSecond(0).withNano(0);
+	}
+	
+	private LocalDateTime fourDaysLater3pm() {
+		return LocalDateTime.now().plusDays(4).withHour(15).withMinute(0).withSecond(0).withNano(0);
+	}
+
+	private LocalDateTime sevenDaysLater0am() {
+		return LocalDateTime.now().plusDays(7).withHour(0).withMinute(0).withSecond(0).withNano(0);
+	}
+
+	private LocalDateTime eightDaysLater0am() {
+		return LocalDateTime.now().plusDays(7).withHour(0).withMinute(0).withSecond(0).withNano(0);
+	}
+	
+	public LocalDate getInitialDate() {
+		return LocalDate.now().plusDays(1);
+	}
+
+	public ScheduleEvent getEvent() {
+		return event;
+	}
+
+	public void setEvent(ScheduleEvent event) {
+		this.event = event;
+	}
+	
 //	public void addEvent() {
 //    	if (event.isAllDay()) {
 //    		//see https://github.com/primefaces/primefaces/issues/1164
@@ -194,7 +184,7 @@ public class ScheduleJava8View  implements Serializable{
 //	public void onDateSelect(SelectEvent<LocalDateTime> selectEvent) {
 //		event = DefaultScheduleEvent.builder().startDate(selectEvent.getObject()).endDate(selectEvent.getObject().plusHours(1)).build();
 //	}
-//	
+	
 //	public void onEventMove(ScheduleEntryMoveEvent event) {
 //		FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Event moved", "Delta:" + event.getDeltaAsDuration());
 //		
@@ -206,10 +196,10 @@ public class ScheduleJava8View  implements Serializable{
 //		
 //		addMessage(message);
 //	}
-//	
-//	private void addMessage(FacesMessage message) {
-//		FacesContext.getCurrentInstance().addMessage(null, message);
-//	}
+	
+	private void addMessage(FacesMessage message) {
+		FacesContext.getCurrentInstance().addMessage(null, message);
+	}
 
 	public boolean isShowWeekends() {
 		return showWeekends;

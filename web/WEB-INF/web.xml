@@ -42,7 +42,7 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>faces/sample.xhtml</welcome-file>
+        <welcome-file>faces/schedule.xhtml</welcome-file>
     </welcome-file-list>
     <context-param>
         <param-name>primefaces.CLIENT_SIDE_VALIDATION</param-name>

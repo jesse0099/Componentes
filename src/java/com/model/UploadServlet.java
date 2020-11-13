@@ -23,18 +23,20 @@ public class UploadServlet extends HttpServlet {
      * Name of the directory where uploaded files will be saved, relative to
      * the web application directory.
      */
-    private static final String SAVE_DIR = "uploadFiles";
+    private static final String SAVE_DIR = "uploadedFiles";
      
     /**
      * handles file upload
      */
+    @Override
     protected void doPost(HttpServletRequest request,
             HttpServletResponse response) throws ServletException, IOException {
         
         String appPath = request.getServletContext().getRealPath("");
        
-        String savePath = appPath + File.separator + SAVE_DIR;
-         
+        String savePath = appPath +File.separator+ SAVE_DIR;
+        //String savePath = "C:\\XFInitialsView";
+        
        
         File fileSaveDir = new File(savePath);
         if (!fileSaveDir.exists()) {
@@ -47,6 +49,8 @@ public class UploadServlet extends HttpServlet {
             fileName = new File(fileName).getName();
             part.write(savePath + File.separator + fileName);
         }
+        
+       
         request.setAttribute("message", "Upload has been done successfully!");
         getServletContext().getRequestDispatcher("/message.jsp").forward(
                 request, response);

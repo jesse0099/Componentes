@@ -46,7 +46,7 @@ public void init(){
  
    Servicio.setServerURL("jdbc:mysql://localhost:3306/mensajeria?serverTimezone=UTC");
    Servicio.setUsername("root");
-   Servicio.setPassword("wvjjk611");
+   Servicio.setPassword("Leiasuri85");
    Servicio.setDriver("com.mysql.jdbc.Driver");
    Servicio.setHbm2DDLprotocol("update");
    Servicio.setDialect("org.hibernate.dialect.MySQLDialect");
@@ -54,10 +54,12 @@ public void init(){
    try{
     Servicio.startEntityManagerFactory();
     
+    
+    SistemaDao sis=new SistemaDao(Servicio.getEm());
     UsuarioDao uDao=new UsuarioDao(Servicio.getEm());
     
     
-    SistemaDao sis=new SistemaDao(Servicio.getEm());
+    
     
     //Esto es para hacer que solo intente ingresar los datos iniciales una vez
     

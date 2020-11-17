@@ -27,9 +27,12 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,6 +44,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
@@ -89,6 +93,7 @@ public class ScheduleController implements Serializable {
     private String[] participantesSeleccionados;
 
     private Map<String, String> repetirCada;
+
     private String repetirSeleccionado;
 
     private int cantidadRecordatorios;
@@ -101,6 +106,16 @@ public class ScheduleController implements Serializable {
 
     private int idCorreo;
     private boolean mostrarBtn;
+
+    /* Nuevo de Recordatorio*/
+    private Map<String, String> opcionesRecordatorio;
+    private String recordatorioSelec;
+    private int meses;
+    private int veces;
+    private int frecunecia;
+
+    private List<Recordatorio> recordatorios;
+    List<Date> fechas = new ArrayList<>();
 
     @PostConstruct
     public void init() {
@@ -165,9 +180,16 @@ public class ScheduleController implements Serializable {
         repetirCada.put("Cada mes", "Cada mes");
         repetirCada.put("Cada año", "Cada año");
 
+        opcionesRecordatorio = new HashMap<String, String>();
+        opcionesRecordatorio.put("Por Mes", "Por Mes");
+        opcionesRecordatorio.put("Veces por Mes", "Veces por Mes");
+        opcionesRecordatorio.put("Veces por Mes con frecuencia", "Veces por Mes con frecuencia");
+        opcionesRecordatorio.put("Ninguno", "Ninguno");
+
         tipo = new HashMap<String, String>();
         tipo.put("HTML", "HTML");
         tipo.put("Texto plano", "Texto plano");
+
     }
 
     public void guardar() {
@@ -181,6 +203,8 @@ public class ScheduleController implements Serializable {
         c.setCuerpo(descripcion);
         c.setFechaEnvio(fecha);
 
+//        int cantidadNueva = this.cantidadRecordatorios;
+//        List<Recordatorio> recordatorios = rDao.getByMail(c);
         if (tipoSeleccionado.equals("HTML")) {
             c.setTipo("html/text");
         } else {
@@ -253,20 +277,82 @@ public class ScheduleController implements Serializable {
         //Recordatorios /guardar correo
         CorreoFunc function = new CorreoFunc();
         RecordatorioFunc recFunction = new RecordatorioFunc();
+
         function.setEm(Servicio.getEm());
         recFunction.setEm(Servicio.getEm());
 
+        ///actualizar 
         if (this.idCorreo > 0) {
 
             Correo correo = correoDao.getById(idCorreo);
-            //Si un correo se edita el numero de recordatorios,mi idea era borrar los recordatorios que pertenecen a ese correo para despues volverlos a crear con el numero nuevo.
-            // Aqui abajo esta el metodo borrar que habia hecho pero no esta funcionando bien.
-            //Ademas del for de abajo, hay que agregar el metodo que le crearia los nuevos recordatorios a este evento.
-            /*
-            for (Recordatorio r : rDao.getByMail(correo)) {
-                    rDao.delete(r);
+
+            if (rDao.getByMail(correo).size() > 0) {
+                if (this.recordatorioSelec == "Por Mes") {
+                    List<Recordatorio> recordatorios = rDao.getByMail(correo);
+
+                    meses = this.getMeses();
+
+                    for (Recordatorio rec : recordatorios) {
+                        rDao.delete(rec);
+                    }
+
+                    function.crearRecxMes(correo, this.getMeses());
+
+                } else if (this.recordatorioSelec == "Veces por Mes") {
+                    List<Recordatorio> recordatorios = rDao.getByMail(correo);
+                    meses = this.getMeses();
+                    veces = this.getVeces();
+
+                    for (Recordatorio rec : recordatorios) {
+                        rDao.delete(rec);
+                    }
+
+                    function.crearRecxVez(correo, this.getVeces(), this.getMeses());
+
+                } else if (this.recordatorioSelec == "Veces por Mes con frecuencia") {
+
+                    meses = this.getMeses();
+                    veces = this.getVeces();
+                    this.frecunecia = this.getFrecunecia();
+
+                    List<Recordatorio> recordatorios = rDao.getByMail(correo);
+
+                    for (Recordatorio rec : recordatorios) {
+                        rDao.delete(rec);
+                    }
+
+                    function.crearRecxFrecuencia(correo, this.getVeces(), this.getMeses(), this.frecunecia);
+
+                } else if (this.recordatorioSelec == "Ninguno") {
+
+                }
+            } else {
+                if (this.recordatorioSelec == "Por Mes") {
+
+                    meses = this.getMeses();
+
+                    function.crearRecxMes(correo, this.getMeses());
+
+                } else if (this.recordatorioSelec == "Veces por Mes") {
+
+                    meses = this.getMeses();
+                    veces = this.getVeces();
+
+                    function.crearRecxVez(correo, this.getVeces(), this.getMeses());
+
+                } else if (this.recordatorioSelec == "Veces por Mes con frecuencia") {
+
+                    meses = this.getMeses();
+                    veces = this.getVeces();
+                    this.frecunecia = this.getFrecunecia();
+
+                    function.crearRecxFrecuencia(correo, this.getVeces(), this.getMeses(), this.frecunecia);
+
+                } else if (this.recordatorioSelec == "Ninguno") {
+
+                }
             }
-            */
+
             correo.setAsunto(c.getAsunto());
             correo.setCuerpo(c.getCuerpo());
             correo.setFechaEnvio(c.getFechaEnvio());
@@ -278,12 +364,33 @@ public class ScheduleController implements Serializable {
             correo.setIntervalo(c.getIntervalo());
             correoDao.update(correo);
 
-            
+        } else if (this.recordatorioSelec != "Ninguno" || this.recordatorioSelec != "" || this.recordatorioSelec != null) {
+
+            if (this.recordatorioSelec == "Por Mes") {
+
+                meses = this.getMeses();
+
+                function.crearRecxMes(c, this.getMeses());
+
+            } else if (this.recordatorioSelec == "Veces por Mes") {
+
+                meses = this.getMeses();
+                veces = this.getVeces();
+
+                function.crearRecxVez(c, this.getVeces(), this.getMeses());
+
+            } else if (this.recordatorioSelec == "Veces por Mes con frecuencia") {
+
+                meses = this.getMeses();
+                veces = this.getVeces();
+                this.frecunecia = this.getFrecunecia();
+
+                function.crearRecxFrecuencia(c, this.getVeces(), this.getMeses(), this.frecunecia);
+
+            }
 
         } else {
-
-            function.crearRecxMes(c, cantidadRecordatorios);
-
+            correoDao.save(c);
         }
 
         eventModel.clear();
@@ -412,9 +519,13 @@ public class ScheduleController implements Serializable {
         tipoSeleccionado = "";
 
         pOcultosSeleccionados = new String[1];
-        
+
         mostrarBtn = false;
-        
+        this.setRecordatorioSelec("");
+        this.setMeses(0);
+        this.setVeces(0);
+        this.setFrecunecia(0);
+
         Date d = (Date) selectEvent.getObject();
         Calendar cal = Calendar.getInstance();
         cal.setTime(d);
@@ -427,7 +538,8 @@ public class ScheduleController implements Serializable {
     }
 
     public void onEventSelect(SelectEvent selectEvent) {
-
+        RecordatorioDao rDao = new RecordatorioDao();
+        rDao.setEm(Servicio.getEm());
         this.idCorreo = 0;
 
         titulo = "";
@@ -444,7 +556,15 @@ public class ScheduleController implements Serializable {
         pOcultosSeleccionados = new String[1];
 
         mostrarBtn = true;
-        
+        this.setRecordatorioSelec("");
+        this.setMeses(0);
+        this.setVeces(0);
+        this.setFrecunecia(0);
+        this.setMesesbol(true);
+        this.setVecesbol(true);
+        this.setFrecuenciabol(true);
+
+        Correo target = new Correo();
         CorreoDao correoDao = new CorreoDao();
         correoDao.setEm(Servicio.getEm());
 
@@ -455,6 +575,7 @@ public class ScheduleController implements Serializable {
         String fechaEvento = new SimpleDateFormat("dd/MM/yyyy").format(fecha);
 
         for (Correo c : correoDao.getAll()) {
+
             Date currentMail = c.getFechaEnvio();
             Calendar cal = Calendar.getInstance();
             cal.setTime(currentMail);
@@ -464,9 +585,12 @@ public class ScheduleController implements Serializable {
             String CurrentMailStr = DateCurrent.format(currentMail);
 
             if (c.getAsunto().equals(asunto) && fechaEvento.equals(CurrentMailStr)) {
+                target = c;
+
                 this.idCorreo = c.getId();
                 this.titulo = c.getAsunto();
                 this.descripcion = c.getCuerpo();
+
                 try {
                     Date currentMailDate = new SimpleDateFormat("dd/MM/yyyy").parse(CurrentMailStr);
                     this.fecha = c.getFechaEnvio();
@@ -507,8 +631,6 @@ public class ScheduleController implements Serializable {
 
                 }
 
-                this.cantidadRecordatorios = c.getRecordatorios().size();
-
                 if (c.getTipo().equals("html/text")) {
                     this.tipoSeleccionado = "HTML";
                 } else {
@@ -528,6 +650,43 @@ public class ScheduleController implements Serializable {
                 }
 
             }
+
+        }
+         
+        
+        recordatorios = rDao.getByMail(target);
+    
+        if (recordatorios.size() > 0) {
+            fechas.clear();
+            for (Recordatorio rec : recordatorios) {
+                fechas.add(rec.getFechaEnvio());
+            }
+
+            Collections.sort(fechas);
+
+            Date startFecha = fechas.get(0);
+            Date endFecha = fechas.get(fechas.size() - 1);
+            
+            Calendar startCalendar = new GregorianCalendar();
+            Calendar endCalendar = new GregorianCalendar();
+            
+            startCalendar.setTime(startFecha);
+            endCalendar.setTime(fecha);
+            
+            int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
+            int diffMonth = diffYear * 12 + endCalendar.get(Calendar.MONTH) - startCalendar.get(Calendar.MONTH);
+
+            this.setMeses(diffMonth);
+            //veces por mes
+            int veces=recordatorios.size()/diffMonth;
+            //calcular recordatorios repetidos en un mismo mes y anadirlos a veces 
+            
+            this.setVeces(veces);
+
+        } else {
+            this.setVeces(0);
+            this.setMeses(0);
+            this.setFrecunecia(0);
         }
 
         System.out.println(asunto);
@@ -537,18 +696,18 @@ public class ScheduleController implements Serializable {
 
     public ScheduleController() {
     }
-    
-    public void borrar(){
-    
+
+    public void borrar() {
+
         CorreoDao correoDao = new CorreoDao();
         correoDao.setEm(Servicio.getEm());
-        
+
         Correo correo = correoDao.getById(idCorreo);
         correoDao.delete(correo);
-        
+
         eventModel.clear();
         init();
-    
+
     }
 
 //	public void onEventMove(ScheduleEntryMoveEvent event) {
@@ -799,8 +958,112 @@ public class ScheduleController implements Serializable {
         this.mostrarBtn = mostrarBtn;
     }
 
+    public Map<String, String> getOpcionesRecordatorio() {
+        return opcionesRecordatorio;
+    }
 
+    public void setOpcionesRecordatorio(Map<String, String> opcionesRecordatorio) {
+        this.opcionesRecordatorio = opcionesRecordatorio;
+    }
 
-    
-    
+    public String getRecordatorioSelec() {
+        return recordatorioSelec;
+    }
+
+    public void setRecordatorioSelec(String recordatorioSelec) {
+        this.recordatorioSelec = recordatorioSelec;
+    }
+
+    public int getMeses() {
+        return meses;
+    }
+
+    public void setMeses(int meses) {
+        this.meses = meses;
+    }
+
+    public int getVeces() {
+        return veces;
+    }
+
+    public void setVeces(int veces) {
+        this.veces = veces;
+    }
+
+    public int getFrecunecia() {
+        return frecunecia;
+    }
+
+    public void setFrecunecia(int frecunecia) {
+        this.frecunecia = frecunecia;
+    }
+
+    public String getValueofPick() {
+        return valueofPick;
+    }
+
+    public void setValueofPick(String valueofPick) {
+        this.valueofPick = valueofPick;
+    }
+
+    public boolean isMesesbol() {
+        return mesesbol;
+    }
+
+    public void setMesesbol(boolean mesesbol) {
+        this.mesesbol = mesesbol;
+    }
+
+    public boolean isVecesbol() {
+        return vecesbol;
+    }
+
+    public void setVecesbol(boolean vecesbol) {
+        this.vecesbol = vecesbol;
+    }
+
+    public boolean isFrecuenciabol() {
+        return frecuenciabol;
+    }
+
+    public void setFrecuenciabol(boolean frecuenciabol) {
+        this.frecuenciabol = frecuenciabol;
+    }
+
+    /*recordatorios selec*/
+    private String valueofPick;
+
+    private boolean mesesbol = true;
+    private boolean vecesbol = true;
+    private boolean frecuenciabol = true;
+
+    public void visibility() {
+        if (this.recordatorioSelec == "Por Mes") {
+            this.setMesesbol(false);
+            this.setVecesbol(true);
+            this.setFrecuenciabol(true);
+
+        } else if (this.recordatorioSelec == "Veces por Mes") {
+            this.setMesesbol(false);
+            this.setVecesbol(false);
+            this.setFrecuenciabol(true);
+        } else if (this.recordatorioSelec == "Veces por Mes con frecuencia") {
+            this.setMesesbol(false);
+            this.setVecesbol(false);
+            this.setFrecuenciabol(false);
+        } else if (this.recordatorioSelec == "Ninguno") {
+            this.setMesesbol(true);
+            this.setVecesbol(true);
+            this.setFrecuenciabol(true);
+        }
+    }
+
+    public List<Recordatorio> getRecordatorios() {
+        return recordatorios;
+    }
+
+    public void setRecordatorios(List<Recordatorio> recordatorios) {
+        this.recordatorios = recordatorios;
+    }
+
 }

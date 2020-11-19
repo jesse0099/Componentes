@@ -46,7 +46,7 @@ public void init(){
  
    Servicio.setServerURL("jdbc:mysql://localhost:3306/mensajeria?serverTimezone=UTC");
    Servicio.setUsername("root");
-   Servicio.setPassword("AndyMysql2601");
+   Servicio.setPassword("123");
    Servicio.setDriver("com.mysql.jdbc.Driver");
    Servicio.setHbm2DDLprotocol("update");
    Servicio.setDialect("org.hibernate.dialect.MySQLDialect");

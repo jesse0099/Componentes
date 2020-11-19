@@ -1,52 +1,72 @@
 package com.model;
 
+import java.io.InputStream;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 /**
  *
  * @author Nvidi
  */
 public class Document {
+
     private String name;
-     
+
     private String size;
-     
+
     private String type;
-     
+
+    //Campo para traer el documento
+    private InputStream file;
+
     public Document(String name, String size, String type) {
         this.name = name;
         this.size = size;
         this.type = type;
     }
- 
+
+    public Document(String name, String size, String type, InputStream file) {
+        this.name = name;
+        this.size = size;
+        this.type = type;
+        this.file = file;
+    }
+
+    public InputStream getFile() {
+        return file;
+    }
+
+    public void setFile(InputStream file) {
+        this.file = file;
+    }
+
     public String getName() {
         return name;
     }
- 
+
     public void setName(String name) {
         this.name = name;
     }
- 
+
     public String getSize() {
         return size;
     }
- 
+
     public void setSize(String size) {
         this.size = size;
     }
- 
+
     public String getType() {
         return type;
     }
- 
+
     public void setType(String type) {
         this.type = type;
     }
- 
+
     //Eclipse Generated hashCode and equals
     @Override
     public int hashCode() {
@@ -57,39 +77,48 @@ public class Document {
         result = prime * result + ((type == null) ? 0 : type.hashCode());
         return result;
     }
- 
+
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Document other = (Document) obj;
         if (name == null) {
-            if (other.name != null)
+            if (other.name != null) {
                 return false;
-        } else if (!name.equals(other.name))
+            }
+        } else if (!name.equals(other.name)) {
             return false;
+        }
         if (size == null) {
-            if (other.size != null)
+            if (other.size != null) {
                 return false;
-        } else if (!size.equals(other.size))
+            }
+        } else if (!size.equals(other.size)) {
             return false;
+        }
         if (type == null) {
-            if (other.type != null)
+            if (other.type != null) {
                 return false;
-        } else if (!type.equals(other.type))
+            }
+        } else if (!type.equals(other.type)) {
             return false;
+        }
         return true;
     }
- 
+
     @Override
     public String toString() {
         return name;
     }
- 
+
     public int compareTo(Document document) {
         return this.getName().compareTo(document.getName());
     }

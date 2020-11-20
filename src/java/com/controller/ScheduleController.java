@@ -124,7 +124,6 @@ public class ScheduleController implements Serializable {
         eventModel = new DefaultScheduleModel();
 
         CorreoDao cDao = new CorreoDao();
-        Correo correo = new Correo();
         cDao.setEm(Servicio.getEm());
 
         int idUser = 0;

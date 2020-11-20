@@ -3,39 +3,51 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:p="http://primefaces.org/ui">
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
-    <div class="topbar clearfix">
+    <div class="topbar clearfix" style="background-color: #333333">
         <a id="omega-menu-button" href="#">
             <span class="fa fa-bars"></span>
         </a>
-        
+
         <span class="topbar-title"><ui:insert name="title"></ui:insert></span>
-        
+
         <a id="options-menu-button" href="#">
             <span class="fa fa-ellipsis-h"></span>
         </a>
-        
-        <div id="topbar-icons" class="animated">
+
+        <div id="topbar-icons" class="animated" style="background-color: #333333">
             <span class="topbar-search">
                 <input type="text" placeholder="Buscar"/>
                 <span class="topbar-search-icon fa fa-search"></span>
             </span>
-            <a href="#">
-                <span class="topbar-item-text">Messages</span>
-                <span class="topbar-icon fa fa-envelope-o animated swing"></span>
-                <span class="topbar-badge animated rubberBand">5</span>
-            </a>
+            <span >
+                <h:form id="XD" prependId="false" style="display: inline">
+                    <p:selectOneMenu id="menuOne" value="#{topBarFilesController.sisSelected.nombre}" style="margin-left:  0.9em;display: inline-block;width:120px;padding: 1px 20px 1px 1px;"> 
+                        <f:selectItem  itemLabel="None" itemValue="None" noSelectionOption="true" ></f:selectItem>
+                        <c:forEach var="sis" items="#{topBarFilesController.sistemas}">
+                            <f:selectItem  itemLabel="#{sis.nombre}" itemValue="#{sis.nombre}"  ></f:selectItem>
+                        </c:forEach>
+                        
+                        <f:facet name="footer">
+                            <p:separator />
+                            <h:outputText value="#{topBarFilesController.sistemas.size} sistemas" style="font-weight:bold;"/>
+                        </f:facet>
+                        <p:ajax 
+                                listener="#{topBarFilesController.onItemSelectedListener()}" >
+                        </p:ajax>
+                    </p:selectOneMenu>
+                </h:form>
+                <!--<span class="topbar-icon fa fa-envelope-o animated swing"></span>
+                <span class="topbar-badge animated rubberBand">5</span>-->
+            </span>
             <a href="#">
                 <span class="topbar-item-text">Settings</span>
                 <span class="topbar-icon fa fa-gear"></span>
             </a>
-            <a href="#">
-                <span class="topbar-item-text">User</span>
-                <span class="topbar-icon fa fa-user"></span>
-            </a>
         </div>
-        
+
     </div>
 
 </ui:composition>

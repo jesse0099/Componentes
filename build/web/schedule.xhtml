@@ -98,7 +98,7 @@
 
                         <p:outputLabel for="listarecordatorios" value="recordatorios:" />
 
-                        <p:selectOneMenu id="listarecordatorios" widgetVar="listRec" value="#{scheduleController.recordatorioSelec}" style="width:87%; " required="true" >
+                        <p:selectOneMenu id="listarecordatorios" widgetVar="listRec" value="#{scheduleController.recordatorioSelec}" style="width:87%; ">
 
                             <p:ajax  listener="#{scheduleController.visibility()}" />                           
                             <f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
@@ -118,7 +118,8 @@
                         <p:outputLabel id="lblfrecuencia" class="frecuenciasClass" for="frecuencia" value="Frecuencia deseada: " />
                         <p:spinner id="frecuencia" widgetVar="wFrecuencia" class="recordatorioDialog frecuenciasClass" value="#{scheduleController.frecunecia}" disabled="#{scheduleController.frecuenciabol}" min="0" style="width:95%" />
 
-
+                        <h:outputText id="errorText" value="#{scheduleController.errorText}" escape="true"/>
+                        
                         <p:panel style="border:none !important"></p:panel>
                         <p:panel style="display: inline-block; float: right;border:none !important">
                             <p:commandButton id="guardar"  value="Guardar" action="#{scheduleController.guardar()}" oncomplete="PF('eventSchedule').update();PF('eventDialog').hide();" />                        

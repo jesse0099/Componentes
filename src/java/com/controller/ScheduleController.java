@@ -656,31 +656,9 @@ public class ScheduleController implements Serializable {
         recordatorios = rDao.getByMail(target);
 
         if (recordatorios.size() > 0) {
-            fechas.clear();
-            for (Recordatorio rec : recordatorios) {
-                fechas.add(rec.getFechaEnvio());
-            }
-
-            Collections.sort(fechas);
-
-            Date startFecha = fechas.get(0);
-            Date endFecha = fechas.get(fechas.size() - 1);
-
-            Calendar startCalendar = new GregorianCalendar();
-            Calendar endCalendar = new GregorianCalendar();
-
-            startCalendar.setTime(startFecha);
-            endCalendar.setTime(fecha);
-
-            int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
-            int diffMonth = diffYear * 12 + endCalendar.get(Calendar.MONTH) - startCalendar.get(Calendar.MONTH);
-
-            this.setMeses(diffMonth);
-            //veces por mes
-            int veces = recordatorios.size() / diffMonth;
-            //calcular recordatorios repetidos en un mismo mes y anadirlos a veces 
-
-            this.setVeces(veces);
+            this.meses = target.getMeses();
+            this.veces = target.getVeces();
+            this.frecunecia = target.getFrecuencia();
 
         } else {
             this.setVeces(0);

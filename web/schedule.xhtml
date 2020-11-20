@@ -122,7 +122,6 @@
                         <p:panel style="border:none !important"></p:panel>
                         <p:panel style="display: inline-block; float: right;border:none !important">
                             <p:commandButton id="guardar"  value="Guardar" action="#{scheduleController.guardar()}" oncomplete="PF('eventSchedule').update();PF('eventDialog').hide();" />                        
-
                             <p:commandButton id="borrar" style="margin-right: 0.8; margin-left: 0.8"  value="Borrar" rendered="#{scheduleController.mostrarBtn}" action="#{scheduleController.borrar()}" oncomplete="PF('eventSchedule').update();PF('eventDialog').hide();" />
                         </p:panel>
 

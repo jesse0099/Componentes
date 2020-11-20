@@ -99,9 +99,9 @@
                         <p:outputLabel for="listarecordatorios" value="recordatorios:" />
                         
                         <p:selectOneMenu id="listarecordatorios" widgetVar="listRec" value="#{scheduleController.recordatorioSelec}" style="width:87%; " required="true" >
-                            <!--
-                            <p:ajax event="change" onsuccess="cambio()" oncomplete="PF('eventSchedule').update();PF('eventDialog').show();" />
-                            -->
+                          
+                            <p:ajax event="change" listener="#{scheduleController.visibility()}"  update="dialogo" oncomplete="PF('eventSchedule').update();PF('eventDialog').show();" />
+                          
                            
                             
                             <f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />

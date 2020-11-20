@@ -44,7 +44,7 @@
     <ui:define name="content">
         <div class="card">
             <h1>Eventos</h1>
-            <h:form>
+            <h:form prependId="false">
 
                 <h:outputScript  name="js/schedule_es.js" />
 
@@ -97,19 +97,16 @@
                         </p:selectOneMenu>
 
                         <p:outputLabel for="listarecordatorios" value="recordatorios:" />
-                        
+
                         <p:selectOneMenu id="listarecordatorios" widgetVar="listRec" value="#{scheduleController.recordatorioSelec}" style="width:87%; " required="true" >
-                          
-                            <p:ajax event="change" listener="#{scheduleController.visibility()}"  update="dialogo" oncomplete="PF('eventSchedule').update();PF('eventDialog').show();" />
-                          
-                           
-                            
+
+                            <p:ajax  listener="#{scheduleController.visibility()}" />                           
                             <f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
                             <f:selectItems value="#{scheduleController.opcionesRecordatorio}" />
 
                         </p:selectOneMenu>
 
-
+                     
                         <p:outputLabel id="lblMeses"  class="mesesClass" for="meses"  value="Meses deseados: "  />
                         <p:spinner id="meses" widgetVar="wMeses" class="recordatorioDialog mesesClass" value="#{scheduleController.meses}" disabled="#{scheduleController.mesesbol}"  min="0"  style="width:95% "  />
 
@@ -124,10 +121,8 @@
 
                         <p:panel style="border:none !important"></p:panel>
                         <p:panel style="display: inline-block; float: right;border:none !important">
-                            <p:commandButton id="guardar"  value="Guardar" action="#{scheduleController.guardar()}" oncomplete="PF('eventSchedule').update();PF('eventDialog').hide();" />
-                            
-                            <p:commandButton id="Actualizar" style="margin-right: 0.8; margin-left: 0.8"  value="Actualizar" action="#{scheduleController.visibility()}" update="dialogo" oncomplete="PF('eventSchedule').update();PF('eventDialog').show();" />
-                           
+                            <p:commandButton id="guardar"  value="Guardar" action="#{scheduleController.guardar()}" oncomplete="PF('eventSchedule').update();PF('eventDialog').hide();" />                        
+
                             <p:commandButton id="borrar" style="margin-right: 0.8; margin-left: 0.8"  value="Borrar" rendered="#{scheduleController.mostrarBtn}" action="#{scheduleController.borrar()}" oncomplete="PF('eventSchedule').update();PF('eventDialog').hide();" />
                         </p:panel>
 
@@ -139,7 +134,7 @@
         </div>
         <h:outputStylesheet name="css/scheduleStyle.css" library="omega-layout" ></h:outputStylesheet>
         <h:outputScript name="js/onSelection.js" target="head"/>
-        
+
 
     </ui:define>
 

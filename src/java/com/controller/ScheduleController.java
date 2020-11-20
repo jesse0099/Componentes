@@ -120,7 +120,7 @@ public class ScheduleController implements Serializable {
     @PostConstruct
     public void init() {
         eventModel = new DefaultScheduleModel();
-
+        this.recordatorioSelec = "";
         CorreoDao cDao = new CorreoDao();
         Correo correo = new Correo();
         cDao.setEm(Servicio.getEm());
@@ -652,10 +652,9 @@ public class ScheduleController implements Serializable {
             }
 
         }
-         
-        
+
         recordatorios = rDao.getByMail(target);
-    
+
         if (recordatorios.size() > 0) {
             fechas.clear();
             for (Recordatorio rec : recordatorios) {
@@ -666,21 +665,21 @@ public class ScheduleController implements Serializable {
 
             Date startFecha = fechas.get(0);
             Date endFecha = fechas.get(fechas.size() - 1);
-            
+
             Calendar startCalendar = new GregorianCalendar();
             Calendar endCalendar = new GregorianCalendar();
-            
+
             startCalendar.setTime(startFecha);
             endCalendar.setTime(fecha);
-            
+
             int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
             int diffMonth = diffYear * 12 + endCalendar.get(Calendar.MONTH) - startCalendar.get(Calendar.MONTH);
 
             this.setMeses(diffMonth);
             //veces por mes
-            int veces=recordatorios.size()/diffMonth;
+            int veces = recordatorios.size() / diffMonth;
             //calcular recordatorios repetidos en un mismo mes y anadirlos a veces 
-            
+
             this.setVeces(veces);
 
         } else {
@@ -1038,6 +1037,7 @@ public class ScheduleController implements Serializable {
     private boolean frecuenciabol = true;
 
     public void visibility() {
+        System.out.println("Entro con Item: " + this.recordatorioSelec);
         if (this.recordatorioSelec == "Por Mes") {
             this.setMesesbol(false);
             this.setVecesbol(true);
@@ -1056,6 +1056,10 @@ public class ScheduleController implements Serializable {
             this.setVecesbol(true);
             this.setFrecuenciabol(true);
         }
+
+        PrimeFaces.current().ajax().update("meses");
+        PrimeFaces.current().ajax().update("veces");
+        PrimeFaces.current().ajax().update("frecuencia");
     }
 
     public List<Recordatorio> getRecordatorios() {

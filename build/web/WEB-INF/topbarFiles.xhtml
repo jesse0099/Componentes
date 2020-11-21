@@ -18,24 +18,33 @@
         </a>
 
         <div id="topbar-icons" class="animated" style="background-color: #333333">
-            <span class="topbar-search">
-                <input type="text" placeholder="Buscar"/>
-                <span class="topbar-search-icon fa fa-search"></span>
+
+            <span class="topbar-search" >
+                <h:form    id="destsSearch" prependId="false" styleClass="foo" style="width: fit-content">
+                    <div>
+                        <p:inputText  style="display: inline" id="inputSe" type="text" placeholder="Buscar" value="#{fileController.filterDests}" ></p:inputText>
+                        <p:commandLink   class="topbar-search-icon fa fa-search"  action="#{fileController.filterByDests()}">
+
+                        </p:commandLink>
+                    </div>
+                </h:form>
             </span>
+
+
             <span >
-                <h:form id="XD" prependId="false" style="display: inline">
-                    <p:selectOneMenu id="menuOne" value="#{topBarFilesController.sisSelected.nombre}" style="margin-left:  0.9em;display: inline-block;width:120px;padding: 1px 20px 1px 1px;"> 
-                        <f:selectItem  itemLabel="None" itemValue="None" noSelectionOption="true" ></f:selectItem>
-                        <c:forEach var="sis" items="#{topBarFilesController.sistemas}">
+                <h:form id="XD" prependId="false">
+                    <p:selectOneMenu id="menuOne" value="#{fileController.sisSelected.nombre}" style="text-align: center;margin-left:  0.3em;display: inline-block;width:120px;padding: 1px 20px 1px 1px;"> 
+                        <f:selectItem  itemLabel="Sistemas" itemValue="None" noSelectionOption="true" ></f:selectItem>
+                        <c:forEach var="sis" items="#{fileController.sistemas}">
                             <f:selectItem  itemLabel="#{sis.nombre}" itemValue="#{sis.nombre}"  ></f:selectItem>
                         </c:forEach>
-                        
+
                         <f:facet name="footer">
                             <p:separator />
-                            <h:outputText value="#{topBarFilesController.sistemas.size} sistemas" style="font-weight:bold;"/>
+                            <h:outputText value="#{fileController.sistemas.size} sistemas" style="font-weight:bold;"/>
                         </f:facet>
                         <p:ajax 
-                                listener="#{topBarFilesController.onItemSelectedListener()}" >
+                            listener="#{fileController.onItemSelectedListener()}" >
                         </p:ajax>
                     </p:selectOneMenu>
                 </h:form>
@@ -49,5 +58,21 @@
         </div>
 
     </div>
+
+    <style type="text/css">
+        @media only screen and (max-width: 1353px){
+            #XD{
+                display: block;
+            }
+        }
+
+        @media only screen and (min-width: 1354px) {
+            
+            #XD{
+                display: inline;
+                
+            }
+        }
+    </style>
 
 </ui:composition>

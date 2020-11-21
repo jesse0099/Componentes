@@ -51,7 +51,8 @@
 
         <div class="ui-g ui-fluid dashboard"  >
 
-            <div id="pricing">
+            <p:panel id="pricing">
+
 
                 <div class="margenTitulo " id="servicios" style="text-align: center">
 
@@ -64,6 +65,7 @@
 
                             <div style ="height: 100px;direction: ltr;margin-bottom: 0px; text-align: left !important;">
                                 <h:outputText  style="margin: 0.5em;display: contents;text-align: left;padding: 0.3em;font-weight: bold;font-size: x-large" value="#{corr.asunto}"></h:outputText>
+
                             </div>
 
 
@@ -80,6 +82,10 @@
                                               value= "#{corr.fechaEnvio}" >
                                     <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
                                 </h:outputText>
+                                <p:outputLabel style="font-weight: bold;padding: 0.3em" for="adjS" value="Archivos : " ></p:outputLabel>
+                                <h:outputText id="adjS" style="font-weight: 600;color: #f05537;padding: 0.3em" 
+                                              value="#{fileController.adjListSize(fileController.getFilesByMail(corr))}" >
+                                </h:outputText>
                             </div>
 
 
@@ -95,8 +101,8 @@
                                     </c:forEach>
                                 </p:scrollPanel>
                             </div>
-
                             <p:scrollPanel style="text-align: left;padding: 0.3em;height: 30px" mode="native" >
+
                                 <!--Ciclo para iterar sobre los archivos adjuntos de un correo!-->
                                 <c:forEach id="innerRepeat"  items="#{fileController.getFilesByMail(corr)}" var="adj"  >
 
@@ -119,8 +125,10 @@
                         </div>
                     </c:forEach>
                 </div>
-            </div>
+
+            </p:panel>
         </div>
+
         <h:outputStylesheet name="css/EventosCreados.css" library="omega-layout" />
         <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
     </ui:define>

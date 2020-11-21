@@ -8,6 +8,7 @@ package com.controller;
 import com.controller.DatosUsuario;
 import com.r6.funciones.CorreoFunc;
 import com.r6.funciones.RecordatorioFunc;
+import com.r6.mensajeria.Adjunto;
 import com.r6.mensajeria.Contacto;
 import com.r6.mensajeria.Correo;
 import com.r6.mensajeria.Usuario;
@@ -18,6 +19,7 @@ import com.r6.service.Servicio;
 import com.r6.service.UsuarioDao;
 import com.r6.service.RecordatorioDao;
 import com.r6.mensajeria.Recordatorio;
+import java.io.IOException;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
 import java.io.Serializable;
@@ -45,14 +47,17 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import org.primefaces.PrimeFaces;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
+import org.primefaces.model.UploadedFile;
 
 /**
  *
@@ -113,13 +118,16 @@ public class ScheduleController implements Serializable {
     private int meses;
     private int veces;
     private int frecunecia;
-
+    private List<UploadedFile> uploadedFiles;
+    private List<Adjunto> uploadedFilesAdj;
+    private UploadedFile uploadedFile;
     private List<Recordatorio> recordatorios;
     List<Date> fechas = new ArrayList<>();
 
     @PostConstruct
     public void init() {
 
+        this.uploadedFiles = new ArrayList<>();
 
         eventModel = new DefaultScheduleModel();
 
@@ -203,6 +211,15 @@ public class ScheduleController implements Serializable {
         c.setAsunto(titulo);
         c.setCuerpo(descripcion);
         c.setFechaEnvio(fecha);
+
+        //Guardar los archivos adjuntos vamos a ver que pedo
+        Set<Adjunto> adjs = new HashSet<>();
+        for (UploadedFile ip : uploadedFiles) {
+            Adjunto adj = new Adjunto();
+            adj.setArchivo(ip.getContents());
+            adjs.add(adj);
+        }
+        c.setAdjuntos(adjs);
 
 //        int cantidadNueva = this.cantidadRecordatorios;
 //        List<Recordatorio> recordatorios = rDao.getByMail(c);
@@ -359,7 +376,7 @@ public class ScheduleController implements Serializable {
             correo.setFechaEnvio(c.getFechaEnvio());
             correo.setTipo(c.getTipo());
             correo.setInifinito(c.getInifinito());
-            //correo.setAdjuntos(c.getAdjuntos()); --No esta contemplado para este Sprint, lo dejo por aqui para no perderlo de vista
+            correo.setAdjuntos(adjs);
             correo.setDestinatarios(c.getDestinatarios());
             correo.setUsuarioscopiados(c.getUsuarioscopiados());
             correo.setIntervalo(c.getIntervalo());
@@ -539,6 +556,9 @@ public class ScheduleController implements Serializable {
     }
 
     public void onEventSelect(SelectEvent selectEvent) {
+
+        this.uploadedFiles = new ArrayList<>();
+
         RecordatorioDao rDao = new RecordatorioDao();
         rDao.setEm(Servicio.getEm());
         this.idCorreo = 0;
@@ -570,7 +590,6 @@ public class ScheduleController implements Serializable {
         correoDao.setEm(Servicio.getEm());
 
         ScheduleEvent event = (ScheduleEvent) selectEvent.getObject();
-
         String asunto = event.getTitle();
         Date fecha = event.getStartDate();
         String fechaEvento = new SimpleDateFormat("dd/MM/yyyy").format(fecha);
@@ -587,6 +606,15 @@ public class ScheduleController implements Serializable {
 
             if (c.getAsunto().equals(asunto) && fechaEvento.equals(CurrentMailStr)) {
                 target = c;
+
+                this.uploadedFilesAdj = new ArrayList<>();
+
+                for (Adjunto adj : FilesController.getFilesByMail(c)) {
+                    this.uploadedFilesAdj.add(adj);
+                }
+                
+                System.out.println("Size : "+this.uploadedFiles.size());
+                updateViewForFiles();
 
                 this.idCorreo = c.getId();
                 this.titulo = c.getAsunto();
@@ -691,7 +719,7 @@ public class ScheduleController implements Serializable {
 
         System.out.println(asunto);
         System.out.println(fechaEvento);
-
+        updateViewForFiles();
     }
 
     public ScheduleController() {
@@ -1066,4 +1094,54 @@ public class ScheduleController implements Serializable {
         this.recordatorios = recordatorios;
     }
 
+    public List<UploadedFile> getUploadedFiles() {
+        return uploadedFiles;
+    }
+
+    public void setUploadedFiles(List<UploadedFile> uploadedFiles) {
+        this.uploadedFiles = uploadedFiles;
+    }
+
+    public UploadedFile getUploadedFile() {
+        return uploadedFile;
+    }
+
+    public void setUploadedFile(UploadedFile uploadedFile) {
+        this.uploadedFile = uploadedFile;
+    }
+
+    public void uploadMultiple() {
+
+    }
+
+    public List<Adjunto> getUploadedFilesAdj() {
+        return uploadedFilesAdj;
+    }
+
+    public void setUploadedFilesAdj(List<Adjunto> uploadedFilesAdj) {
+        this.uploadedFilesAdj = uploadedFilesAdj;
+    }
+
+    public byte[] filetoByteArr(UploadedFile up) {
+        return up.getContents();
+    }
+
+    //Evento disparado cuando un archivo termina de cargar
+    public void handleFileUpload(FileUploadEvent event) {
+
+        //Cada archivo cargado va a una lista 
+        this.uploadedFiles.add(event.getFile());
+        updateViewForFiles();
+
+        System.out.println("Cargados : " + this.uploadedFiles.size());
+    }
+
+    public void updateViewForFiles() {
+        PrimeFaces.current().ajax().update("scrollFiles");
+    }
+
+    public static String getMimeTypeFromByteArray(Adjunto adj) {
+
+        return FilesController.getMIMETypeFromByteArray(adj.getArchivo());
+    }
 }

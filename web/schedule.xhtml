@@ -55,6 +55,11 @@
                 </p:schedule> 
 
                 <p:dialog widgetVar="eventDialog" id="dialogo"  header="Evento" showEffect="clip" hideEffect="clip" resizable="false">
+
+                   <!-- <p:dialog  header="Errores en el formulario: " widgetVar="errores" minHeight="40"> </p:dialog> 
+                        <h:outputText id="errorText" value="#{scheduleController.errorText}" escape="true"/>-->
+                    
+
                     <h:panelGrid id="eventDetails" columns="2">
                         <p:outputLabel for="title" value="Nombre del evento:" />
                         <p:inputText id="title" value="#{scheduleController.titulo}" required="true" style="width:95%; " />
@@ -106,7 +111,7 @@
 
                         </p:selectOneMenu>
 
-                     
+
                         <p:outputLabel id="lblMeses"  class="mesesClass" for="meses"  value="Meses deseados: "  />
                         <p:spinner id="meses" widgetVar="wMeses" class="recordatorioDialog mesesClass" value="#{scheduleController.meses}" disabled="#{scheduleController.mesesbol}"  min="0"  style="width:95% "  />
 
@@ -118,13 +123,15 @@
                         <p:outputLabel id="lblfrecuencia" class="frecuenciasClass" for="frecuencia" value="Frecuencia deseada: " />
                         <p:spinner id="frecuencia" widgetVar="wFrecuencia" class="recordatorioDialog frecuenciasClass" value="#{scheduleController.frecunecia}" disabled="#{scheduleController.frecuenciabol}" min="0" style="width:95%" />
 
-                        <h:outputText id="errorText" value="#{scheduleController.errorText}" escape="true"/>
-                        
+
+
                         <p:panel style="border:none !important"></p:panel>
                         <p:panel style="display: inline-block; float: right;border:none !important">
                             <p:commandButton id="guardar"  value="Guardar" action="#{scheduleController.guardar()}" oncomplete="PF('eventSchedule').update();PF('eventDialog').hide();" />                        
                             <p:commandButton id="borrar" style="margin-right: 0.8; margin-left: 0.8"  value="Borrar" rendered="#{scheduleController.mostrarBtn}" action="#{scheduleController.borrar()}" oncomplete="PF('eventSchedule').update();PF('eventDialog').hide();" />
                         </p:panel>
+                        <h:inputHidden id="errorText" value="#{scheduleController.errorText}"></h:inputHidden>
+                        <h:outputScript rendered="#{scheduleController.var}">alert(document.getElementById('errorText').value);</h:outputScript>
 
                     </h:panelGrid>
                 </p:dialog>  

@@ -3,36 +3,18 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/resources/omega-layout/css/EventosCreados.css</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/WEB-INF/sidebar.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/FilePickerController.java</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/file.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/WEB-INF/web.xml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/DatosUsuario.java</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/model/Car.java</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/login.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/WEB-INF/topbar.xhtml</file>
             <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/files.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/error.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/resources/omega-layout/css/layout.css</file>
             <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/schedule.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/resources/js/schedule_es.js</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/model/Document.java</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/landing.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/access.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/nbproject/build-impl.xml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/FilesController.java</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/TopBarFilesController.java</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/forms.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/WEB-INF/primefaces-omega.taglib.xml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/model/UploadServlet.java</file>
+            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/file.xhtml</file>
+            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/FilePickerController.java</file>
             <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/LlenaModelo.java</file>
             <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/WEB-INF/topbarFiles.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/conf/MANIFEST.MF</file>
+            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/FilesController.java</file>
             <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/WEB-INF/template.xhtml</file>
+            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/CarController.java</file>
+            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/WEB-INF/topbar.xhtml</file>
             <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/ScheduleController.java</file>
             <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/WEB-INF/templatFiles.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/resources/omega-layout/css/myLogin.css</file>
         </group>
     </open-files>
 </project-private>

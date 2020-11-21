@@ -46,6 +46,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
+import org.apache.tomcat.util.http.fileupload.RequestContext;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.ScheduleEntryMoveEvent;
 import org.primefaces.event.ScheduleEntryResizeEvent;
@@ -119,8 +120,8 @@ public class ScheduleController implements Serializable {
     private List<Recordatorio> recordatorios;
     List<Date> fechas = new ArrayList<>();
     private String errorText;
-    
-    
+    private boolean undeleteable = false;
+
     @PostConstruct
     public void init() {
         eventModel = new DefaultScheduleModel();
@@ -293,22 +294,26 @@ public class ScheduleController implements Serializable {
             if (rDao.getByMail(correo).size() > 0) {
 
                 if (this.recordatorioSelec == "Por Mes") {
-                    if(this.checkDatosxMeses(correo, meses)){
-                    List<Recordatorio> recordatorios = rDao.getByMail(correo);
+                    if (this.checkDatosxMeses(correo, meses)) {
+                        List<Recordatorio> recordatorios = rDao.getByMail(correo);
 
-                    meses = this.getMeses();
+                        meses = this.getMeses();
 
-                    for (Recordatorio rec : recordatorios) {
-                        rDao.delete(rec);
+                        for (Recordatorio rec : recordatorios) {
+                            rDao.delete(rec);
+                        }
+                        correo.setMeses(meses);
+                        correo.setVeces(0);
+                        correo.setFrecuencia(0);
+                        function.crearRecxMes(correo, this.getMeses());
+                    } else {
+
+                        this.setUndeleteable(true);
+                        
+                        PrimeFaces.current().ajax().update("dialogo");
+                      
                     }
-                    correo.setMeses(meses);
-                    correo.setVeces(0);
-                    correo.setFrecuencia(0);
-                    function.crearRecxMes(correo, this.getMeses());
-                    }else{
-                       PrimeFaces.current().ajax().update("errorText");
-                    }
-                    
+
                 } else if (this.recordatorioSelec == "Veces por Mes") {
                     List<Recordatorio> recordatorios = rDao.getByMail(correo);
                     meses = this.getMeses();
@@ -571,10 +576,14 @@ public class ScheduleController implements Serializable {
         pOcultosSeleccionados = new String[1];
 
         mostrarBtn = false;
+        this.setUndeleteable(false);
         this.setRecordatorioSelec("");
         this.setMeses(0);
         this.setVeces(0);
         this.setFrecunecia(0);
+        this.setUndeleteable(false);
+        
+        
 
         Date d = (Date) selectEvent.getObject();
         Calendar cal = Calendar.getInstance();
@@ -584,7 +593,7 @@ public class ScheduleController implements Serializable {
 
         fecha = d;
         event = new DefaultScheduleEvent("", d, d);
-
+         PrimeFaces.current().ajax().update("dialogo");
     }
 
     public void onEventSelect(SelectEvent selectEvent) {
@@ -613,7 +622,7 @@ public class ScheduleController implements Serializable {
         this.setMesesbol(true);
         this.setVecesbol(true);
         this.setFrecuenciabol(true);
-
+        this.setUndeleteable(false);
         Correo target = new Correo();
         CorreoDao correoDao = new CorreoDao();
         correoDao.setEm(Servicio.getEm());
@@ -709,16 +718,27 @@ public class ScheduleController implements Serializable {
             this.meses = target.getMeses();
             this.veces = target.getVeces();
             this.frecunecia = target.getFrecuencia();
-
+            
+            if(meses > 0 && veces ==0 && frecunecia ==0){
+                this.setRecordatorioSelec("Por meses");
+            }else if(meses > 0 && veces > 0 && frecunecia ==0){
+                this.setRecordatorioSelec("Veces por Mes");
+            }else if(meses > 0 && veces > 0 && frecunecia>0){
+               
+             this.setRecordatorioSelec("Veces por Mes con frecuencia");
+            }
+             PrimeFaces.current().ajax().update("listarecordatorios");
         } else {
+            this.setRecordatorioSelec("Ninguno");
             this.setVeces(0);
             this.setMeses(0);
             this.setFrecunecia(0);
+              PrimeFaces.current().ajax().update("listarecordatorios");
         }
 
         System.out.println(asunto);
         System.out.println(fechaEvento);
-
+         PrimeFaces.current().ajax().update("dialogo");
     }
 
     public ScheduleController() {
@@ -1106,10 +1126,6 @@ public class ScheduleController implements Serializable {
         this.errorText = errorText;
     }
 
-    
-    
-    
-    
     //<editor-fold defaultstate="collapsed" desc="Validaciones">
     Date today = new Date();
 
@@ -1130,7 +1146,6 @@ public class ScheduleController implements Serializable {
     }
 
     //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Veces x Mes">
     public boolean checkDatosVecesxMeses(Correo correo, int veces, int meses) {
 
@@ -1194,7 +1209,6 @@ public class ScheduleController implements Serializable {
     }
 
     //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Veces x Mes con Frecuencia">
     public boolean checkDatosMesesXFrecuencia(Correo correo, int veces, int meses, int frecuencia) {
 
@@ -1231,8 +1245,6 @@ public class ScheduleController implements Serializable {
     }
 
     //</editor-fold>
-    
-    
     //<editor-fold defaultstate="collapsed" desc="Funciones y utilidades">
     /*   -convertToLocal-   
 	 * Convierte los datos tipo Date a Local date 
@@ -1254,7 +1266,7 @@ public class ScheduleController implements Serializable {
 	 * Calcula los meses entre las dos fechas tipo LocalDate*/
     public int monthsBetween(LocalDate d1, LocalDate d2) {
         int restantes = 0;
-        
+
         if (d1.getYear() <= d2.getYear()) {
             restantes = d1.getMonthValue() - d2.getMonthValue();
         } else {
@@ -1362,7 +1374,18 @@ public class ScheduleController implements Serializable {
         return fecha;
     }
     //</editor-fold>
-    
-    
+
     //</editor-fold>
+    public void error() {
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error!", this.errorText));
+    }
+
+    public boolean isUndeleteable() {
+        return undeleteable;
+    }
+
+    public void setUndeleteable(boolean undeleteable) {
+        this.undeleteable = undeleteable;
+    }
+
 }

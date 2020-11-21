@@ -60,7 +60,7 @@ public void init(){
     SistemaDao sis=new SistemaDao(Servicio.getEm());
     UsuarioDao uDao=new UsuarioDao(Servicio.getEm());
     
-    System.out.println("gfgfgf");
+
     
     
     //Esto es para hacer que solo intente ingresar los datos iniciales una vez
@@ -99,7 +99,7 @@ public void init(){
 public static void poblarModelo() {
     	
     	//Colocar aquí el directorio en que está el archivo adjunto
-    	String directorioAdjunto="C:/Users/andya/Downloads/text1.txt";
+    	String directorioAdjunto="C:/Users/Lenovo/Desktop/tareas.txt";
     	 try {
              
 
@@ -230,6 +230,7 @@ public static void poblarModelo() {
           
           c.setAdjuntos(adjuntoList);
           
+
          funtion.crearRecxMes(c, 2);
           
          

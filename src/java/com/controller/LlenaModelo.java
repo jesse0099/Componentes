@@ -46,10 +46,12 @@ public void init(){
  
    Servicio.setServerURL("jdbc:mysql://localhost:3306/mensajeria?serverTimezone=UTC");
    Servicio.setUsername("root");
-   Servicio.setPassword("AndyMysql2601");
+   Servicio.setPassword("wvjjk611");
    Servicio.setDriver("com.mysql.jdbc.Driver");
    Servicio.setHbm2DDLprotocol("update");
    Servicio.setDialect("org.hibernate.dialect.MySQLDialect");
+   
+   
    
    try{
     Servicio.startEntityManagerFactory();
@@ -58,7 +60,7 @@ public void init(){
     SistemaDao sis=new SistemaDao(Servicio.getEm());
     UsuarioDao uDao=new UsuarioDao(Servicio.getEm());
     
-    
+
     
     
     //Esto es para hacer que solo intente ingresar los datos iniciales una vez
@@ -97,7 +99,7 @@ public void init(){
 public static void poblarModelo() {
     	
     	//Colocar aquí el directorio en que está el archivo adjunto
-    	String directorioAdjunto="C:/Users/andya/Downloads/text1.txt";
+    	String directorioAdjunto="C:/Users/Lenovo/Desktop/tareas.txt";
     	 try {
              
 
@@ -109,15 +111,30 @@ public static void poblarModelo() {
           sist.setActivo(true);
           
           sis.save(sist);
-             
+            
+          Sistema sist2=new Sistema();
+          sist2.setNombre("Recursos humanos");
+          sist2.setActivo(true);
+          
+          sis.save(sist2);
+          
           UsuarioDao uDao=new UsuarioDao(Servicio.getEm());
           
-       
-          Usuario usuario = new Usuario(2,"teamr6cr@gmail.com","bada907817",false,false,false);
+          
+          
+          Usuario usuarioA = new Usuario(3,"teamr6cr@gmail.com","bada907817",false,false,false);
+          usuarioA.setSistema(sist2);
+            usuarioA.setActivo(Boolean.TRUE);
+          uDao.save(usuarioA);
+          
+          Usuario usuario = new Usuario(2,"ventasestructurasulatina@gmail.com","wvjjk611",false,false,false);
           usuario.setSistema(sist);
+          usuario.setActivo(Boolean.TRUE);
           uDao.save(usuario);
-          Usuario usuario2 = new Usuario(2,"ventasestructurasulatina@gmail.com","wvjjk611",false,false,false);
-          usuario2.setSistema(sist);
+          
+          Usuario usuario2 = new Usuario(3,"ventasestructurasulatina@gmail.com","wvjjk611",false,false,false);
+          usuario2.setSistema(sist2);
+            usuario2.setActivo(Boolean.TRUE);
           uDao.save(usuario2);
           
           
@@ -213,6 +230,7 @@ public static void poblarModelo() {
           
           c.setAdjuntos(adjuntoList);
           
+
          funtion.crearRecxMes(c, 2);
           
          

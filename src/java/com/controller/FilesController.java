@@ -58,6 +58,10 @@ public class FilesController {
 
     @PostConstruct
     public void init() {
+        onLoad();
+    }
+
+    public void onLoad() {
 
         //Carga de destinatarios
         Dao mDao = new SistemaDao();
@@ -87,7 +91,6 @@ public class FilesController {
         for (Correo c : this.correos) {
             this.correosBackUp.add(c);
         }
-
     }
 
     public void onItemSelectedListener() {
@@ -154,7 +157,7 @@ public class FilesController {
         return guessMimeType(topOfStream);
     }
 
-    public static StreamedContent byteArrayToStreamedContent(byte[] adj, int name,String contentType) {
+    public static StreamedContent byteArrayToStreamedContent(byte[] adj, int name, String contentType) {
         StreamedContent returned = null;
         InputStream inputStr = null;
 

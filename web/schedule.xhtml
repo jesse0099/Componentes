@@ -125,6 +125,7 @@
                         <p:outputLabel value="Adjuntos: "></p:outputLabel>
                         <p:panel style="width: 100%;border: none !important">
                             <p:fileUpload  mode="advanced" 
+                                           process="scrollFiles,scrollFiles2"
                                            multiple="true"
                                            fileUploadListener="#{scheduleController.handleFileUpload}"
                                            id="imgLoader"  chooseIcon="fas fa-file-image" 
@@ -141,23 +142,26 @@
                         </p:panel>
 
                         <p:panel style="border:none !important"></p:panel>
-                        <p:scrollPanel id="scrollFiles" style="height:100px" mode="native" >
 
-                            <c:forEach id="innerRepeat"  items="#{scheduleController.uploadedFiles}" var="adj"  >
-
-
-
-
-                                <p:commandButton  process="scrollFiles"  disabled="true" style="border-radius:5px;border-color: #ffffff;background-color: #333333;display: inline-block;padding: 0.3em;width: fit-content" 
-                                                  value="#{adj.fileName}.#{adj.contentType}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down">
+                        <p:panel id="files" style="border: none;background-color: transparent"> 
+                            <p:scrollPanel rendered="#{not empty scheduleController.uploadedFiles }" id="scrollFiles" style="height:100px" mode="native" >
+                                <c:forEach   id="innerRepeat"  items="#{scheduleController.uploadedFiles}" var="adj"  >
+                                    <p:commandButton  process="scrollFiles"  disabled="true" style="border-radius:5px;border-color: #ffffff;background-color: #333333;display: inline-block;padding: 0.3em;width: fit-content" 
+                                                      value="#{adj.fileName}.#{adj.contentType}" 
+                                                      ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down">
                                     </p:commandButton>      
-                            
+                                </c:forEach>     
+                            </p:scrollPanel>
 
-
-
-
-                            </c:forEach>     
-                        </p:scrollPanel>
+                            <p:scrollPanel  rendered="#{not empty scheduleController.uploadedFilesAdj}"  id="scrollFiles2" style="height:100px" mode="native" >
+                                <c:forEach   id="innerRepeatHidden"  items="#{scheduleController.uploadedFilesAdj}" var="adj2"  >
+                                    <p:commandButton  process="scrollFiles2"  disabled="true" style="border-radius:5px;border-color: #ffffff;background-color: #333333;display: inline-block;padding: 0.3em;width: fit-content" 
+                                                      value="#{adj2.id}.#{fileController.getMIMETypeFromByteArray(adj2.archivo)}" 
+                                                      ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down">
+                                    </p:commandButton>      
+                                </c:forEach>
+                            </p:scrollPanel>
+                        </p:panel>
 
                         <p:panel style="border:none !important"></p:panel>
                         <p:panel style="display: inline-block; float: right;border:none !important">

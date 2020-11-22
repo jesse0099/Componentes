@@ -19,6 +19,10 @@ import com.r6.service.Servicio;
 import com.r6.service.UsuarioDao;
 import com.r6.service.RecordatorioDao;
 import com.r6.mensajeria.Recordatorio;
+import com.r6.service.AdjuntoDao;
+import com.r6.service.Dao;
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
@@ -128,6 +132,7 @@ public class ScheduleController implements Serializable {
     public void init() {
 
         this.uploadedFiles = new ArrayList<>();
+        this.uploadedFilesAdj = new ArrayList<>();
 
         eventModel = new DefaultScheduleModel();
 
@@ -556,9 +561,7 @@ public class ScheduleController implements Serializable {
     }
 
     public void onEventSelect(SelectEvent selectEvent) {
-
-        this.uploadedFiles = new ArrayList<>();
-
+        uploadedFiles = new ArrayList<>();
         RecordatorioDao rDao = new RecordatorioDao();
         rDao.setEm(Servicio.getEm());
         this.idCorreo = 0;
@@ -605,15 +608,16 @@ public class ScheduleController implements Serializable {
             String CurrentMailStr = DateCurrent.format(currentMail);
 
             if (c.getAsunto().equals(asunto) && fechaEvento.equals(CurrentMailStr)) {
+
                 target = c;
 
-                this.uploadedFilesAdj = new ArrayList<>();
+                //Extrayendo adjuntos de la BD
+                uploadedFilesAdj = new ArrayList<>();
+                AdjuntoDao daoMas = new AdjuntoDao();
+                (daoMas).getByMail(c).forEach((x) -> {
+                    this.uploadedFilesAdj.add(x);
+                });
 
-                for (Adjunto adj : FilesController.getFilesByMail(c)) {
-                    this.uploadedFilesAdj.add(adj);
-                }
-                
-                System.out.println("Size : "+this.uploadedFiles.size());
                 updateViewForFiles();
 
                 this.idCorreo = c.getId();
@@ -667,7 +671,7 @@ public class ScheduleController implements Serializable {
                 }
 
                 int arraySizePOcultos = c.getUsuarioscopiados().size();
-                pOcultosSeleccionados = new String[arraySize];
+                pOcultosSeleccionados = new String[arraySizePOcultos];
                 int agregarPOculto = 0;
 
                 for (Usuario UsuarioOculto : c.getUsuarioscopiados()) {
@@ -1130,14 +1134,21 @@ public class ScheduleController implements Serializable {
     public void handleFileUpload(FileUploadEvent event) {
 
         //Cada archivo cargado va a una lista 
+        this.uploadedFilesAdj.clear();
+        PrimeFaces.current().ajax().update("scrollFiles");
         this.uploadedFiles.add(event.getFile());
-        updateViewForFiles();
 
         System.out.println("Cargados : " + this.uploadedFiles.size());
+        System.out.println("Lista de adjuntos:" + this.uploadedFilesAdj.size());
+
+        updateViewForFiles();
     }
 
     public void updateViewForFiles() {
+        PrimeFaces.current().ajax().update("files");
         PrimeFaces.current().ajax().update("scrollFiles");
+        PrimeFaces.current().ajax().update("scrollFiles2");
+
     }
 
     public static String getMimeTypeFromByteArray(Adjunto adj) {

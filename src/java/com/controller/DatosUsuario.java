@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import static java.util.Collections.list;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
@@ -28,76 +29,66 @@ import org.primefaces.PrimeFaces;
 @ManagedBean(name = "userController")
 @ViewScoped
 public class DatosUsuario implements Serializable {
-    
-  //Estos son el usuario y el sistema seleccionados   
-  public static Sistema sis; 
-  public static Usuario user;
-  
-  
-  
- private String usuarioStr="";
- private String contraStr="";
-  
-  public static boolean hayCoincidencias;
-  private List<Usuario> usuariosCoincidencia;
-  
-  public void getCoincidencias(){
-      
-      hayCoincidencias=false;
-    
-    SistemaDao sis=new SistemaDao(Servicio.getEm());
-    UsuarioDao uDao=new UsuarioDao(Servicio.getEm());
-    
-    usuariosCoincidencia=new ArrayList<>();
-    
-   
-    for(Usuario u:uDao.getAll()){
-     
-        
-        
-        if(u.getCorreo().equals(usuarioStr) && u.getContrasenia().equals(contraStr)){
-           
-            hayCoincidencias=true;
-            usuariosCoincidencia.add(u);
+
+    //Estos son el usuario y el sistema seleccionados   
+    public static Sistema sis;
+    public static Usuario user;
+
+    public boolean alerta;
+
+    private String usuarioStr = "";
+    private String contraStr = "";
+
+    public static boolean hayCoincidencias;
+    private List<Usuario> usuariosCoincidencia;
+
+    public void getCoincidencias() {
+
+        hayCoincidencias = false;
+
+        SistemaDao sis = new SistemaDao(Servicio.getEm());
+        UsuarioDao uDao = new UsuarioDao(Servicio.getEm());
+
+        usuariosCoincidencia = new ArrayList<>();
+
+        for (Usuario u : uDao.getAll()) {
+
+            if (u.getCorreo().equals(usuarioStr) && u.getContrasenia().equals(contraStr) && u.getActivo()) {
+
+                hayCoincidencias = true;
+                usuariosCoincidencia.add(u);
+            }
+
         }
-        
+
+        if (hayCoincidencias) {
+
+            PrimeFaces.current().ajax().update("sisDialog");
+
+            PrimeFaces.current().executeScript("PF('sisDialog').show();");
+
+        } else {
+            PrimeFaces.current().executeScript("PF('errorDialog').show();");
+
+        }
+
     }
-     
 
- 
-if(hayCoincidencias){
-  
-     PrimeFaces.current().ajax().update("sisDialog");
-     
- PrimeFaces.current().executeScript("PF('sisDialog').show();");
-     
-}else{
-           PrimeFaces.current().executeScript("PF('errorDialog').show();");
-       
-     
-              
-     
-      
-  }
+    public void setUsuarioSelect(Usuario u) {
+        DatosUsuario.user = u;
 
-  }
-  
-  
-  public void setUsuarioSelect(Usuario u){
-      DatosUsuario.user=u;
-      
-      usuarioStr=u.getCorreo();
-      String destino;
-      
-      if(u.getIdUsuario()==1){
-          destino="AgregarUsuarios.xhtml";
-      }else{
-          destino="schedule.xhtml";
-      }
-             
-      
-      
-      try {
+        usuarioStr = u.getCorreo();
+        String destino;
+
+
+
+        if (u.getIdUsuario() == 1) {
+            destino = "AgregarUsuarios.xhtml";
+        } else {
+            destino = "schedule.xhtml";
+        }
+
+        try {
 
             HttpServletRequest request = (HttpServletRequest) FacesContext
                     .getCurrentInstance().getExternalContext().getRequest();
@@ -110,13 +101,12 @@ if(hayCoincidencias){
                     .redirect(
                             request.getContextPath()
                             + String.format("/faces/%s", destino));
-         
 
         } catch (Exception e) {
 
         }
-  } 
-  
+    }
+
     public static Sistema getSis() {
         return sis;
     }
@@ -165,7 +155,12 @@ if(hayCoincidencias){
         this.usuariosCoincidencia = usuariosCoincidencia;
     }
 
-  
-  
-  
+    public boolean isAlerta() {
+        return alerta;
+    }
+
+    public void setAlerta(boolean alerta) {
+        this.alerta = alerta;
+    }
+
 }

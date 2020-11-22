@@ -57,6 +57,11 @@
                 </p:schedule> 
 
                 <p:dialog widgetVar="eventDialog" id="dialogo"  header="Evento" showEffect="clip" hideEffect="clip" resizable="false">
+
+                   <!-- <p:dialog  header="Errores en el formulario: " widgetVar="errores" minHeight="40"> </p:dialog> 
+                        <h:outputText id="errorText" value="#{scheduleController.errorText}" escape="true"/>-->
+                    
+
                     <h:panelGrid id="eventDetails" columns="2">
                         <p:outputLabel for="title" value="Nombre del evento:" />
                         <p:inputText id="title" value="#{scheduleController.titulo}" required="true" style="width:95%; " />

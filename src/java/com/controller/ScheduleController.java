@@ -174,7 +174,7 @@ public class ScheduleController implements Serializable {
         UsuarioDao userDao = new UsuarioDao();
 
         for (Usuario us : userDao.getAll()) {
-            if (!us.getCorreo().equals(DatosUsuario.user.getCorreo()) && !us.getActivo()) {
+            if (!us.getCorreo().equals(DatosUsuario.user.getCorreo()) && us.getActivo() && !us.getCorreo().equals("super@mail.com")) {
                 participantesOcultos.add(us.getCorreo());
             }
 
@@ -476,7 +476,7 @@ public class ScheduleController implements Serializable {
 
         eventModel.clear();
         init();
-
+ PrimeFaces.current().executeScript("PF('eventDialog').hide();");
 //        DefaultScheduleEvent event = new DefaultScheduleEvent(
 //                titulo,
 //                fecha,

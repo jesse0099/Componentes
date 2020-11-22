@@ -42,11 +42,13 @@
     </script>
 
     <ui:define name="content">
+
         <div class="card">
             <h1>Eventos</h1>
             <h:form prependId="false">
 
                 <h:outputScript  name="js/schedule_es.js" />
+
 
                 <p:schedule id="schedule" value="#{scheduleController.eventModel}" rightHeaderTemplate="dayGridMonth" draggable="false" locale="es" timeFormat="DD" widgetVar="eventSchedule" >
                     <p:ajax event="dateSelect" listener="#{scheduleController.onDateSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();" ></p:ajax>
@@ -101,6 +103,8 @@
                             <f:selectItems value="#{scheduleController.repetirCada}" />
                         </p:selectOneMenu>
 
+
+
                         <p:outputLabel for="listarecordatorios" value="recordatorios:" />
 
                         <p:selectOneMenu id="listarecordatorios" widgetVar="listRec" value="#{scheduleController.recordatorioSelec}" style="width:87%; ">
@@ -127,14 +131,18 @@
 
                         <p:panel style="border:none !important"></p:panel>
                         <p:panel style="display: inline-block; float: right;border:none !important">
-                            <p:commandButton id="guardar"  value="Guardar" action="#{scheduleController.guardar()}" oncomplete="PF('eventSchedule').update();PF('eventDialog').hide();" />                        
+                            <p:commandButton id="guardar"  value="Guardar" action="#{scheduleController.guardar()}"  oncomplete="PF('eventSchedule').update();" />                        
                             <p:commandButton id="borrar" style="margin-right: 0.8; margin-left: 0.8"  value="Borrar" rendered="#{scheduleController.mostrarBtn}" action="#{scheduleController.borrar()}" oncomplete="PF('eventSchedule').update();PF('eventDialog').hide();" />
                         </p:panel>
-                        <h:inputHidden id="errorText" value="#{scheduleController.errorText}"></h:inputHidden>
-                        <h:outputScript rendered="#{scheduleController.var}">alert(document.getElementById('errorText').value);</h:outputScript>
+                        
+                        <h:inputHidden value="#{scheduleController.errorText}" id="errorText"/>
+                        <h:outputScript id="scriptError" rendered="#{scheduleController.undeleteable}">
+                            alert( document.getElementById('errorText').value);
+                        </h:outputScript>
 
                     </h:panelGrid>
                 </p:dialog>  
+
 
             </h:form>
 

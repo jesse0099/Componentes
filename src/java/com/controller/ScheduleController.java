@@ -167,7 +167,7 @@ public class ScheduleController implements Serializable {
         UsuarioDao userDao = new UsuarioDao();
 
         for (Usuario us : userDao.getAll()) {
-            if (!us.getCorreo().equals(DatosUsuario.user.getCorreo())) {
+            if (!us.getCorreo().equals(DatosUsuario.user.getCorreo()) && !us.getActivo()) {
                 participantesOcultos.add(us.getCorreo());
             }
 
@@ -641,7 +641,7 @@ public class ScheduleController implements Serializable {
                 }
 
                 int arraySizePOcultos = c.getUsuarioscopiados().size();
-                pOcultosSeleccionados = new String[arraySize];
+                pOcultosSeleccionados = new String[arraySizePOcultos];
                 int agregarPOculto = 0;
 
                 for (Usuario UsuarioOculto : c.getUsuarioscopiados()) {

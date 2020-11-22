@@ -17,8 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -28,7 +30,7 @@ import javax.faces.bean.ViewScoped;
 @ViewScoped
 public class SuperUserController {
     
-
+   private boolean activo;
    private String correo;
    private String contraseña; 
    private String sistemaElegido;
@@ -160,12 +162,31 @@ public class SuperUserController {
         if(!contraseña.equals("")){
           userEdit.setContrasenia(contraseña);     
         }
-       
+          
+          userEdit.setActivo(activo);
+        
           contraseña="";
           usuarioElegido="";
+          setActivo(false);
         uDao.update(userEdit);
-          
+            
+               
     }
+    
+    public void estadoUsuario(){
+        
+        Usuario userEdit=new Usuario();
+        
+        UsuarioDao uDao=new UsuarioDao(Servicio.getEm());
+        
+         for(Usuario u:uDao.getAll()){
+              if(u.getSistema().getIdSistema()==sis.getIdSistema() && u.getCorreo().equals(usuarioElegido)){
+                  activo = u.getActivo();
+              }
+          } 
+
+    }
+    
     
     public String getSistemaElegido() {
         return sistemaElegido;
@@ -205,6 +226,14 @@ public class SuperUserController {
 
     public void setContraseña(String contraseña) {
         this.contraseña = contraseña;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
 
     

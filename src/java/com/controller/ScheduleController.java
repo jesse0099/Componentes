@@ -26,6 +26,8 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -116,11 +118,14 @@ public class ScheduleController implements Serializable {
 
     private List<Recordatorio> recordatorios;
     List<Date> fechas = new ArrayList<>();
+    private String errorText;
+
+    private boolean var = false;
 
     @PostConstruct
     public void init() {
         eventModel = new DefaultScheduleModel();
-
+        this.recordatorioSelec = "";
         CorreoDao cDao = new CorreoDao();
         Correo correo = new Correo();
         cDao.setEm(Servicio.getEm());
@@ -288,69 +293,117 @@ public class ScheduleController implements Serializable {
             Correo correo = correoDao.getById(idCorreo);
 
             if (rDao.getByMail(correo).size() > 0) {
+
                 if (this.recordatorioSelec == "Por Mes") {
-                    List<Recordatorio> recordatorios = rDao.getByMail(correo);
+                    if (this.checkDatosxMeses(correo, meses)) {
+                        List<Recordatorio> recordatorios = rDao.getByMail(correo);
 
-                    meses = this.getMeses();
+                        meses = this.getMeses();
 
-                    for (Recordatorio rec : recordatorios) {
-                        rDao.delete(rec);
+                        for (Recordatorio rec : recordatorios) {
+                            rDao.delete(rec);
+                        }
+                        correo.setMeses(meses);
+                        correo.setVeces(0);
+                        correo.setFrecuencia(0);
+                        function.crearRecxMes(correo, this.getMeses());
+                    } else {
+                        this.setVar(true);
+                        PrimeFaces.current().ajax().update("dialogo");
                     }
-
-                    function.crearRecxMes(correo, this.getMeses());
 
                 } else if (this.recordatorioSelec == "Veces por Mes") {
-                    List<Recordatorio> recordatorios = rDao.getByMail(correo);
-                    meses = this.getMeses();
-                    veces = this.getVeces();
+                    if (this.checkDatosVecesxMeses(correo, veces, meses)) {
 
-                    for (Recordatorio rec : recordatorios) {
-                        rDao.delete(rec);
+                        List<Recordatorio> recordatorios = rDao.getByMail(correo);
+                        meses = this.getMeses();
+                        veces = this.getVeces();
+
+                        for (Recordatorio rec : recordatorios) {
+                            rDao.delete(rec);
+                        }
+                        correo.setMeses(meses);
+                        correo.setVeces(veces);
+                        correo.setFrecuencia(0);
+                        function.crearRecxVez(correo, this.getVeces(), this.getMeses());
+                    } else {
+                        this.setVar(true);
+                        PrimeFaces.current().ajax().update("dialogo");
                     }
-
-                    function.crearRecxVez(correo, this.getVeces(), this.getMeses());
-
                 } else if (this.recordatorioSelec == "Veces por Mes con frecuencia") {
+                    if (this.checkDatosMesesXFrecuencia(correo, veces, meses, frecunecia)) {
+                        meses = this.getMeses();
+                        veces = this.getVeces();
+                        this.frecunecia = this.getFrecunecia();
 
-                    meses = this.getMeses();
-                    veces = this.getVeces();
-                    this.frecunecia = this.getFrecunecia();
+                        List<Recordatorio> recordatorios = rDao.getByMail(correo);
+
+                        for (Recordatorio rec : recordatorios) {
+                            rDao.delete(rec);
+                        }
+                        correo.setMeses(meses);
+                        correo.setVeces(veces);
+                        correo.setFrecuencia(frecunecia);
+                        function.crearRecxFrecuencia(correo, this.getVeces(), this.getMeses(), this.frecunecia);
+                    } else {
+                        this.setVar(true);
+                        PrimeFaces.current().ajax().update("dialogo");
+                    }
+                } else if (this.recordatorioSelec == "Ninguno" || this.recordatorioSelec == "" || this.recordatorioSelec == null) {
 
                     List<Recordatorio> recordatorios = rDao.getByMail(correo);
-
                     for (Recordatorio rec : recordatorios) {
                         rDao.delete(rec);
                     }
 
-                    function.crearRecxFrecuencia(correo, this.getVeces(), this.getMeses(), this.frecunecia);
+                    correo.setVeces(0);
+                    correo.setMeses(0);
+                    correo.setFrecuencia(0);
 
-                } else if (this.recordatorioSelec == "Ninguno") {
-                        
+                    function.saveCorreo(correo);
                 }
             } else {
                 if (this.recordatorioSelec == "Por Mes") {
-
-                    meses = this.getMeses();
-
-                    function.crearRecxMes(correo, this.getMeses());
-
+                    if (this.checkDatosxMeses(correo, meses)) {
+                        meses = this.getMeses();
+                        correo.setMeses(meses);
+                        correo.setVeces(0);
+                        correo.setFrecuencia(0);
+                        function.crearRecxMes(correo, this.getMeses());
+                    } else {
+                        this.setVar(true);
+                        PrimeFaces.current().ajax().update("dialogo");
+                    }
                 } else if (this.recordatorioSelec == "Veces por Mes") {
-
-                    meses = this.getMeses();
-                    veces = this.getVeces();
-
-                    function.crearRecxVez(correo, this.getVeces(), this.getMeses());
-
+                    if (this.checkDatosVecesxMeses(correo, veces, meses)) {
+                        meses = this.getMeses();
+                        veces = this.getVeces();
+                        correo.setMeses(meses);
+                        correo.setVeces(veces);
+                        correo.setFrecuencia(0);
+                        function.crearRecxVez(correo, this.getVeces(), this.getMeses());
+                    } else {
+                        this.setVar(true);
+                        PrimeFaces.current().ajax().update("dialogo");
+                    }
                 } else if (this.recordatorioSelec == "Veces por Mes con frecuencia") {
-
-                    meses = this.getMeses();
-                    veces = this.getVeces();
-                    this.frecunecia = this.getFrecunecia();
-
-                    function.crearRecxFrecuencia(correo, this.getVeces(), this.getMeses(), this.frecunecia);
-
+                    if (this.checkDatosMesesXFrecuencia(correo, veces, meses, frecunecia)) {
+                        meses = this.getMeses();
+                        veces = this.getVeces();
+                        this.frecunecia = this.getFrecunecia();
+                        correo.setMeses(meses);
+                        correo.setVeces(veces);
+                        correo.setFrecuencia(frecunecia);
+                        function.crearRecxFrecuencia(correo, this.getVeces(), this.getMeses(), this.frecunecia);
+                    } else {
+                        this.setVar(true);
+                        PrimeFaces.current().ajax().update("dialogo");
+                    }
                 } else if (this.recordatorioSelec == "Ninguno") {
-
+                    correo.setVeces(0);
+                    correo.setMeses(0);
+                    correo.setFrecuencia(0);
+                    function.saveCorreo(correo);
                 }
             }
 
@@ -369,30 +422,54 @@ public class ScheduleController implements Serializable {
         } else if (this.recordatorioSelec != "Ninguno" || this.recordatorioSelec != "" || this.recordatorioSelec != null) {
 
             if (this.recordatorioSelec == "Por Mes") {
-
-                meses = this.getMeses();
-
-                function.crearRecxMes(c, this.getMeses());
-
+                if (this.checkDatosxMeses(c, meses)) {
+                    meses = this.getMeses();
+                    c.setMeses(meses);
+                    c.setVeces(0);
+                    c.setFrecuencia(0);
+                    function.crearRecxMes(c, this.getMeses());
+                } else {
+                    this.setVar(true);
+                    PrimeFaces.current().ajax().update("dialogo");
+                }
             } else if (this.recordatorioSelec == "Veces por Mes") {
+                if (this.checkDatosVecesxMeses(c, veces, meses)) {
+                    meses = this.getMeses();
+                    veces = this.getVeces();
 
-                meses = this.getMeses();
-                veces = this.getVeces();
-
-                function.crearRecxVez(c, this.getVeces(), this.getMeses());
-
+                    c.setMeses(meses);
+                    c.setVeces(veces);
+                    c.setFrecuencia(0);
+                    function.crearRecxVez(c, this.getVeces(), this.getMeses());
+                } else {
+                    this.setVar(true);
+                    PrimeFaces.current().ajax().update("dialogo");
+                }
             } else if (this.recordatorioSelec == "Veces por Mes con frecuencia") {
+                if (this.checkDatosMesesXFrecuencia(c, veces, meses, frecunecia)) {
+                    meses = this.getMeses();
+                    veces = this.getVeces();
+                    this.frecunecia = this.getFrecunecia();
 
-                meses = this.getMeses();
-                veces = this.getVeces();
-                this.frecunecia = this.getFrecunecia();
-
-                function.crearRecxFrecuencia(c, this.getVeces(), this.getMeses(), this.frecunecia);
-
+                    c.setMeses(meses);
+                    c.setVeces(veces);
+                    c.setFrecuencia(frecunecia);
+                    function.crearRecxFrecuencia(c, this.getVeces(), this.getMeses(), this.frecunecia);
+                } else {
+                    this.setVar(true);
+                    PrimeFaces.current().ajax().update("dialogo");
+                }
+            } else if (this.recordatorioSelec == "Ninguno" || this.recordatorioSelec == "" || this.recordatorioSelec == null) {
+                c.setMeses(0);
+                c.setVeces(0);
+                c.setFrecuencia(0);
+                correoDao.save(c);
             }
 
         } else {
-             System.out.println("Llegó");
+            c.setMeses(0);
+            c.setVeces(0);
+            c.setFrecuencia(0);
             correoDao.save(c);
         }
 
@@ -522,7 +599,7 @@ public class ScheduleController implements Serializable {
         tipoSeleccionado = "";
 
         pOcultosSeleccionados = new String[1];
-
+        this.setVar(false);
         mostrarBtn = false;
         this.setRecordatorioSelec("");
         this.setMeses(0);
@@ -553,7 +630,7 @@ public class ScheduleController implements Serializable {
         repetirSeleccionado = "";
 
         cantidadRecordatorios = 0;
-
+        this.setVar(false);
         tipoSeleccionado = "";
 
         pOcultosSeleccionados = new String[1];
@@ -655,36 +732,13 @@ public class ScheduleController implements Serializable {
             }
 
         }
-         
-        
+
         recordatorios = rDao.getByMail(target);
-    
+
         if (recordatorios.size() > 0) {
-            fechas.clear();
-            for (Recordatorio rec : recordatorios) {
-                fechas.add(rec.getFechaEnvio());
-            }
-
-            Collections.sort(fechas);
-
-            Date startFecha = fechas.get(0);
-            Date endFecha = fechas.get(fechas.size() - 1);
-            
-            Calendar startCalendar = new GregorianCalendar();
-            Calendar endCalendar = new GregorianCalendar();
-            
-            startCalendar.setTime(startFecha);
-            endCalendar.setTime(fecha);
-            
-            int diffYear = endCalendar.get(Calendar.YEAR) - startCalendar.get(Calendar.YEAR);
-            int diffMonth = diffYear * 12 + endCalendar.get(Calendar.MONTH) - startCalendar.get(Calendar.MONTH);
-
-            this.setMeses(diffMonth);
-            //veces por mes
-            int veces=recordatorios.size()/diffMonth;
-            //calcular recordatorios repetidos en un mismo mes y anadirlos a veces 
-            
-            this.setVeces(veces);
+            this.meses = target.getMeses();
+            this.veces = target.getVeces();
+            this.frecunecia = target.getFrecuencia();
 
         } else {
             this.setVeces(0);
@@ -1041,6 +1095,7 @@ public class ScheduleController implements Serializable {
     private boolean frecuenciabol = true;
 
     public void visibility() {
+        System.out.println("Entro con Item: " + this.recordatorioSelec);
         if (this.recordatorioSelec == "Por Mes") {
             this.setMesesbol(false);
             this.setVecesbol(true);
@@ -1059,6 +1114,10 @@ public class ScheduleController implements Serializable {
             this.setVecesbol(true);
             this.setFrecuenciabol(true);
         }
+
+        PrimeFaces.current().ajax().update("meses");
+        PrimeFaces.current().ajax().update("veces");
+        PrimeFaces.current().ajax().update("frecuencia");
     }
 
     public List<Recordatorio> getRecordatorios() {
@@ -1069,4 +1128,270 @@ public class ScheduleController implements Serializable {
         this.recordatorios = recordatorios;
     }
 
+    public String getErrorText() {
+        return errorText;
+    }
+
+    public void setErrorText(String errorText) {
+        this.errorText = errorText;
+    }
+
+    public boolean isVar() {
+        return var;
+    }
+
+    public void setVar(boolean var) {
+        this.var = var;
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="Validaciones">
+    Date today = new Date();
+
+    //<editor-fold defaultstate="collapsed" desc="Meses">
+    public boolean checkDatosxMeses(Correo correo, int meses) {
+        boolean allOk = false;
+        int mesesRestantes = (int) ChronoUnit.MONTHS.between(convertToLocal(today), convertToLocal(correo.getFechaEnvio()));
+        System.out.println(" ! Meses entre dia actual y la fecha meta " + mesesRestantes);
+
+        if (meses <= mesesRestantes && meses > 0) {
+            allOk = true;
+        } else {
+            this.setErrorText(" Error: Datos proporcionados son erroneos. \n"
+                    + "* La cantidad de meses proporcionada sobrepasa los meses actuales\n");
+        }
+
+        return allOk;
+    }
+
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Veces x Mes">
+    public boolean checkDatosVecesxMeses(Correo correo, int veces, int meses) {
+
+        boolean allOK = false;
+
+        /*Anno en que se envia el correo meta*/
+        int yearSend = getYear(correo.getFechaEnvio());
+
+        /*Anno actual*/
+        int yearActual = getYear(today);
+
+        System.out.println(" ! Anno meta: " + yearSend + " Anno Actual: " + yearActual);
+
+        /*Dias entre dia actual y la fecha meta*/
+        int diasRestantes = (int) daysBetween(convertToLocal(today), convertToLocal(correo.getFechaEnvio()));
+        System.out.println(" ! Dias entre dia actual y la fecha meta " + diasRestantes);
+
+        /* Meses entre el dia actual y la fecha meta*/
+        int mesesRestantes = (int) monthsBetween(convertToLocal(today), convertToLocal(correo.getFechaEnvio()));
+        System.out.println(" ! Meses entre dia actual y la fecha meta " + mesesRestantes);
+
+        /* Si el anno meta es mayor o igual que el anno actual*/
+ /* Si la cantidad de veces propuestas es mayor a cero y si la cantidad de meses es mayor a 0*/
+        if (yearActual <= yearSend && veces > 0 && meses > 0) {
+
+            /* Si la cantidad de meses es valida*/
+            if (meses <= mesesRestantes) {
+
+                /* Si la cantidad de veces que se puede avisar es factble (Por dias restantes)*/
+                if (this.checkMonthAv(today, correo.getFechaEnvio(), veces, meses)) {
+
+                    /* Si las veces no exceden el limite de dias estandar por mes*/
+                    if (veces <= 31) {
+                        System.out.println(" All set! ( Veces x Mes )");
+                        allOK = true;
+
+                    } else {
+                        this.setErrorText(" Error: Datos proporcionados son erroneos. \n"
+                                + "* La cantidad de veces proporcionada sobrepasa los dias en un mes\n");
+                    }
+
+                } else {
+                    this.setErrorText(" Error: Datos proporcionados son erroneos. \n"
+                            + "* La cantidad de veces proporcionada sobrepasa los dias actuales\n");
+                }
+
+            } else {
+                this.setErrorText(" Error: Datos proporcionados son erroneos. \n"
+                        + "* La cantidad de meses proporcionada sobrepasa los meses actuales\n");
+            }
+
+        } else {
+            this.setErrorText(" Error: Datos proporcionados son erroneos. +\n"
+                    + "* El anno porporcionado es menor al actual \n"
+                    + "* La cantidad de veces es igual o menor a 0 \n"
+                    + "* La cantidad de meses es menor a 0 \n");
+        }
+
+        return allOK;
+
+    }
+
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Veces x Mes con Frecuencia">
+    public boolean checkDatosMesesXFrecuencia(Correo correo, int veces, int meses, int frecuencia) {
+
+        boolean allOk = true;
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(correo.getFechaEnvio());
+        List<Date> fechas = new ArrayList<>();
+        int maxDay = 0;
+        int capxMes = 0;
+
+        for (int i = 1; i <= meses; i++) {
+            Date fecha = this.genFechasxMes(cal);
+            fechas.add(fecha);
+        }
+        Collections.sort(fechas);
+
+        for (Date fecha : fechas) {
+            Calendar calendario = new GregorianCalendar();
+            calendario.setTime(fecha);
+            maxDay = calendario.getActualMaximum(Calendar.DAY_OF_MONTH);
+            capxMes = Math.round(maxDay / veces);
+
+            if (capxMes < frecuencia) {
+                allOk = false;
+                this.setErrorText(" Error: Frecuencia digitada no es valida ");
+            }
+
+        }
+
+        if (allOk) {
+            System.out.println(" All set! (Meses x Frecuencia)");
+        }
+        return allOk;
+    }
+
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Funciones y utilidades">
+    /*   -convertToLocal-   
+	 * Convierte los datos tipo Date a Local date 
+	 * para calcular los dias restantes   */
+    public LocalDate convertToLocal(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
+
+    /*   -daysBetween-   
+	 * Calcula los dias restantes entre dos local dates*/
+    public long daysBetween(LocalDate d1, LocalDate d2) {
+        long restantes = ChronoUnit.DAYS.between(d1, d2);
+        return restantes;
+    }
+
+    /*  -monthsBetween- 
+	 * Calcula los meses entre las dos fechas tipo LocalDate*/
+    public int monthsBetween(LocalDate d1, LocalDate d2) {
+        int restantes = 0;
+
+        if (d1.getYear() <= d2.getYear()) {
+            restantes = d1.getMonthValue() - d2.getMonthValue();
+        } else {
+            restantes = d2.getMonthValue() - d1.getMonthValue();
+        }
+
+        return restantes;
+    }
+
+    /* - getYear - 
+	 * Devuelve el anno en base a la fecha*/
+    public int getYear(Date fecha) {
+        Calendar calendar = new GregorianCalendar();
+        calendar.setTime(fecha);
+        int year = calendar.get(Calendar.YEAR);
+        return year;
+    }
+
+    /*   -- genCalendar-- */
+ /*Pasa un objeto tipo date a calendario */
+    public Calendar genCalendar(Date fecha) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(fecha);
+        return cal;
+    }
+
+    /* genDate */
+ /* Genera un valor tipo date con los valores definidos de YYYY/MM/DD*/
+    public Date dateGen(int y, int m, int d) {
+        Date fecha = new Date();
+        fecha.setYear(y);
+        fecha.setMonth(m);
+        fecha.setDate(d);
+        return fecha;
+    }
+
+    /* -- calendarToDate -- 
+     Pasa calores calendar a Date*/
+    public Date calendarToDate(Calendar cal) {
+        return cal.getTime();
+    }
+
+    public Calendar dateToCalendar(Date date) {
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(date);
+        return cal;
+    }
+
+    public boolean isLate(Date today, Date due) {
+        boolean late = false;
+        if (due.before(today)) {
+            late = true;
+        }
+        return late;
+    }
+
+    /* -- compareDates-- */
+ /* Compara dos fechas si son iguales*/
+    public boolean compareDates(Date cal1, Date cal2) {
+        boolean chk = false;
+
+        if (cal1.equals(cal2)) {
+            chk = true;
+        }
+        return chk;
+    }
+
+    public boolean checkMonthAv(Date fechaActual, Date fechaMeta, int veces, int meses) {
+        boolean allOk = true;
+        YearMonth yearMonthObject = null;
+        int daysInMonth = 0;
+
+        yearMonthObject = YearMonth.of(fechaActual.getYear(), fechaActual.getMonth());
+        daysInMonth = yearMonthObject.lengthOfMonth();
+
+        /* Si las veces caben en el primer mes se ejecuta el resto de checks*/
+        if (veces <= daysInMonth) {
+
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(fechaActual);
+
+            for (int i = 1; i < meses; i++) {
+                cal.add(Calendar.MONTH, cal.getTime().getMonth() + i);
+                yearMonthObject = YearMonth.of(cal.getTime().getYear(), cal.getTime().getMonth());
+                daysInMonth = yearMonthObject.lengthOfMonth();
+
+                if (veces > daysInMonth) {
+                    allOk = false;
+                }
+            }
+
+        } else {
+            allOk = false;
+        }
+
+        return allOk;
+    }
+
+    public Date genFechasxMes(Calendar calendario) {
+        int orgMonth = calendario.getTime().getMonth();
+
+        calendario.set(Calendar.MONTH, orgMonth - 1);
+        Date fecha = calendario.getTime();
+
+        return fecha;
+    }
+    //</editor-fold>
+
+    //</editor-fold>
 }

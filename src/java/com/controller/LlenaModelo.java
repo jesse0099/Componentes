@@ -36,7 +36,7 @@ import javax.faces.bean.ManagedBean;
  *
  * @author Lenovo
  */
-@ManagedBean(name="llenaModelo",eager=true)
+@ManagedBean(name = "llenaModelo", eager = true)
 @ApplicationScoped
 public class LlenaModelo {
    

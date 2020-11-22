@@ -1,0 +1,54 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templateSuperUser.xhtml">
+   <ui:define name="title">
+     Nuevo Usuario
+    </ui:define>
+
+    
+    
+    <ui:define name="content">
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <div class="card">
+                      <h1> Información general</h1> 
+                      <h:form>
+                    <h:panelGrid columns="2">
+                         <p:outputLabel for="sistema" value="Sistema:" />
+                    <p:selectOneMenu id="sistema" value="#{superUserController.sistemaElegido}"   style="width:150%; ">
+
+                            
+                        <f:selectItems value="#{superUserController.sistemas}" />
+                        </p:selectOneMenu>
+                    
+             
+                        <p:outputLabel for="username" value="Correo:" />
+                        <p:inputText id="username" value="#{superUserController.correo}"  style="width:150%; " />
+                      
+                        <p:outputLabel for="pass" value="Contraseña:" />
+                        <p:password id="pass" value="#{superUserController.contraseña}"  style="width:150%; " />
+   
+                    </h:panelGrid>
+                
+                    <br></br>
+                     
+                    
+                        
+               
+                    
+                          <br></br>
+                          <p:commandButton id="save"  action="#{superUserController.guardarUser()}" value="Guardar" update="username pass" style="width:25%"/>
+                                   
+                    </h:form>
+                       
+                            
+                </div>
+            </div>
+        </div>
+        
+    </ui:define>
+
+</ui:composition>

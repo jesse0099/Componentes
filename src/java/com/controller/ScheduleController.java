@@ -172,7 +172,7 @@ public class ScheduleController implements Serializable {
         UsuarioDao userDao = new UsuarioDao();
 
         for (Usuario us : userDao.getAll()) {
-            if (us.getIdUsuario() != DatosUsuario.user.getIdUsuario()) {
+            if (!us.getCorreo().equals(DatosUsuario.user.getCorreo()) && !us.getActivo()) {
                 participantesOcultos.add(us.getCorreo());
             }
 
@@ -233,7 +233,7 @@ public class ScheduleController implements Serializable {
                 }
             }
         }
-
+       
         c.setUsuarioscopiados(usuariosOcultos);
 
         Set<Contacto> destinatarios = new HashSet<>();
@@ -287,6 +287,7 @@ public class ScheduleController implements Serializable {
         recFunction.setEm(Servicio.getEm());
 
         ///actualizar 
+       
         if (this.idCorreo > 0) {
 
             Correo correo = correoDao.getById(idCorreo);
@@ -415,6 +416,7 @@ public class ScheduleController implements Serializable {
             correo.setDestinatarios(c.getDestinatarios());
             correo.setUsuarioscopiados(c.getUsuarioscopiados());
             correo.setIntervalo(c.getIntervalo());
+            System.out.println("dkj");
             correoDao.update(correo);
 
         } else if (this.recordatorioSelec != "Ninguno" || this.recordatorioSelec != "" || this.recordatorioSelec != null) {
@@ -716,7 +718,7 @@ public class ScheduleController implements Serializable {
                 }
 
                 int arraySizePOcultos = c.getUsuarioscopiados().size();
-                pOcultosSeleccionados = new String[arraySize];
+                pOcultosSeleccionados = new String[arraySizePOcultos];
                 int agregarPOculto = 0;
 
                 for (Usuario UsuarioOculto : c.getUsuarioscopiados()) {

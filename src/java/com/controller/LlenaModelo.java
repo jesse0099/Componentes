@@ -14,6 +14,7 @@ import com.r6.mensajeria.Sistema;
 import com.r6.mensajeria.Usuario;
 import com.r6.service.AdjuntoDao;
 import com.r6.service.ContactoDao;
+import com.r6.service.Dao;
 import com.r6.service.IntervalosTiempo;
 import com.r6.service.Servicio;
 import com.r6.service.SistemaDao;
@@ -31,6 +32,9 @@ import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.component.behavior.FacesBehavior;
+import org.primefaces.PrimeFaces;
 
 /**
  *
@@ -99,7 +103,8 @@ public void init(){
 public static void poblarModelo() {
     	
     	//Colocar aquí el directorio en que está el archivo adjunto
-    	String directorioAdjunto="C:/Users/Nvidi/Documents/PortaF.txt";
+    	   String directorioAdjunto = "C:/Users/Nvidi/Downloads/AdministracionPERT.pdf";
+        String directorioAdjunto2 = "C:/Users/Nvidi/Downloads/EEF.docx";
     	 try {
              
 
@@ -187,51 +192,73 @@ public static void poblarModelo() {
           cal.setTime(date);
           cal.add(Calendar.MONTH, 3);
           cal.add(Calendar.DAY_OF_MONTH, 1);
-          Correo c = new Correo();
-          c.setAsunto(" Reunión con accionistas");
-          c.setCuerpo(" Es necesario llevar gráficas de los beneficios de la compañía");
-          c.setFechaEnvio(cal.getTime());
-          c.setTipo("html/text");
-          c.setInifinito(Boolean.FALSE);
-         
-          
-        //Remitente
-          Set<Usuario> usuarioList1=new HashSet<>();
-          usuarioList1.add(usuario);
-          c.setUsuarios(usuarioList1);
-         
-          //Destinatario
-          Set<Contacto>contactList1=new HashSet<>();
-          contactList1.add(contacto1);
-          contactList1.add(cont);
-          c.setDestinatarios(contactList1);
-          
-          //Copiados
-          Set<Usuario> usuarioCopyList=new HashSet<>();
-          usuarioCopyList.add(usuario2);
-          c.setUsuarioscopiados(usuarioCopyList);
-          
-          //Adjuntos
-          AdjuntoDao adDao = new AdjuntoDao();
-          adDao.setEm(Servicio.getEm());
+                     Correo c = new Correo();
+            c.setAsunto(" Reunión con accionistas");
+            c.setCuerpo(" Es necesario llevar gráficas de los beneficios de la compañía");
+            c.setFechaEnvio(cal.getTime());
+            c.setTipo("html/text");
+            c.setInifinito(Boolean.FALSE);
 
-          File file = new File(directorioAdjunto);
-          byte[] fileContent = Files.readAllBytes(file.toPath());
-          //Adjunto   \
-          
-          List<File> files  = new ArrayList<>();
-          Adjunto adj = new Adjunto();
-          adj.setArchivo(fileContent);
+            Correo c2 = new Correo();
+            c2.setAsunto(" Reunión con accionistas - COPIA");
+            c2.setCuerpo(" Es necesario llevar gráficas de los beneficios de la compañía - COPIA");
+            c2.setFechaEnvio(cal.getTime());
+            c2.setTipo("html/text");
+            c2.setInifinito(Boolean.FALSE);
 
-          adDao.save(adj);
-          
-          Set<Adjunto> adjuntoList=new HashSet<>();
-          adjuntoList.add(adj);
-          
-          c.setAdjuntos(adjuntoList);
-          
+            //Remitente
+            Set<Usuario> usuarioList1 = new HashSet<>();
+            usuarioList1.add(usuario);
+            c.setUsuarios(usuarioList1);
+            c2.setUsuarios(usuarioList1);
 
-         funtion.crearRecxMes(c, 2);
+            //Destinatario
+            Set<Contacto> contactList1 = new HashSet<>();
+            contactList1.add(contacto1);
+            contactList1.add(cont);
+            c.setDestinatarios(contactList1);
+            c2.setDestinatarios(contactList1);
+
+            //Copiados
+            Set<Usuario> usuarioCopyList = new HashSet<>();
+            usuarioCopyList.add(usuario2);
+            c.setUsuarioscopiados(usuarioCopyList);
+            c2.setUsuarioscopiados(usuarioCopyList);
+
+            //Adjuntos
+            AdjuntoDao adDao = new AdjuntoDao();
+            adDao.setEm(Servicio.getEm());
+
+            File file = new File(directorioAdjunto);
+            File file2 = new File(directorioAdjunto2);
+
+            byte[] fileContent = Files.readAllBytes(file.toPath());
+            byte[] fileContent2 = Files.readAllBytes(file2.toPath());
+
+            //Adjunto   \
+            //List<File> files  = new ArrayList<>();
+            Adjunto adj = new Adjunto();
+            adj.setArchivo(fileContent);
+
+            Adjunto adj2 = new Adjunto();
+            adj2.setArchivo(fileContent2);
+
+            adDao.save(adj);
+            adDao.save(adj2);
+
+            Set<Adjunto> adjuntoList = new HashSet<>();
+
+            adjuntoList.add(adj);
+            adjuntoList.add(adj2);
+            c.setAdjuntos(adjuntoList);
+
+            Set<Adjunto> adjuntoList2 = new HashSet<>();
+            adjuntoList2.add(adDao.get(adj.getId()).get());
+
+            c2.setAdjuntos(adjuntoList2);
+
+            funtion.crearRecxMes(c, 2);
+            funtion.crearRecxMes(c2, 3);
           
          
          

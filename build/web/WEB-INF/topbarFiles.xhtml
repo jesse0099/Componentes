@@ -1,0 +1,78 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <div class="topbar clearfix" style="background-color: #333333">
+        <a id="omega-menu-button" href="#">
+            <span class="fa fa-bars"></span>
+        </a>
+
+        <span class="topbar-title"><ui:insert name="title"></ui:insert></span>
+
+        <a id="options-menu-button" href="#">
+            <span class="fa fa-ellipsis-h"></span>
+        </a>
+
+        <div id="topbar-icons" class="animated" style="background-color: #333333">
+
+            <span class="topbar-search" >
+                <h:form    id="destsSearch" prependId="false" styleClass="foo" style="width: fit-content">
+                    <div>
+                        <p:inputText  style="display: inline" id="inputSe" type="text" placeholder="Buscar" value="#{fileController.filterDests}" ></p:inputText>
+                        <p:commandLink   class="topbar-search-icon fa fa-search"  action="#{fileController.filterByDests()}">
+
+                        </p:commandLink>
+                    </div>
+                </h:form>
+            </span>
+
+
+            <span >
+                <h:form id="XD" prependId="false">
+                    <p:selectOneMenu id="menuOne" value="#{fileController.sisSelected.nombre}" style="text-align: center;margin-left:  0.3em;display: inline-block;width:120px;padding: 1px 20px 1px 1px;"> 
+                        <f:selectItem  itemLabel="Sistemas" itemValue="None" noSelectionOption="true" ></f:selectItem>
+                        <c:forEach var="sis" items="#{fileController.sistemas}">
+                            <f:selectItem  itemLabel="#{sis.nombre}" itemValue="#{sis.nombre}"  ></f:selectItem>
+                        </c:forEach>
+
+                        <f:facet name="footer">
+                            <p:separator />
+                            <h:outputText value="#{fileController.sistemas.size} sistemas" style="font-weight:bold;"/>
+                        </f:facet>
+                        <p:ajax 
+                            listener="#{fileController.onItemSelectedListener()}" >
+                        </p:ajax>
+                    </p:selectOneMenu>
+                </h:form>
+                <!--<span class="topbar-icon fa fa-envelope-o animated swing"></span>
+                <span class="topbar-badge animated rubberBand">5</span>-->
+            </span>
+            <a href="#">
+                <span class="topbar-item-text">Settings</span>
+                <span class="topbar-icon fa fa-gear"></span>
+            </a>
+        </div>
+
+    </div>
+
+    <style type="text/css">
+        @media only screen and (max-width: 1353px){
+            #XD{
+                display: block;
+            }
+        }
+
+        @media only screen and (min-width: 1354px) {
+            
+            #XD{
+                display: inline;
+                
+            }
+        }
+    </style>
+
+</ui:composition>

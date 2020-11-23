@@ -235,7 +235,7 @@ public class ScheduleController implements Serializable {
                 }
             }
         }
-       
+
         c.setUsuarioscopiados(usuariosOcultos);
 
         Set<Contacto> destinatarios = new HashSet<>();
@@ -289,7 +289,6 @@ public class ScheduleController implements Serializable {
         recFunction.setEm(Servicio.getEm());
 
         ///actualizar 
-       
         if (this.idCorreo > 0) {
 
             Correo correo = correoDao.getById(idCorreo);
@@ -311,14 +310,14 @@ public class ScheduleController implements Serializable {
                         function.crearRecxMes(correo, this.getMeses());
                     } else {
 
-                        this.setUndeleteable(true);
-                        
                         PrimeFaces.current().ajax().update("dialogo");
-                      
+                        PrimeFaces.current().ajax().update("errorDialogPanel");
+                        PrimeFaces.current().executeScript("PF('errorDialog').show()");
                     }
 
                 } else if (this.recordatorioSelec == "Veces por Mes") {
-                   
+
+                    if (checkDatosVecesxMeses(correo, veces, meses)) {
                         List<Recordatorio> recordatorios = rDao.getByMail(correo);
                         meses = this.getMeses();
                         veces = this.getVeces();
@@ -330,7 +329,11 @@ public class ScheduleController implements Serializable {
                         correo.setVeces(veces);
                         correo.setFrecuencia(0);
                         function.crearRecxVez(correo, this.getVeces(), this.getMeses());
-                 
+                    } else {
+                        PrimeFaces.current().ajax().update("dialogo");
+                        PrimeFaces.current().ajax().update("errorDialogPanel");
+                        PrimeFaces.current().executeScript("PF('errorDialog').show()");
+                    }
                 } else if (this.recordatorioSelec == "Veces por Mes con frecuencia") {
                     if (this.checkDatosMesesXFrecuencia(correo, veces, meses, frecunecia)) {
                         meses = this.getMeses();
@@ -347,8 +350,9 @@ public class ScheduleController implements Serializable {
                         correo.setFrecuencia(frecunecia);
                         function.crearRecxFrecuencia(correo, this.getVeces(), this.getMeses(), this.frecunecia);
                     } else {
-                        this.setVar(true);
                         PrimeFaces.current().ajax().update("dialogo");
+                        PrimeFaces.current().ajax().update("errorDialogPanel");
+                        PrimeFaces.current().executeScript("PF('errorDialog').show()");
                     }
                 } else if (this.recordatorioSelec == "Ninguno" || this.recordatorioSelec == "" || this.recordatorioSelec == null) {
 
@@ -372,11 +376,14 @@ public class ScheduleController implements Serializable {
                         correo.setFrecuencia(0);
                         function.crearRecxMes(correo, this.getMeses());
                     } else {
-                        this.setVar(true);
                         PrimeFaces.current().ajax().update("dialogo");
+                        PrimeFaces.current().ajax().update("errorDialogPanel");
+                        PrimeFaces.current().executeScript("PF('errorDialog').show()");
                     }
                 } else if (this.recordatorioSelec == "Veces por Mes") {
+                    System.out.println("Entro veces x mes");
                     if (this.checkDatosVecesxMeses(correo, veces, meses)) {
+                        System.out.println(" All ok");
                         meses = this.getMeses();
                         veces = this.getVeces();
                         correo.setMeses(meses);
@@ -384,8 +391,9 @@ public class ScheduleController implements Serializable {
                         correo.setFrecuencia(0);
                         function.crearRecxVez(correo, this.getVeces(), this.getMeses());
                     } else {
-                        this.setVar(true);
                         PrimeFaces.current().ajax().update("dialogo");
+                        PrimeFaces.current().ajax().update("errorDialogPanel");
+                        PrimeFaces.current().executeScript("PF('errorDialog').show()");
                     }
                 } else if (this.recordatorioSelec == "Veces por Mes con frecuencia") {
                     if (this.checkDatosMesesXFrecuencia(correo, veces, meses, frecunecia)) {
@@ -397,8 +405,9 @@ public class ScheduleController implements Serializable {
                         correo.setFrecuencia(frecunecia);
                         function.crearRecxFrecuencia(correo, this.getVeces(), this.getMeses(), this.frecunecia);
                     } else {
-                        this.setVar(true);
                         PrimeFaces.current().ajax().update("dialogo");
+                        PrimeFaces.current().ajax().update("errorDialogPanel");
+                        PrimeFaces.current().executeScript("PF('errorDialog').show()");
                     }
                 } else if (this.recordatorioSelec == "Ninguno") {
                     correo.setVeces(0);
@@ -420,10 +429,13 @@ public class ScheduleController implements Serializable {
             System.out.println("dkj");
             correoDao.update(correo);
 
-        } else if (this.recordatorioSelec != "Ninguno" || this.recordatorioSelec != "" || this.recordatorioSelec != null) {
+        } else if (this.recordatorioSelec != "Ninguno" || this.recordatorioSelec != "" || this.recordatorioSelec
+                != null) {
 
-            if (this.recordatorioSelec == "Por Mes") {
+            if (this.recordatorioSelec.equals("Por Mes")) {
+                System.out.println("Nuevo: Entro por meses!");
                 if (this.checkDatosxMeses(c, meses)) {
+                    System.out.println("Nuevo: Todo Correcto!");
                     meses = this.getMeses();
                     c.setMeses(meses);
                     c.setVeces(0);
@@ -431,7 +443,11 @@ public class ScheduleController implements Serializable {
                     function.crearRecxMes(c, this.getMeses());
                 } else {
                     this.setVar(true);
+                    System.out.println("Nuevo:Error!" + this.errorText);
+                    System.out.println("Error :" + this.errorText);
                     PrimeFaces.current().ajax().update("dialogo");
+                    PrimeFaces.current().ajax().update("errorDialogPanel");
+                    PrimeFaces.current().executeScript("PF('errorDialog').show()");
                 }
             } else if (this.recordatorioSelec == "Veces por Mes") {
                 if (this.checkDatosVecesxMeses(c, veces, meses)) {
@@ -443,8 +459,9 @@ public class ScheduleController implements Serializable {
                     c.setFrecuencia(0);
                     function.crearRecxVez(c, this.getVeces(), this.getMeses());
                 } else {
-                    this.setVar(true);
                     PrimeFaces.current().ajax().update("dialogo");
+                    PrimeFaces.current().ajax().update("errorDialogPanel");
+                    PrimeFaces.current().executeScript("PF('errorDialog').show()");
                 }
             } else if (this.recordatorioSelec == "Veces por Mes con frecuencia") {
                 if (this.checkDatosMesesXFrecuencia(c, veces, meses, frecunecia)) {
@@ -457,8 +474,9 @@ public class ScheduleController implements Serializable {
                     c.setFrecuencia(frecunecia);
                     function.crearRecxFrecuencia(c, this.getVeces(), this.getMeses(), this.frecunecia);
                 } else {
-                    this.setVar(true);
                     PrimeFaces.current().ajax().update("dialogo");
+                    PrimeFaces.current().ajax().update("errorDialogPanel");
+                    PrimeFaces.current().executeScript("PF('errorDialog').show()");
                 }
             } else if (this.recordatorioSelec == "Ninguno" || this.recordatorioSelec == "" || this.recordatorioSelec == null) {
                 c.setMeses(0);
@@ -475,8 +493,11 @@ public class ScheduleController implements Serializable {
         }
 
         eventModel.clear();
+
         init();
- PrimeFaces.current().executeScript("PF('eventDialog').hide();");
+
+        PrimeFaces.current()
+                .executeScript("PF('eventDialog').hide();");
 //        DefaultScheduleEvent event = new DefaultScheduleEvent(
 //                titulo,
 //                fecha,
@@ -608,8 +629,6 @@ public class ScheduleController implements Serializable {
         this.setVeces(0);
         this.setFrecunecia(0);
         this.setUndeleteable(false);
-        
-        
 
         Date d = (Date) selectEvent.getObject();
         Calendar cal = Calendar.getInstance();
@@ -619,7 +638,7 @@ public class ScheduleController implements Serializable {
 
         fecha = d;
         event = new DefaultScheduleEvent("", d, d);
-         PrimeFaces.current().ajax().update("dialogo");
+        PrimeFaces.current().ajax().update("dialogo");
     }
 
     public void onEventSelect(SelectEvent selectEvent) {
@@ -679,8 +698,10 @@ public class ScheduleController implements Serializable {
                 try {
                     Date currentMailDate = new SimpleDateFormat("dd/MM/yyyy").parse(CurrentMailStr);
                     this.fecha = c.getFechaEnvio();
+
                 } catch (ParseException ex) {
-                    Logger.getLogger(ScheduleController.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(ScheduleController.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
 
                 int arraySize = c.getDestinatarios().size();
@@ -744,27 +765,28 @@ public class ScheduleController implements Serializable {
             this.meses = target.getMeses();
             this.veces = target.getVeces();
             this.frecunecia = target.getFrecuencia();
-            
-            if(meses > 0 && veces ==0 && frecunecia ==0){
+
+            if (meses > 0 && veces == 0 && frecunecia == 0) {
                 this.setRecordatorioSelec("Por meses");
-            }else if(meses > 0 && veces > 0 && frecunecia ==0){
+            } else if (meses > 0 && veces > 0 && frecunecia == 0) {
                 this.setRecordatorioSelec("Veces por Mes");
-            }else if(meses > 0 && veces > 0 && frecunecia>0){
-               
-             this.setRecordatorioSelec("Veces por Mes con frecuencia");
+            } else if (meses > 0 && veces > 0 && frecunecia > 0) {
+
+                this.setRecordatorioSelec("Veces por Mes con frecuencia");
             }
-             PrimeFaces.current().ajax().update("listarecordatorios");
+          
         } else {
             this.setRecordatorioSelec("Ninguno");
             this.setVeces(0);
             this.setMeses(0);
             this.setFrecunecia(0);
-              PrimeFaces.current().ajax().update("listarecordatorios");
+           
         }
+         PrimeFaces.current().ajax().update("listarecordatorios");
 
         System.out.println(asunto);
         System.out.println(fechaEvento);
-         PrimeFaces.current().ajax().update("dialogo");
+        PrimeFaces.current().ajax().update("dialogo");
     }
 
     public ScheduleController() {
@@ -1420,6 +1442,25 @@ public class ScheduleController implements Serializable {
 
     public void setUndeleteable(boolean undeleteable) {
         this.undeleteable = undeleteable;
+    }
+
+    private boolean bolRecordatorio = true;
+
+    public boolean isBolRecordatorio() {
+        return bolRecordatorio;
+    }
+
+    public void setBolRecordatorio(boolean bolRecordatorio) {
+        this.bolRecordatorio = bolRecordatorio;
+    }
+
+    public void repetirNunca() {
+
+        if (this.repetirSeleccionado.equals("Nunca")) {
+            this.setBolRecordatorio(false);
+        } else {
+            this.setBolRecordatorio(true);
+        }
     }
 
 }

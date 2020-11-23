@@ -46,7 +46,7 @@ public void init(){
  
    Servicio.setServerURL("jdbc:mysql://localhost:3306/mensajeria?serverTimezone=UTC");
    Servicio.setUsername("root");
-   Servicio.setPassword("wvjjk611");
+   Servicio.setPassword("123");
    Servicio.setDriver("com.mysql.jdbc.Driver");
    Servicio.setHbm2DDLprotocol("create");
    Servicio.setDialect("org.hibernate.dialect.MySQLDialect");
@@ -99,7 +99,7 @@ public void init(){
 public static void poblarModelo() {
     	
     	//Colocar aquí el directorio en que está el archivo adjunto
-    	String directorioAdjunto="C:/Users/Lenovo/Desktop/tareas.txt";
+    	String directorioAdjunto="C:/Users/Nvidi/Documents/PortaF.txt";
     	 try {
              
 

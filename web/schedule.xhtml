@@ -58,9 +58,9 @@
 
                 <p:dialog widgetVar="eventDialog" id="dialogo"  header="Evento" showEffect="clip" hideEffect="clip" resizable="false">
 
-                   <!-- <p:dialog  header="Errores en el formulario: " widgetVar="errores" minHeight="40"> </p:dialog> 
-                        <h:outputText id="errorText" value="#{scheduleController.errorText}" escape="true"/>-->
-                    
+                    <!-- <p:dialog  header="Errores en el formulario: " widgetVar="errores" minHeight="40"> </p:dialog> 
+                         <h:outputText id="errorText" value="#{scheduleController.errorText}" escape="true"/>-->
+
 
                     <h:panelGrid id="eventDetails" columns="2">
                         <p:outputLabel for="title" value="Nombre del evento:" />
@@ -98,7 +98,7 @@
 
                         <p:outputLabel for="repetir" value="Repetir:" />
                         <p:selectOneMenu id="repetir" value="#{scheduleController.repetirSeleccionado}" style="width:87%; " required="true">
-
+                            <p:ajax  listener="#{scheduleController.repetirNunca()}" update="listarecordatorios" />    
                             <f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
                             <f:selectItems value="#{scheduleController.repetirCada}" />
                         </p:selectOneMenu>
@@ -107,7 +107,7 @@
 
                         <p:outputLabel for="listarecordatorios" value="recordatorios:" />
 
-                        <p:selectOneMenu id="listarecordatorios" widgetVar="listRec" value="#{scheduleController.recordatorioSelec}" style="width:87%; ">
+                        <p:selectOneMenu id="listarecordatorios" widgetVar="listRec" disabled="#{scheduleController.bolRecordatorio}" value="#{scheduleController.recordatorioSelec}" style="width:87%; ">
 
                             <p:ajax  listener="#{scheduleController.visibility()}" />                           
                             <f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
@@ -134,7 +134,7 @@
                             <p:commandButton id="guardar"  value="Guardar" action="#{scheduleController.guardar()}"  oncomplete="PF('eventSchedule').update();" />                        
                             <p:commandButton id="borrar" style="margin-right: 0.8; margin-left: 0.8"  value="Borrar" rendered="#{scheduleController.mostrarBtn}" action="#{scheduleController.borrar()}" oncomplete="PF('eventSchedule').update();PF('eventDialog').hide();" />
                         </p:panel>
-                        
+
                         <h:inputHidden value="#{scheduleController.errorText}" id="errorText"/>
                         <h:outputScript id="scriptError" rendered="#{scheduleController.undeleteable}">
                             alert( document.getElementById('errorText').value);
@@ -145,7 +145,13 @@
 
 
             </h:form>
-
+            <p:panel id="errorDialogPanel" widgetVar="errorDialogPanel">
+                <h:form>
+                    <p:dialog id="errorDialog" widgetVar="errorDialog" >
+                        <p:outputLabel value="#{scheduleController.errorText}" ></p:outputLabel>
+                    </p:dialog>
+                </h:form>
+            </p:panel>
         </div>
         <h:outputStylesheet name="css/scheduleStyle.css" library="omega-layout" ></h:outputStylesheet>
         <h:outputScript name="js/onSelection.js" target="head"/>

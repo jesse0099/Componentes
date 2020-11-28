@@ -10,21 +10,50 @@
 
     <ui:define name="title"> Nueva Orden </ui:define>
     <ui:define name="head">
-
+        <f:metadata>
+            <f:viewAction
+                action="#{orderController.initBean()}">
+            </f:viewAction>
+        </f:metadata>
     </ui:define>
 
     <ui:define name="content">
-        <div class="ui-g ui-fluid dashboard"  style=" text-align:center;"  >
-            <p:panel id="orderFourm" style=" width: 100%;  background-color: #FFFFFF; border: #000000 ">
+        <div class="ui-g ui-fluid dashboard"   >
 
-                <h:outputText id="adjS" style="font-weight: 600;color: #000000;padding: 0.3em" 
-                              value="Crea tu nueva orden" >
-                </h:outputText>
-                <br/>
+            <p:panel id="order" style="width: 100%;background-color: #FFFFFF" >
+                <div id="Title" style="text-align: center;width: 100%">
+                    <h1> Crea una Nueva Orden</h1>
+                </div>
+
+
+                <h:form style="margin-top: 35px; padding: 20px;">
+
+         
+                    <p:pickList id="PojoPickList" value="#{orderController.productList}" var="producto" effect="bounce"
+                                itemValue="#{producto}" itemLabel="#{producto.getNombre()}" showSourceControls="true" showTargetControls="true" showCheckbox="true"
+                                showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains" converter="producto"  responsive="true">
+
+                        <f:facet name="sourceCaption">Lista Productos</f:facet>
+                        <f:facet name="targetCaption">Productos seleccionados</f:facet>
+
+                        
+
+                        <p:column style="width:15%">
+                            <h:outputText value="#{producto.getNombre()}" />
+                        </p:column>
+
+                        <p:column style="width:85%;">
+                            <h:outputText value="#{producto.getNombre()}" />
+                        </p:column>
+                    </p:pickList>
+
+                </h:form>
+
+
+
             </p:panel>
 
         </div>
-
     </ui:define>
 
 </ui:composition>

@@ -718,6 +718,7 @@ public class ScheduleController implements Serializable {
                 //Extrayendo adjuntos de la BD
                 uploadedFilesAdj = new ArrayList<>();
                 AdjuntoDao daoMas = new AdjuntoDao();
+                daoMas.setEm(Servicio.getEm());
                 (daoMas).getByMail(c).forEach((x) -> {
                     this.uploadedFilesAdj.add(x);
                 });
@@ -792,7 +793,15 @@ public class ScheduleController implements Serializable {
 
         }
 
-        recordatorios = rDao.getByMail(target);
+        recordatorios=new ArrayList<>();
+        
+        for(Recordatorio r:rDao.getAll()){
+           if(r.getCorreo().getId()==target.getId()){
+               recordatorios.add(r);
+           }
+        }
+        
+       // recordatorios = rDao.getByMail(target);
 
         if (recordatorios.size() > 0) {
             this.meses = target.getMeses();
@@ -819,8 +828,15 @@ public class ScheduleController implements Serializable {
 
         System.out.println(asunto);
         System.out.println(fechaEvento);
+        System.out.println("xdxdxdx");
         updateViewForFiles();
-        PrimeFaces.current().ajax().update("dialogo");
+        try{
+        PrimeFaces.current().ajax().update("dialogo"); 
+        }catch(Exception e){
+           e.printStackTrace();
+        }
+
+        System.out.println("xdxdxdx2");
     }
 
     public ScheduleController() {
@@ -1247,10 +1263,15 @@ public class ScheduleController implements Serializable {
     }
 
     public void updateViewForFiles() {
+        try{
         PrimeFaces.current().ajax().update("files");
         PrimeFaces.current().ajax().update("scrollFiles");
         PrimeFaces.current().ajax().update("scrollFiles2");
-
+    
+        }catch(Exception e){
+           e.printStackTrace();
+        }
+    
     }
 
     public static String getMimeTypeFromByteArray(Adjunto adj) {

@@ -52,7 +52,7 @@ public void init(){
    Servicio.setUsername("root");
    Servicio.setPassword("wvjjk611");
    Servicio.setDriver("com.mysql.jdbc.Driver");
-   Servicio.setHbm2DDLprotocol("create");
+   Servicio.setHbm2DDLprotocol("update");
    Servicio.setDialect("org.hibernate.dialect.MySQLDialect");
    
    

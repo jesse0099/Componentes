@@ -10,12 +10,14 @@ import com.r6.funciones.RecordatorioFunc;
 import com.r6.mensajeria.Adjunto;
 import com.r6.mensajeria.Contacto;
 import com.r6.mensajeria.Correo;
+import com.r6.mensajeria.Producto;
 import com.r6.mensajeria.Sistema;
 import com.r6.mensajeria.Usuario;
 import com.r6.service.AdjuntoDao;
 import com.r6.service.ContactoDao;
 import com.r6.service.Dao;
 import com.r6.service.IntervalosTiempo;
+import com.r6.service.ProductoDao;
 import com.r6.service.Servicio;
 import com.r6.service.SistemaDao;
 import com.r6.service.UsuarioDao;
@@ -52,7 +54,7 @@ public void init(){
    Servicio.setUsername("root");
    Servicio.setPassword("AsdF2013");
    Servicio.setDriver("com.mysql.jdbc.Driver");
-   Servicio.setHbm2DDLprotocol("create");
+   Servicio.setHbm2DDLprotocol("update");
    Servicio.setDialect("org.hibernate.dialect.MySQLDialect");
    
    
@@ -335,7 +337,17 @@ public static void poblarModelo() {
          correo4.setDestinatarios(contactList4);
          
          funtion.crearRecxMes(correo4,0);
+         
+         /* Productos */
+         
+        ProductoDao productoDao = new ProductoDao();
         
+        productoDao.save(new Producto(1,"Producto 1",1500.00,"Descripcion",1));
+        productoDao.save(new Producto(2,"Producto 2",8500.00,"Descripcion",1));
+        productoDao.save(new Producto(3,"Producto 3",500.00,"Descripcion",1));
+        productoDao.save(new Producto(4,"Producto 4",2500.00,"Descripcion",1));
+        productoDao.save(new Producto(5,"Producto 5",1550.00,"Descripcion",1));
+        productoDao.save(new Producto(6,"Producto 6",3300.00,"Descripcion",1));
              
          } catch (Exception e) {
              e.printStackTrace();

@@ -16,6 +16,7 @@ import com.r6.funciones.RecordatorioFunc;
 import com.r6.mensajeria.Adjunto;
 import com.r6.mensajeria.Contacto;
 import com.r6.mensajeria.Correo;
+import com.r6.mensajeria.Itemorden;
 import com.r6.mensajeria.Producto;
 import com.r6.mensajeria.Usuario;
 import com.r6.service.ContactoDao;
@@ -61,6 +62,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import org.apache.tomcat.util.http.fileupload.RequestContext;
 import org.primefaces.PrimeFaces;
@@ -105,7 +107,15 @@ public class OrderController implements Serializable {
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Productos">
-    private DualListModel<Producto> productList;
+    private List<Producto> productList;
+    private List<Itemorden> ordenList;
+
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Orden">
+    private int idProducto;
+    private String nombreProducto;
+    private double precioProducto;
+    private int cantidadProducto;
 
     //</editor-fold>
     //</editor-fold>
@@ -118,6 +128,45 @@ public class OrderController implements Serializable {
             this.refeshProductList();
         }
 
+    }
+
+    public void addToCart() {
+        Double total = 0.00;
+        Producto productoNuevo = new Producto(this.idProducto, this.nombreProducto, this.precioProducto);
+
+        /* Si la lista esta vacia, mete el item de una vez*/
+        if (this.ordenList.size() == 0) {
+
+            total = (productoNuevo.getPrecio() + (productoNuevo.getPrecio() * 0.13)) * this.cantidadProducto;
+            Itemorden item = new Itemorden(productoNuevo.getIdProducto(), 1, this.cantidadProducto, 0.13, productoNuevo.getPrecio(), total, productoNuevo);
+            this.ordenList.add(item);
+
+        } else {
+            boolean exists = false;
+            /* Revisa si existe el Item para solo actualizar la cantidad*/
+            for (Itemorden item : this.ordenList) {
+                /* Se actualiza el precio y la cantidad en la lista*/
+                if (item.getIdItem().equals(productoNuevo.getIdProducto())) {
+                    total = (productoNuevo.getPrecio() + (productoNuevo.getPrecio() * 0.13)) * this.cantidadProducto;
+                    item.setCantidad(this.cantidadProducto);
+                    item.setTotalItem(total);
+                    exists = true;
+
+                }
+
+            }
+
+            /* Si el objeto no existe */
+            if (!exists) {
+                total = (productoNuevo.getPrecio() + (productoNuevo.getPrecio() * 0.13)) * this.cantidadProducto;
+                Itemorden item = new Itemorden(productoNuevo.getIdProducto(), this.ordenList.size()+1, this.cantidadProducto, 0.13, productoNuevo.getPrecio(), total, productoNuevo);
+                this.ordenList.add(item);
+            }
+
+        }
+        
+           PrimeFaces.current().ajax().update("panelOrden");
+        
     }
 
     //<editor-fold defaultstate="collapsed" desc="Funcionalidades Extra">
@@ -143,40 +192,71 @@ public class OrderController implements Serializable {
     /* Settea la lista general de Productos con respecto a lo reflejado en BD */
     public void refeshProductList() {
         try {
-        List<Producto> productoSource = productoDao.getAll();
-        List<Producto> productoTarget = new ArrayList<Producto>();
-     
-     
-        this.setProductList( new DualListModel<Producto>(productoSource,productoTarget));
-        
+
+            this.setProductList(productoDao.getAll());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-    
-    
-     public void onTransfer(TransferEvent event) {
+
+    public void onTransfer(TransferEvent event) {
         StringBuilder builder = new StringBuilder();
-        for(Object item : event.getItems()) {
+        for (Object item : event.getItems()) {
             builder.append(((Producto) item).getNombre()).append("<br />");
         }
-         
-    }  
+
+    }
 
     //</editor-fold>
-    
-    
-    
-    
-    
     //<editor-fold defaultstate="collapsed" desc="Gets y sets">
-    public DualListModel<Producto> getProductList() {
+    public List<Producto> getProductList() {
         return productList;
     }
 
-    public void setProductList(DualListModel<Producto> productList) {
+    public void setProductList(List<Producto> productList) {
         this.productList = productList;
+    }
+
+    public List<Itemorden> getOrdenList() {
+        return ordenList;
+    }
+
+    public void setOrdenList(List<Itemorden> ordenList) {
+        this.ordenList = ordenList;
+    }
+
+    public int getIdProducto() {
+        return idProducto;
+    }
+
+    public void setIdProducto(int idProducto) {
+        this.idProducto = idProducto;
+    }
+
+    public String getNombreProducto() {
+        return nombreProducto;
+    }
+
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
+    }
+
+    public double getPrecioProducto() {
+        return precioProducto;
+    }
+
+    public void setPrecioProducto(double precioProducto) {
+        this.precioProducto = precioProducto;
+    }
+
+    public int getCantidadProducto() {
+        return cantidadProducto;
+    }
+
+    public void setCantidadProducto(int cantidadProducto) {
+        this.cantidadProducto = cantidadProducto;
     }
 
     //</editor-fold>

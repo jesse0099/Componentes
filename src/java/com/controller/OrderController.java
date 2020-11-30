@@ -27,6 +27,7 @@ import com.r6.service.UsuarioDao;
 import com.r6.service.RecordatorioDao;
 import com.r6.mensajeria.Recordatorio;
 import com.r6.service.AdjuntoDao;
+import com.r6.service.BitacoraDao;
 import com.r6.service.Dao;
 import com.r6.service.ItemOrdenDao;
 import com.r6.service.OrdenDao;
@@ -55,6 +56,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -109,7 +111,7 @@ public class OrderController implements Serializable {
     //<editor-fold defaultstate="collapsed" desc="Productos">
     private List<Producto> productList;
     private List<Itemorden> ordenList;
-
+    private DualListModel<Producto> productosSeleccionados;
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Orden">
     private int idProducto;
@@ -122,6 +124,7 @@ public class OrderController implements Serializable {
     @PostConstruct
     public void initBean() {
 
+        this.ordenList = new ArrayList<>();
         /* Inicializar y settear los EM
          Su hubo un error no realiza las operaciones*/
         if (this.setAllEms()) {
@@ -130,43 +133,56 @@ public class OrderController implements Serializable {
 
     }
 
-    public void addToCart() {
+    public void addToCart(Producto p) {
         Double total = 0.00;
-        Producto productoNuevo = new Producto(this.idProducto, this.nombreProducto, this.precioProducto);
 
-        /* Si la lista esta vacia, mete el item de una vez*/
-        if (this.ordenList.size() == 0) {
+        Producto productoNuevo = new Producto(p.getIdProducto(), p.getNombre(), p.getPrecio());
 
+        if (this.ordenList.isEmpty()) {
             total = (productoNuevo.getPrecio() + (productoNuevo.getPrecio() * 0.13)) * this.cantidadProducto;
-            Itemorden item = new Itemorden(productoNuevo.getIdProducto(), 1, this.cantidadProducto, 0.13, productoNuevo.getPrecio(), total, productoNuevo);
+            Itemorden item = new Itemorden(1, this.cantidadProducto, 0.13, productoNuevo.getPrecio(), total, productoNuevo);
             this.ordenList.add(item);
 
         } else {
-            boolean exists = false;
-            /* Revisa si existe el Item para solo actualizar la cantidad*/
-            for (Itemorden item : this.ordenList) {
-                /* Se actualiza el precio y la cantidad en la lista*/
-                if (item.getIdItem().equals(productoNuevo.getIdProducto())) {
-                    total = (productoNuevo.getPrecio() + (productoNuevo.getPrecio() * 0.13)) * this.cantidadProducto;
-                    item.setCantidad(this.cantidadProducto);
-                    item.setTotalItem(total);
+
+            Boolean exists = false;
+            for (Itemorden x : this.ordenList) {
+                if (Objects.equals(x.getProducto().getIdProducto(), p.getIdProducto())) {
+                    x.setTotalItem((productoNuevo.getPrecio() + (productoNuevo.getPrecio() * 0.13)) * this.cantidadProducto);
+                    x.setCantidad(x.getCantidad() + this.cantidadProducto);
                     exists = true;
-
                 }
-
             }
 
-            /* Si el objeto no existe */
             if (!exists) {
                 total = (productoNuevo.getPrecio() + (productoNuevo.getPrecio() * 0.13)) * this.cantidadProducto;
-                Itemorden item = new Itemorden(productoNuevo.getIdProducto(), this.ordenList.size()+1, this.cantidadProducto, 0.13, productoNuevo.getPrecio(), total, productoNuevo);
+                Itemorden item = new Itemorden(1, this.cantidadProducto, 0.13, productoNuevo.getPrecio(), total, productoNuevo);
                 this.ordenList.add(item);
             }
 
         }
-        
-           PrimeFaces.current().ajax().update("panelOrden");
-        
+
+        this.cantidadProducto = 1;
+        PrimeFaces.current().ajax().update("panelProductos");
+        PrimeFaces.current().ajax().update("panelOrden");
+
+    }
+
+    public void deleteFromCart(Itemorden p) {
+        int index = 0;
+        int index2 = 0;
+        for (Itemorden x : this.ordenList) {
+            if (Objects.equals(x.getIdItem(), p.getIdItem())) {
+                index2 = index;
+            }
+            index++;
+        }
+        this.ordenList.remove(this.ordenList.get(index2));
+        PrimeFaces.current().ajax().update("panelOrden");
+    }
+
+    public void addToCartSpin(int p) {
+        System.out.println("C1 : " + p);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Funcionalidades Extra">
@@ -194,6 +210,9 @@ public class OrderController implements Serializable {
         try {
 
             this.setProductList(productoDao.getAll());
+            List<Producto> dummy = new ArrayList<>();
+
+            this.productosSeleccionados = new DualListModel<>(this.productList, dummy);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -209,10 +228,23 @@ public class OrderController implements Serializable {
 
     }
 
+    public void onSelect(SelectEvent event) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        System.out.println("Objeto : " + ((Producto) event.getObject()).getNombre());
+    }
+
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Gets y sets">
     public List<Producto> getProductList() {
         return productList;
+    }
+
+    public DualListModel<Producto> getProductosSeleccionados() {
+        return productosSeleccionados;
+    }
+
+    public void setProductosSeleccionados(DualListModel<Producto> productosSeleccionados) {
+        this.productosSeleccionados = productosSeleccionados;
     }
 
     public void setProductList(List<Producto> productList) {

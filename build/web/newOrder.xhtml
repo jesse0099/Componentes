@@ -3,7 +3,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:p="http://primefaces.org/ui"
-                template="/WEB-INF/templatFiles.xhtml"
+                template="/WEB-INF/template.xhtml"
                 xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
                 xmlns:c="http://java.sun.com/jsp/jstl/core">
 
@@ -15,126 +15,109 @@
                 action="#{orderController.initBean()}">
             </f:viewAction>
         </f:metadata>
+        <style type="text/css">
+
+            .ui-button, button.ui-button.ui-state-default, .ui-button.ui-state-default{
+                border: 1px solid;
+                border-color: transparent;
+            }
+
+        </style>
     </ui:define>
 
     <ui:define name="content">
         <div class="ui-g ui-fluid dashboard"   >
 
             <p:panel id="order" style="width: 100%;background-color: #FFFFFF" >
+
                 <div id="Title" style="text-align: center;width: 100%">
                     <h1> Crea una Nueva Orden</h1>
                 </div>
 
+                <p:panel id="panelProductos" style="border: none;background-color: transparent; width: 49%; height: 100%;display: inline-block"> 
 
-                <h:form style="margin-top: 35px; padding: 20px; width: 100%">
-                    <p:outputLabel for="panelProductos" value="Items"></p:outputLabel>
-                    <p:panel id="panelProductos" style="border: none;background-color: transparent; width: 50%; height: 100%"> 
+                    <p:scrollPanel  id="scrollProductos" style="height:350px; width: 100%" mode="native" >
 
-                        <p:scrollPanel  id="scrollProductos" style="height:350px; width: 100%" mode="native" >
+                        <c:forEach   id="innerRepeat"  items="#{orderController.productList}" var="producto"  >
 
-                            <c:forEach   id="innerRepeat"  items="#{orderController.productList}" var="producto"  >
+                            <h:form prependId="false" >
+                                <div style="width: 98%;margin-bottom: 0.5em" >
+                                    <p:panel>
+                                        <h:inputHidden value="#{producto.idProducto}"></h:inputHidden>
+                                        <p:outputLabel value="Producto: " style="font-weight: bold"></p:outputLabel>
+                                        <h:outputText  style="font-weight: 600;
+                                                       color: #f05537;
+                                                       padding: 0.3em;
+                                                       display: inline;"
+                                                       value="#{producto.nombre}" >
+                                        </h:outputText>
+                                        <p:outputLabel value="Precio: " style="font-weight: bold"></p:outputLabel>
+                                        <h:outputText style="font-weight: 600;
+                                                      color: #f05537;
+                                                      padding: 0.3em;
+                                                      display: inline;" 
+                                                      value="#{producto.precio}" >
+                                        </h:outputText>
+                                    </p:panel> 
+                                    <p:panel>
 
-                                <div style="width: 98%; height: 50px; border-bottom-color: #000;border-style: groove;">
+                                        <p:spinner  value="#{orderController.cantidadProducto}" min="1" style="margin-bottom: 0.2em " >
+                                        </p:spinner>
+                                        <p:commandButton process="@form" style="background-color: #33cc00"   icon="fa fa-cart-plus" value="Agregar" action="#{orderController.addToCart(producto)}">
+                                        </p:commandButton>   
+                                    </p:panel>
+                                </div>
+                            </h:form>
+                        </c:forEach>  
 
-                                    <h:inputHidden value="#{producto.idProducto}" id="errorText">
-                                        <f:param value="#{orderController.idProducto}"/>
-                                    </h:inputHidden>
-                                    <p:outputLabel style="
-                                                   font-weight: bold;
-                                                   padding: 0.3em; " 
-                                                   for="adjS" value="Item: " ></p:outputLabel>
+                    </p:scrollPanel> 
 
-                                    <h:outputText id="adjS" style="font-weight: 600;
-                                                  color: #f05537;
-                                                  padding: 0.3em;
-                                                  display: inline;
-                                                  margin-right: 50px"
-                                                  value="#{producto.nombre}" >
-                                        <f:param value="#{orderController.nombreProducto}"/>
-                                    </h:outputText>
+                </p:panel>
 
-                                    <p:outputLabel style="font-weight: bold;padding: 0.3em" for="precio" value="Precio: " ></p:outputLabel>
-                                    <h:outputText id="precio" style="font-weight: 600;
-                                                  color: #f05537;
-                                                  padding: 0.3em;
-                                                  display: inline;
-                                                  margin-right:50px" 
-                                                  value="#{producto.precio}" >
-                                        <f:param value="#{orderController.precioProducto}"/>
-                                    </h:outputText>
 
-                                    <p:outputLabel style="font-weight: bold;padding: 0.3em; display: inline" for="cant" value="Cantidad: " ></p:outputLabel>
-                                    <p:spinner id="cant" min="0"   style="width:75px; 
-                                               margin-top: 1.5px;
-                                               margin-right:2px"
-                                              
-                                               >
-                                        <f:param value="#{orderController.cantidadProducto}"/>
-                                    </p:spinner>
-                                    <p:commandButton style="width: 75px;
-                                                     position: relative; 
-                                                     margin-right:25px; 
-                                                     margin-top: 10px"  
-                                                     icon="fa fa-cart-plus" value="submit" action="#{orderController.addToCart()}">
-                                                     
-                                                     
-                                    </p:commandButton>   
+                <p:panel id="panelOrden" style="border: none;background-color: transparent; width: 49%;display: inline-block"> 
+
+                    <p:scrollPanel  id="scrollOrden" style="height:350px; width: 100%" mode="native" >
+                        <c:forEach   id="ordenRepeat"  items="#{orderController.ordenList}" var="ordenProducto"  >
+                            <h:form prependId="false">
+                                <div >
+                                    <p:panel>
+                                        <p:outputLabel style="
+                                                       font-weight: bold;
+                                                       padding: 0.3em; " 
+                                                       value="Item: " ></p:outputLabel>
+
+                                        <h:outputText  style="font-weight: 600;
+                                                       color: #f05537;
+                                                       padding: 0.3em;
+                                                       display: inline;"
+
+                                                       value="#{ordenProducto.producto.nombre}" >
+                                        </h:outputText>
+
+                                        <p:outputLabel style="font-weight: bold;padding: 0.3em"  value="Precio: " ></p:outputLabel>
+                                        <h:outputText  style="font-weight: 600;
+                                                       color: #f05537;
+                                                       padding: 0.3em;
+                                                       display: inline;" 
+                                                       value="#{ordenProducto.producto.precio}" >
+                                        </h:outputText>
+                                        <p:outputLabel style="font-weight: bold;padding: 0.3em; display: inline"  value="Cantidad: " ></p:outputLabel>
+                                        <h:outputText  style="font-weight: bold;color: #f05537" value="#{ordenProducto.cantidad}"></h:outputText>
+                                    </p:panel>
+                                    <p:panel>
+                                        <br></br>
+                                        <p:commandButton  process="@form" style="background-color: #ff3333;"   icon="fa fa-trash" action="#{orderController.deleteFromCart(ordenProducto)}" value="Eliminar">
+                                        </p:commandButton>   
+                                    </p:panel>
 
                                 </div>
+                            </h:form>
+                        </c:forEach>
 
-                            </c:forEach>  
+                    </p:scrollPanel>
 
-                        </p:scrollPanel> 
-
-                    </p:panel>
-
-
-                    <p:outputLabel for="panelOrden" value="Lista de Orden"></p:outputLabel>
-                    <p:panel id="panelOrden" style="border: none;background-color: transparent; width: 50%; height: 100%"> 
-
-                        <p:scrollPanel  id="scrollOrden" style="height:350px; width: 100%" mode="native" >
-                            <c:forEach   id="ordenRepeat"  items="#{orderController.ordenList}" var="ordenProducto"  >
-
-                                <div style="width: 98%; height: 50px; border-bottom-color: #000;border-style: groove;">
-
-                                    <p:outputLabel style="
-                                                   font-weight: bold;
-                                                   padding: 0.3em; " 
-                                                   for="ordenNombre" value="Item: " ></p:outputLabel>
-
-                                    <h:outputText id="ordenNombre" style="font-weight: 600;
-                                                  color: #f05537;
-                                                  padding: 0.3em;
-                                                  display: inline;
-                                                  margin-right: 50px"
-
-                                                  value="#{ordenProducto.producto.nombre}" >
-                                    </h:outputText>
-
-                                    <p:outputLabel style="font-weight: bold;padding: 0.3em" for="precioOrden" value="Precio: " ></p:outputLabel>
-                                    <h:outputText id="precioOrden" style="font-weight: 600;
-                                                  color: #f05537;
-                                                  padding: 0.3em;
-                                                  display: inline;
-                                                  margin-right:50px" 
-                                                  value="#{ordenProducto.producto.precio}" >
-                                    </h:outputText>
-
-                                    <p:outputLabel style="font-weight: bold;padding: 0.3em; display: inline" for="cantOrden" value="Cantidad: " ></p:outputLabel>
-                                    <h:outputText id = "cantidad" value="#{ordenProducto.cantidad}"></h:outputText>
-
-                                    <p:commandButton style="width: 75px;position: relative; margin-right:25px; margin-top: 10px"  icon="fa fa-cart-plus">
-                                    </p:commandButton>   
-
-                                </div>
-
-                            </c:forEach>
-
-                        </p:scrollPanel>
-
-                    </p:panel>
-
-                </h:form>
+                </p:panel>
 
 
 

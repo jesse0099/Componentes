@@ -28,6 +28,7 @@ import com.r6.service.Servicio;
 import com.r6.service.UsuarioDao;
 import com.r6.service.RecordatorioDao;
 import com.r6.mensajeria.Recordatorio;
+import com.r6.mensajeria.Sistema;
 import com.r6.service.AdjuntoDao;
 import com.r6.service.BitacoraDao;
 import com.r6.service.ClienteDao;
@@ -123,8 +124,13 @@ public class OrderController implements Serializable {
     private String nombreProducto;
     private double precioProducto;
     private int cantidadProducto;
+    private Date fechaOrden;
     private List<UploadedFile> filesUpoloaded;
 
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Cliente">
+    private List<Cliente> clientes;
+    private Cliente selectedClient;
     //</editor-fold>
     //</editor-fold>
     @PostConstruct
@@ -132,14 +138,28 @@ public class OrderController implements Serializable {
 
         this.filesUpoloaded = new ArrayList<>();
         this.ordenList = new ArrayList<>();
+        this.clientes = new ArrayList<>();
         /* Inicializar y settear los EM
          Su hubo un error no realiza las operaciones*/
         if (this.setAllEms()) {
             this.refeshProductList();
         }
-
+        
+        //Clientes de BD
+        
+        ClienteDao dao = new ClienteDao();
+        dao.setEm(Servicio.getEm());
+        this.clientes = dao.getAll();
+        
+        
+        this.selectedClient = new Cliente();
+        selectedClient.setIdCliente(-1);
+        selectedClient.setNombre("Selecciona un cliente");
+        
     }
 
+    
+    
     public void addToCart(Producto p) {
         Double total = 0.00;
 
@@ -175,6 +195,8 @@ public class OrderController implements Serializable {
 
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Metodos">
+    
     //Evento disparado cuando un archivo termina de cargar
     public void handleFileUpload(FileUploadEvent event) {
         this.filesUpoloaded.add(event.getFile());
@@ -251,6 +273,17 @@ public class OrderController implements Serializable {
         }
     }
 
+        public void onItemSelectedListener() {
+        
+        if (selectedClient.getIdCliente()!=-1) {
+            System.out.println("ID : "+this.selectedClient.getIdCliente());
+
+        }
+
+    }
+    
+    //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Funcionalidades Extra">
     /*Settea todos los em de uan vez*/
     public Boolean setAllEms() {
@@ -334,6 +367,34 @@ public class OrderController implements Serializable {
     public List<Producto> getProductList() {
         return productList;
     }
+
+    public Date getFechaOrden() {
+        return fechaOrden;
+    }
+
+    public void setFechaOrden(Date fechaOrden) {
+        this.fechaOrden = fechaOrden;
+    }
+    
+
+    public Cliente getSelectedClient() {
+        return selectedClient;
+    }
+
+    public void setSelectedClient(Cliente selectedClient) {
+        this.selectedClient = selectedClient;
+    }
+    
+
+    public List<Cliente> getClientes() {
+        return clientes;
+    }
+
+    public void setClientes(List<Cliente> clientes) {
+        this.clientes = clientes;
+    }
+    
+    
 
     public List<UploadedFile> getFilesUpoloaded() {
         return filesUpoloaded;

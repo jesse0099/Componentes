@@ -149,7 +149,7 @@
                                             <p:fileDownload value="#{orderController.setStreamedContent(adj)}" />
                                         </p:commandButton>    
                                         <br></br>
-                                        <p:commandButton  style="border-radius:5px;border-color: #ffffff;background-color: #ff3333;display: inline-block;padding: 0.3em;width: 100%"  
+                                        <p:commandButton process="@form"  style="border-radius:5px;border-color: #ffffff;background-color: #ff3333;display: inline-block;padding: 0.3em;width: 100%"  
                                                           action="#{orderController.deleteAddedFile(adj)}"
                                                           icon="fa fa-trash" 
                                                           value="Eliminar">
@@ -159,6 +159,10 @@
                             </c:forEach>     
                         </p:scrollPanel>
                     </p:panel>
+                    
+                    <p:commandButton icon="fa fa-cart-plus" value=" Levantar Orden " action="#{orderController.addOrder()}" style="border-radius:5px;border-color: #ffffff;background-color: #33cc00;display: inline-block;padding: 0.3em;width: fit-content; margin-left: 15px" >
+                                                 
+                     </p:commandButton>    
 
                 </h:form>
 

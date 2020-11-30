@@ -14,9 +14,11 @@ import com.controller.DatosUsuario;
 import com.r6.funciones.CorreoFunc;
 import com.r6.funciones.RecordatorioFunc;
 import com.r6.mensajeria.Adjunto;
+import com.r6.mensajeria.Cliente;
 import com.r6.mensajeria.Contacto;
 import com.r6.mensajeria.Correo;
 import com.r6.mensajeria.Itemorden;
+import com.r6.mensajeria.Orden;
 import com.r6.mensajeria.Producto;
 import com.r6.mensajeria.Usuario;
 import com.r6.service.ContactoDao;
@@ -28,6 +30,7 @@ import com.r6.service.RecordatorioDao;
 import com.r6.mensajeria.Recordatorio;
 import com.r6.service.AdjuntoDao;
 import com.r6.service.BitacoraDao;
+import com.r6.service.ClienteDao;
 import com.r6.service.Dao;
 import com.r6.service.ItemOrdenDao;
 import com.r6.service.OrdenDao;
@@ -105,6 +108,9 @@ public class OrderController implements Serializable {
 
     /*Usuario Orden*/
     UsuarioDao usuarioDao = new UsuarioDao();
+
+    /* Cliente*/
+    ClienteDao clienteDao = new ClienteDao();
 
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Productos">
@@ -217,6 +223,34 @@ public class OrderController implements Serializable {
         System.out.println("C1 : " + p);
     }
 
+    public void addOrder() {
+        if (this.ordenList.size() > 0) {
+            try {
+
+                Orden newOrden = new Orden();
+                Date fecha = new Date();
+                newOrden.setCliente(clienteDao.get(1).get());
+                newOrden.setFechaOrden(fecha);
+                newOrden.setTotalOrden(getTotal());
+                Correo dummyCorreo = correoDao.getById(1);
+                ordenDao.save(newOrden);
+            
+                ordenDao.getEm().refresh(newOrden);
+                
+                for(Itemorden item: this.ordenList){
+                    item.setOrden(newOrden);
+                    itemOrdenDao.save(item);
+                }
+                System.out.println("All set!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            System.out.println("Error, no hay nada en la lista");
+        }
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Funcionalidades Extra">
     /*Settea todos los em de uan vez*/
     public Boolean setAllEms() {
@@ -229,6 +263,7 @@ public class OrderController implements Serializable {
             this.ordenDao.setEm(em);
             this.productoDao.setEm(em);
             this.usuarioDao.setEm(em);
+            this.clienteDao.setEm(em);
         } catch (Exception e) {
             allOK = false;
             e.printStackTrace();
@@ -263,6 +298,35 @@ public class OrderController implements Serializable {
     public void onSelect(SelectEvent event) {
         FacesContext context = FacesContext.getCurrentInstance();
         System.out.println("Objeto : " + ((Producto) event.getObject()).getNombre());
+    }
+
+    
+    
+    
+    /* Devuelve el total de la lista*/
+    public double getTotal() {
+
+        double total = 0.00;
+
+        for (Itemorden item : this.ordenList) {
+
+            total += item.getTotalItem();
+        }
+
+        return total;
+
+    }
+
+    /* Devuelve la lista de Orden en tipo set*/
+    public Set<Itemorden> listToSet() {
+        Set<Itemorden> set = new HashSet();
+
+        for (Itemorden item : this.ordenList) {
+            set.add(item);
+        }
+
+        return set;
+
     }
 
     //</editor-fold>

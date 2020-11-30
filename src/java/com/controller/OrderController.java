@@ -32,8 +32,6 @@ import com.r6.service.Dao;
 import com.r6.service.ItemOrdenDao;
 import com.r6.service.OrdenDao;
 import com.r6.service.ProductoDao;
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
@@ -80,6 +78,7 @@ import org.primefaces.model.DualListModel;
 import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 
 //</editor-fold>
@@ -118,12 +117,14 @@ public class OrderController implements Serializable {
     private String nombreProducto;
     private double precioProducto;
     private int cantidadProducto;
+    private List<UploadedFile> filesUpoloaded;
 
     //</editor-fold>
     //</editor-fold>
     @PostConstruct
     public void initBean() {
 
+        this.filesUpoloaded = new ArrayList<>();
         this.ordenList = new ArrayList<>();
         /* Inicializar y settear los EM
          Su hubo un error no realiza las operaciones*/
@@ -168,16 +169,47 @@ public class OrderController implements Serializable {
 
     }
 
-    public void deleteFromCart(Itemorden p) {
+    //Evento disparado cuando un archivo termina de cargar
+    public void handleFileUpload(FileUploadEvent event) {
+        this.filesUpoloaded.add(event.getFile());
+        System.out.println("Entramos");
+        PrimeFaces.current().ajax().update("files");
+    }
+
+    public void deleteAddedFile(UploadedFile up) {
         int index = 0;
-        int index2 = 0;
-        for (Itemorden x : this.ordenList) {
-            if (Objects.equals(x.getIdItem(), p.getIdItem())) {
-                index2 = index;
+        int deleteIndex = 0;
+        for (UploadedFile p : this.filesUpoloaded) {
+            if (p.getFileName().equals(up.getFileName())) {
+                deleteIndex = index;
             }
             index++;
         }
-        this.ordenList.remove(this.ordenList.get(index2));
+        this.filesUpoloaded.remove(deleteIndex);
+        PrimeFaces.current().ajax().update("files");
+
+    }
+
+    public StreamedContent setStreamedContent(UploadedFile file) {
+        DefaultStreamedContent returned = null;
+        try {
+            returned = new DefaultStreamedContent(file.getInputstream(), file.getContentType(), file.getFileName());
+        } catch (IOException ex) {
+            Logger.getLogger(OrderController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return returned;
+    }
+
+    public void deleteFromCart(Itemorden p) {
+        int index = 0;
+        int deleteindex = 0;
+        for (Itemorden x : this.ordenList) {
+            if (Objects.equals(x.getProducto().getNombre(), p.getProducto().getNombre())) {
+                deleteindex = index;
+            }
+            index++;
+        }
+        this.ordenList.remove(deleteindex);
         PrimeFaces.current().ajax().update("panelOrden");
     }
 
@@ -237,6 +269,14 @@ public class OrderController implements Serializable {
     //<editor-fold defaultstate="collapsed" desc="Gets y sets">
     public List<Producto> getProductList() {
         return productList;
+    }
+
+    public List<UploadedFile> getFilesUpoloaded() {
+        return filesUpoloaded;
+    }
+
+    public void setFilesUpoloaded(List<UploadedFile> filesUpoloaded) {
+        this.filesUpoloaded = filesUpoloaded;
     }
 
     public DualListModel<Producto> getProductosSeleccionados() {

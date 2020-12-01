@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./WEB-INF/template.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">
+        Calendario Ordenes
+    </ui:define>
+
+
+
+    <script type="text/javascript">
+        PrimeFaces.locales['es'] = {
+            closeText: 'Cerrar',
+            prevText: 'Anterior',
+            nextText: 'Siguiente',
+            monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+            monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+            dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+            dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+            dayNamesMin: ['D', 'L', 'M', 'X', 'J', 'V', 'S'],
+            weekHeader: 'Semana',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: '',
+            timeOnlyTitle: 'Sólo hora',
+            timeText: 'Tiempo',
+            hourText: 'Hora',
+            minuteText: 'Minuto',
+            secondText: 'Segundo',
+            currentText: 'Fecha actual',
+            ampm: false,
+            month: 'Mes',
+            week: 'Semana',
+            day: 'Día',
+            allDayText: 'Todo el día'
+        };
+    </script>
+
+    <ui:define name="content">
+
+        <div class="card">
+            <h1>Ordenes</h1>
+            <h:form prependId="false">
+
+                <h:outputScript  name="js/schedule_es.js" />
+
+
+                <p:schedule id="schedule" value="#{scheduleOrdenController.eventModel}" rightHeaderTemplate="dayGridMonth" draggable="false" locale="es" timeFormat="DD" widgetVar="eventSchedule" >
+<p:ajax event="eventSelect" listener="#{scheduleOrdenController.onEventSelect}" update="eventDetails" oncomplete="PF('eventDialog').show();"></p:ajax>
+
+                </p:schedule> 
+
+                                <p:dialog responsive="true" widgetVar="eventDialog" id="dialogo"  header="Orden" showEffect="clip" hideEffect="clip" resizable="false">
+
+
+
+
+                    <h:panelGrid id="eventDetails" columns="2">
+                        <p:outputLabel for="title" value="Nombre del evento:" />
+                        <p:inputText id="title" value="#{scheduleOrdenController.titulo}" required="true" style="width:95%; " />
+
+
+                        <p:outputLabel for="button" value="Fecha:" />
+                        <p:datePicker id="button" class="fechaDialog" value="#{scheduleOrdenController.fecha}" pattern="dd/MM/yyyy" showTime="true" appendTo="@(body)"  showIcon="true" readonlyInput="true" style="width:95%; " />
+
+                        <p:outputLabel for="desc" value="Descripción:" />
+                        <p:inputTextarea id="desc" rows="6" cols="33" value="#{scheduleOrdenController.descripcion}" required="true" style="width:95%; " />
+
+
+
+                        <p:outputLabel for="tipo" value="Tipo de mensaje:" />
+                        <p:selectOneMenu id="tipo" value="#{scheduleOrdenController.tipoSeleccionado}"  required="true" style="width:87%; ">
+
+                            <f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
+                            <f:selectItems value="#{scheduleOrdenController.tipo}" />
+                        </p:selectOneMenu>
+
+                        <p:outputLabel  for="participantes" value="Participantes:" />
+                        <p:selectCheckboxMenu id="participantes" value="#{scheduleOrdenController.participantesSeleccionados}" label="Participantes"
+                                              filter="true" filterMatchMode="startsWith" panelStyle="width:250px" style="width:95%; ">
+                            <f:selectItems value="#{scheduleOrdenController.participantes}" />
+                        </p:selectCheckboxMenu>
+
+
+                        <p:outputLabel value="Adjuntos: "></p:outputLabel>
+                        <p:panel style="width: 100%;border: none !important">
+                            <p:fileUpload  mode="advanced" 
+                                           process="scrollFiles,scrollFiles2"
+                                           multiple="true"
+                                           fileUploadListener="#{scheduleOrdenController.handleFileUpload}"
+                                           id="imgLoader"  chooseIcon="fas fa-file-image" 
+                                           uploadIcon="fas fa-cloud-upload-alt"     
+                                           cancelLabel="Cancelar"
+                                           dragDropSupport="false"
+                                           invalidFileMessage="Tipo no soportado." 
+                                           fileLimitMessage="El archivo excede el tamaño permitido." 
+                                           allowTypes="/(\.|\/)(jpe?g|png|pdf|docx)$/" 
+                                           uploadLabel="Confirmar" style="display: inline;width: 100%" label="Archivo." 
+                                           >
+
+                            </p:fileUpload>
+                        </p:panel>
+
+                        <p:panel style="border:none !important"></p:panel>
+
+                        <p:panel id="files" style="border: none;background-color: transparent"> 
+                            <p:scrollPanel rendered="#{not empty scheduleOrdenController.uploadedFiles }" id="scrollFiles" style="height:100px" mode="native" >
+                                <c:forEach   id="innerRepeat"  items="#{scheduleOrdenController.uploadedFiles}" var="adj"  >
+                                    <p:commandButton  process="scrollFiles"  disabled="true" style="border-radius:5px;border-color: #ffffff;background-color: #333333;display: inline-block;padding: 0.3em;width: fit-content" 
+                                                      value="#{adj.fileName}.#{adj.contentType}" 
+                                                      ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down">
+                                    </p:commandButton>      
+                                </c:forEach>     
+                            </p:scrollPanel>
+
+                            <p:scrollPanel  rendered="#{not empty scheduleOrdenController.uploadedFilesAdj}"  id="scrollFiles2" style="height:100px" mode="native" >
+                                <c:forEach   id="innerRepeatHidden"  items="#{scheduleOrdenController.uploadedFilesAdj}" var="adj2"  >
+                                    <p:commandButton  process="scrollFiles2"  disabled="true" style="border-radius:5px;border-color: #ffffff;background-color: #333333;display: inline-block;padding: 0.3em;width: fit-content" 
+                                                      value="#{adj2.id}.#{fileController.getMIMETypeFromByteArray(adj2.archivo)}" 
+                                                      ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down">
+                                    </p:commandButton>      
+                                </c:forEach>
+                            </p:scrollPanel>
+                        </p:panel>
+
+
+                        <p:panel style="border:none !important"></p:panel>
+                        <p:panel style="display: inline-block; float: right;border:none !important">
+                            <p:commandButton id="Cerrar"  value="Cerrar" oncomplete="PF('eventDialog').hide();" />                        
+                        </p:panel>
+
+                        <h:inputHidden value="#{scheduleOrdenController.errorText}" id="errorText"/>
+                        <h:outputScript id="scriptError" rendered="#{scheduleOrdenController.undeleteable}">
+                            alert( document.getElementById('errorText').value);
+                        </h:outputScript>
+
+                    </h:panelGrid>
+                </p:dialog>  
+
+
+            </h:form>
+
+        </div>
+        <h:outputStylesheet name="css/scheduleStyle.css" library="omega-layout" ></h:outputStylesheet>
+        <h:outputScript name="js/onSelection.js" target="head"/>
+
+
+    </ui:define>
+
+</ui:composition>

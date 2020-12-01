@@ -131,11 +131,13 @@ public class OrderController implements Serializable {
     //<editor-fold defaultstate="collapsed" desc="Cliente">
     private List<Cliente> clientes;
     private Cliente selectedClient;
+
     //</editor-fold>
     //</editor-fold>
     @PostConstruct
     public void initBean() {
 
+        this.fechaOrden = null;
         this.filesUpoloaded = new ArrayList<>();
         this.ordenList = new ArrayList<>();
         this.clientes = new ArrayList<>();
@@ -144,22 +146,18 @@ public class OrderController implements Serializable {
         if (this.setAllEms()) {
             this.refeshProductList();
         }
-        
+
         //Clientes de BD
-        
         ClienteDao dao = new ClienteDao();
         dao.setEm(Servicio.getEm());
         this.clientes = dao.getAll();
-        
-        
+
         this.selectedClient = new Cliente();
         selectedClient.setIdCliente(-1);
         selectedClient.setNombre("Selecciona un cliente");
-        
+
     }
 
-    
-    
     public void addToCart(Producto p) {
         Double total = 0.00;
 
@@ -196,7 +194,6 @@ public class OrderController implements Serializable {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Metodos">
-    
     //Evento disparado cuando un archivo termina de cargar
     public void handleFileUpload(FileUploadEvent event) {
         this.filesUpoloaded.add(event.getFile());
@@ -246,24 +243,89 @@ public class OrderController implements Serializable {
     }
 
     public void addOrder() {
-        if (this.ordenList.size() > 0) {
+        if (this.ordenList.size() > 0 && (this.selectedClient.getIdCliente() != -1)
+                && (null != this.fechaOrden)) {
             try {
 
+                String cuerpoCorreo = "";
+
+                //Generar Orden
                 Orden newOrden = new Orden();
                 Date fecha = new Date();
                 newOrden.setCliente(clienteDao.get(1).get());
-                newOrden.setFechaOrden(fecha);
+                newOrden.setFechaOrden(fechaOrden);
                 newOrden.setTotalOrden(getTotal());
-                Correo dummyCorreo = correoDao.getById(1);
+
+                //Insertarla con el cliente seleccionado
+                ClienteDao cliD = new ClienteDao();
+                cliD.setEm(Servicio.getEm());
+                Cliente cli = cliD.get(this.selectedClient.getIdCliente()).get();
+
+                newOrden.setCliente(cli);
                 ordenDao.save(newOrden);
-            
                 ordenDao.getEm().refresh(newOrden);
-                
-                for(Itemorden item: this.ordenList){
+
+                for (Itemorden item : this.ordenList) {
                     item.setOrden(newOrden);
+                    cuerpoCorreo += item.getNumLinea() + " - " + item.getProducto().getNombre() + " - " + item.getCantidad() + " - " + item.getPrecioUnitario() + " - " + item.getTotalItem() + "\n";
                     itemOrdenDao.save(item);
+
                 }
-                System.out.println("All set!");
+
+                //Adjuntos y correos
+                Dao masterDao = new AdjuntoDao();
+                ((AdjuntoDao) masterDao).setEm(Servicio.getEm());
+
+                Set<Adjunto> adjs = new HashSet<>();
+
+                if (!this.filesUpoloaded.isEmpty()) {
+                    for (UploadedFile upf : this.filesUpoloaded) {
+                        Adjunto adj = new Adjunto();
+                        adj.setArchivo(upf.getContents());
+                        adjs.add(adj);
+                        ((AdjuntoDao) masterDao).save(adj);
+                    }
+                }
+
+                masterDao = new CorreoDao();
+                ((CorreoDao) masterDao).setEm(Servicio.getEm());
+
+                //Correo
+                Correo corr = new Correo();
+                corr.setAdjuntos(adjs);
+                corr.setCuerpo(cuerpoCorreo);
+                corr.setAsunto(String.valueOf(newOrden.getIdOrden()));
+                corr.setTipoCorreo(2);
+                corr.setTipo("Texto plano");
+                corr.setFechaEnvio(this.fechaOrden);
+                corr.setOrden(newOrden);
+
+                //Remitente del correo
+                Set<Usuario> usuarioList1 = new HashSet<>();
+                usuarioList1.add(DatosUsuario.user);
+                corr.setUsuarios(usuarioList1);
+
+                //Destinatarios del corrreo
+                masterDao = new ContactoDao();
+                ((ContactoDao) masterDao).setEm(Servicio.getEm());
+
+                Set<Contacto> contactos = new HashSet<>();
+                for (Contacto cont : (((ContactoDao) masterDao).getByClientId(cli.getIdCliente()))) {
+                    contactos.add(cont);
+                }
+
+                corr.setDestinatarios(contactos);
+
+                masterDao = new CorreoDao();
+                ((CorreoDao) masterDao).save(corr);
+
+                //Limpiando la vista
+                initBean();
+                //PrimeFaces.current().executeScript("$('#myModalReject').modal();") ;
+                PrimeFaces.current().ajax().update("files");
+                PrimeFaces.current().ajax().update("panelProductos");
+                PrimeFaces.current().ajax().update("panelOrden");
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -273,17 +335,16 @@ public class OrderController implements Serializable {
         }
     }
 
-        public void onItemSelectedListener() {
-        
-        if (selectedClient.getIdCliente()!=-1) {
-            System.out.println("ID : "+this.selectedClient.getIdCliente());
+    public void onItemSelectedListener() {
+
+        if (selectedClient.getIdCliente() != -1) {
+            System.out.println("ID : " + this.selectedClient.getIdCliente());
 
         }
 
     }
-    
+
     //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Funcionalidades Extra">
     /*Settea todos los em de uan vez*/
     public Boolean setAllEms() {
@@ -333,9 +394,6 @@ public class OrderController implements Serializable {
         System.out.println("Objeto : " + ((Producto) event.getObject()).getNombre());
     }
 
-    
-    
-    
     /* Devuelve el total de la lista*/
     public double getTotal() {
 
@@ -375,7 +433,6 @@ public class OrderController implements Serializable {
     public void setFechaOrden(Date fechaOrden) {
         this.fechaOrden = fechaOrden;
     }
-    
 
     public Cliente getSelectedClient() {
         return selectedClient;
@@ -384,7 +441,6 @@ public class OrderController implements Serializable {
     public void setSelectedClient(Cliente selectedClient) {
         this.selectedClient = selectedClient;
     }
-    
 
     public List<Cliente> getClientes() {
         return clientes;
@@ -393,8 +449,6 @@ public class OrderController implements Serializable {
     public void setClientes(List<Cliente> clientes) {
         this.clientes = clientes;
     }
-    
-    
 
     public List<UploadedFile> getFilesUpoloaded() {
         return filesUpoloaded;

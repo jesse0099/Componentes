@@ -10,6 +10,7 @@
 
     <ui:define name="title"> Nueva Orden </ui:define>
     <ui:define name="head">
+        
         <f:metadata>
             <f:viewAction
                 action="#{orderController.initBean()}">
@@ -44,7 +45,7 @@
                                            var="cli"
                                            itemValue="#{cli.idCliente}"
                                            itemLabel="#{cli.nombre}">
-                                         
+
                             </f:selectItems>
                             <f:facet name="footer">
                                 <p:separator />
@@ -56,17 +57,6 @@
                         </p:selectOneMenu>
                     </h:form>
                 </div>
-                <p:panel  style="border: none">
-                    <div style="display: inline-block">
-                        <p:outputLabel style="margin-left: 0.1em;display: inline;font-weight: bold;font-size: medium" 
-                                       for="fechaEntrega" 
-                                       value="Fecha de entrega">
-
-                        </p:outputLabel>
-                        <p:separator></p:separator>
-                        <p:datePicker style="display: inline" id="fechaEntrega"></p:datePicker>
-                    </div>
-                </p:panel>
                 <p:panel id="panelProductos" style="border: none;background-color: transparent; width: 49%; height: 100%;display: inline-block"> 
 
                     <p:scrollPanel  id="scrollProductos" style="height:350px; width: 100%" mode="native" >
@@ -195,14 +185,27 @@
                         </p:scrollPanel>
                     </p:panel>
 
-                    <p:commandButton icon="fa fa-cart-plus" value=" Levantar Orden " action="#{orderController.addOrder()}" style="border-radius:5px;border-color: #ffffff;background-color: #333333;display: inline-block;padding: 0.3em;width: fit-content; margin-left: 15px" >
 
-                    </p:commandButton>    
 
                 </h:form>
+                <h:form prependId="false" style="display: inline-block">
+                    <p:panel  style="border: none;display: inline">
 
+                        <div style="display: inline-block">
+                            <p:outputLabel style="margin-left: 0.1em;display: inline;font-weight: bold;font-size: medium" 
+                                           for="fechaEntrega" 
+                                           value="Fecha de entrega">
+
+                            </p:outputLabel>
+                            <p:separator></p:separator>
+                            <p:datePicker value="#{orderController.fechaOrden }" style="display: inline" id="fechaEntrega"></p:datePicker>
+                        </div>
+                        <p:commandButton process="@form" icon="fa fa-cart-plus" value=" Levantar Orden " action="#{orderController.addOrder()}" style="border-radius:5px;border-color: #ffffff;background-color: #333333;display: inline-block;padding: 0.3em;width: fit-content; margin-left: 15px" >
+
+                        </p:commandButton>   
+                    </p:panel>
+                </h:form>
             </p:panel>
-
         </div>
     </ui:define>
 

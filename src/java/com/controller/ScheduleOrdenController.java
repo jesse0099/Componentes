@@ -5,30 +5,26 @@
  */
 package com.controller;
 
-import com.controller.DatosUsuario;
 import com.r6.funciones.CorreoFunc;
 import com.r6.funciones.RecordatorioFunc;
 import com.r6.mensajeria.Adjunto;
 import com.r6.mensajeria.Contacto;
 import com.r6.mensajeria.Correo;
+import com.r6.mensajeria.Recordatorio;
 import com.r6.mensajeria.Usuario;
+import com.r6.service.AdjuntoDao;
 import com.r6.service.ContactoDao;
 import com.r6.service.CorreoDao;
 import com.r6.service.IntervalosTiempo;
+import com.r6.service.RecordatorioDao;
 import com.r6.service.Servicio;
 import com.r6.service.UsuarioDao;
-import com.r6.service.RecordatorioDao;
-import com.r6.mensajeria.Recordatorio;
-import com.r6.service.AdjuntoDao;
-import javax.faces.bean.ViewScoped;
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,29 +41,27 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import org.apache.tomcat.util.http.fileupload.RequestContext;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.ScheduleEntryMoveEvent;
-import org.primefaces.event.ScheduleEntryResizeEvent;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
 import org.primefaces.model.DefaultScheduleModel;
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.LazyScheduleModel;
 import org.primefaces.model.ScheduleEvent;
 import org.primefaces.model.ScheduleModel;
 import org.primefaces.model.UploadedFile;
 
 /**
  *
- * @author Nvidi
+ * @author josem
  */
-@ManagedBean(name = "scheduleController")
-@ViewScoped
-public class ScheduleController implements Serializable {
 
+@ManagedBean(name = "scheduleOrdenController")
+@SessionScoped
+public class ScheduleOrdenController {
+
+    
     private ScheduleModel eventModel;
 
     private ScheduleModel lazyEventModel;
@@ -147,7 +141,7 @@ public class ScheduleController implements Serializable {
                 idUser = u.getIdUsuario();
             }
 
-            if (idUser == DatosUsuario.user.getIdUsuario() && cList.getTipoCorreo()==1) {
+            if (idUser == DatosUsuario.user.getIdUsuario() && cList.getTipoCorreo()==2) {
 
                 DefaultScheduleEvent event = new DefaultScheduleEvent(
                         cList.getAsunto(),
@@ -835,7 +829,7 @@ public class ScheduleController implements Serializable {
         System.out.println("xdxdxdx2");
     }
 
-    public ScheduleController() {
+    public ScheduleOrdenController() {
     }
 
     public void borrar() {
@@ -970,7 +964,7 @@ public class ScheduleController implements Serializable {
         this.columnHeaderFormat = columnHeaderFormat;
     }
 
-    public ScheduleController(ScheduleModel eventModel, ScheduleModel lazyEventModel, String timeFormat, String slotLabelInterval, Date fecha, List<String> participantes, String[] participantesSeleccionados, Map<String, String> repetirCada, String repetirSeleccionado, int cantidadRecordatorios, Map<String, String> tipo, String tipoSeleccionado, List<String> participantesOcultos, String[] pOcultosSeleccionados) {
+    public ScheduleOrdenController(ScheduleModel eventModel, ScheduleModel lazyEventModel, String timeFormat, String slotLabelInterval, Date fecha, List<String> participantes, String[] participantesSeleccionados, Map<String, String> repetirCada, String repetirSeleccionado, int cantidadRecordatorios, Map<String, String> tipo, String tipoSeleccionado, List<String> participantesOcultos, String[] pOcultosSeleccionados) {
         this.eventModel = eventModel;
         this.lazyEventModel = lazyEventModel;
         this.timeFormat = timeFormat;
@@ -1571,4 +1565,8 @@ public class ScheduleController implements Serializable {
         }
     }
 
+    
+        
+        
+        
 }

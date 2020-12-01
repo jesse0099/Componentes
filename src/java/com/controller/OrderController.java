@@ -133,6 +133,10 @@ public class OrderController implements Serializable {
     private Cliente selectedClient;
 
     //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Modal">
+    private String mensajeModal;
+
+    //</editor-fold>
     //</editor-fold>
     @PostConstruct
     public void initBean() {
@@ -141,6 +145,7 @@ public class OrderController implements Serializable {
         this.filesUpoloaded = new ArrayList<>();
         this.ordenList = new ArrayList<>();
         this.clientes = new ArrayList<>();
+        this.setMensajeModal("");
         /* Inicializar y settear los EM
          Su hubo un error no realiza las operaciones*/
         if (this.setAllEms()) {
@@ -322,16 +327,23 @@ public class OrderController implements Serializable {
                 //Limpiando la vista
                 initBean();
                 //PrimeFaces.current().executeScript("$('#myModalReject').modal();") ;
+                this.setMensajeModal("Orden Agregada!");
                 PrimeFaces.current().ajax().update("files");
                 PrimeFaces.current().ajax().update("panelProductos");
                 PrimeFaces.current().ajax().update("panelOrden");
+                PrimeFaces.current().ajax().update("dialogo");
+                PrimeFaces.current().ajax().update("errorDialogPanel");
+                PrimeFaces.current().executeScript("PF('errorDialog').show()");
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
         } else {
-            System.out.println("Error, no hay nada en la lista");
+            this.setMensajeModal(" Error: Revise que todos los campos esten llenos");
+            PrimeFaces.current().ajax().update("dialogo");
+            PrimeFaces.current().ajax().update("errorDialogPanel");
+            PrimeFaces.current().executeScript("PF('errorDialog').show()");
         }
     }
 
@@ -508,6 +520,14 @@ public class OrderController implements Serializable {
 
     public void setCantidadProducto(int cantidadProducto) {
         this.cantidadProducto = cantidadProducto;
+    }
+
+    public String getMensajeModal() {
+        return mensajeModal;
+    }
+
+    public void setMensajeModal(String mensajeModal) {
+        this.mensajeModal = mensajeModal;
     }
 
     //</editor-fold>

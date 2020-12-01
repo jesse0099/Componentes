@@ -10,7 +10,7 @@
 
     <ui:define name="title"> Nueva Orden </ui:define>
     <ui:define name="head">
-        
+
         <f:metadata>
             <f:viewAction
                 action="#{orderController.initBean()}">
@@ -207,6 +207,14 @@
                 </h:form>
             </p:panel>
         </div>
+
+        <p:panel id="errorDialogPanel" widgetVar="errorDialogPanel">
+            <h:form>
+                <p:dialog id="errorDialog" widgetVar="errorDialog" >
+                    <p:outputLabel value="#{orderController.mensajeModal}" ></p:outputLabel>
+                </p:dialog>
+            </h:form>
+        </p:panel>
     </ui:define>
 
 </ui:composition>

@@ -1,0 +1,220 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+    <ui:define name="title"> Nueva Orden </ui:define>
+    <ui:define name="head">
+
+        <f:metadata>
+            <f:viewAction
+                action="#{orderController.initBean()}">
+            </f:viewAction>
+        </f:metadata>
+        <style type="text/css">
+
+            .ui-button, button.ui-button.ui-state-default, .ui-button.ui-state-default{
+                border: 1px solid;
+                border-color: transparent;
+            }
+
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <div class="ui-g ui-fluid dashboard"   >
+
+            <p:panel id="order" style="width: 100%;background-color: #FFFFFF" >
+
+                <div id="Title" style="text-align: center;width: 100%">
+                    <h1> Crea una Nueva Orden</h1>
+                </div>
+                <p:separator></p:separator>
+                <div style="margin-left: 1.5%;margin-bottom: 1%">
+                    <h:form id="XD" prependId="false">
+                        <p:selectOneMenu id="selectClient" 
+                                         style="font-weight: 600"
+                                         value="#{orderController.selectedClient.idCliente}"> 
+                            <f:selectItem  itemLabel="Selecciona un cliente" itemValue="None" noSelectionOption="true" ></f:selectItem>                            
+                            <f:selectItems value="#{orderController.clientes}"  
+                                           var="cli"
+                                           itemValue="#{cli.idCliente}"
+                                           itemLabel="#{cli.nombre}">
+
+                            </f:selectItems>
+                            <f:facet name="footer">
+                                <p:separator />
+                                <h:outputText value="#{orderController.clientes.size} sistemas" style="font-weight:bold;"/>
+                            </f:facet>
+                            <p:ajax 
+                                listener="#{orderController.onItemSelectedListener()}" >
+                            </p:ajax>
+                        </p:selectOneMenu>
+                    </h:form>
+                </div>
+                <p:panel id="panelProductos" style="border: none;background-color: transparent; width: 49%; height: 100%;display: inline-block"> 
+
+                    <p:scrollPanel  id="scrollProductos" style="height:350px; width: 100%" mode="native" >
+
+                        <c:forEach   id="innerRepeat"  items="#{orderController.productList}" var="producto"  >
+
+                            <h:form prependId="false" style="border: none" >
+                                <div style="width: 98%;margin-bottom: 0.5em" >
+                                    <p:panel style=" border-bottom: transparent">
+                                        <h:inputHidden value="#{producto.idProducto}"></h:inputHidden>
+                                        <p:outputLabel value="Producto: " style="font-weight: bold"></p:outputLabel>
+                                        <h:outputText  style="font-weight: 600;
+                                                       color: #f05537;
+                                                       padding: 0.3em;
+                                                       display: inline;"
+                                                       value="#{producto.nombre}" >
+                                        </h:outputText>
+                                        <p:outputLabel value="Precio: " style="font-weight: bold"></p:outputLabel>
+                                        <h:outputText style="font-weight: 600;
+                                                      color: #f05537;
+                                                      padding: 0.3em;
+                                                      display: inline;" 
+                                                      value="#{producto.precio}" >
+                                        </h:outputText>
+                                    </p:panel> 
+                                    <p:panel style="border-top:transparent">
+
+                                        <p:spinner  value="#{orderController.cantidadProducto}" min="1" style="margin-bottom: 0.2em " >
+                                        </p:spinner>
+                                        <p:commandButton process="@form"    icon="fa fa-cart-plus" value="Agregar" action="#{orderController.addToCart(producto)}">
+                                        </p:commandButton>   
+                                    </p:panel>
+                                </div>
+                            </h:form>
+                        </c:forEach>  
+
+                    </p:scrollPanel> 
+
+                </p:panel>
+
+
+                <p:panel id="panelOrden" style="border: none;background-color: transparent; width: 50%;display: inline-block"> 
+
+                    <p:scrollPanel  id="scrollOrden" style="height:350px; width: 100%" mode="native" >
+                        <c:forEach   id="ordenRepeat"  items="#{orderController.ordenList}" var="ordenProducto"  >
+                            <h:form prependId="false">
+                                <div >
+                                    <p:panel style="border-bottom: transparent">
+                                        <p:outputLabel style="
+                                                       font-weight: bold;
+                                                       padding: 0.3em; " 
+                                                       value="Item: " ></p:outputLabel>
+
+                                        <h:outputText  style="font-weight: 600;
+                                                       color: #f05537;
+                                                       padding: 0.3em;
+                                                       display: inline;"
+
+                                                       value="#{ordenProducto.producto.nombre}" >
+                                        </h:outputText>
+
+                                        <p:outputLabel style="font-weight: bold;padding: 0.3em"  value="Precio: " ></p:outputLabel>
+                                        <h:outputText  style="font-weight: 600;
+                                                       color: #f05537;
+                                                       padding: 0.3em;
+                                                       display: inline;" 
+                                                       value="#{ordenProducto.producto.precio}" >
+                                        </h:outputText>
+                                        <p:outputLabel style="font-weight: bold;padding: 0.3em; display: inline"  value="Cantidad: " ></p:outputLabel>
+                                        <h:outputText  style="font-weight: bold;color: #f05537" value="#{ordenProducto.cantidad}"></h:outputText>
+                                    </p:panel>
+                                    <p:panel style="border-top: transparent">
+                                        <br></br>
+                                        <p:commandButton  process="@form" style="background-color: #ff3333;"   icon="fa fa-trash" action="#{orderController.deleteFromCart(ordenProducto)}" value="Eliminar">
+                                        </p:commandButton>   
+                                    </p:panel>
+
+                                </div>
+                            </h:form>
+                        </c:forEach>
+
+                    </p:scrollPanel>
+
+                </p:panel>
+                <div id="Title" style="text-align: center;width: 100%">
+                    <h2> Agregar adjuntos </h2>
+                </div>
+                <h:form prependId="false">
+                    <p:panel style="width: 100%;border: none !important">
+                        <p:fileUpload  mode="advanced" 
+                                       multiple="true"
+                                       fileUploadListener="#{orderController.handleFileUpload}"
+                                       id="imgLoader"  chooseIcon="fas fa-file-image" 
+                                       uploadIcon="fas fa-cloud-upload-alt"     
+                                       cancelLabel="Cancelar"
+                                       dragDropSupport="false"
+                                       invalidFileMessage="Tipo no soportado." 
+                                       fileLimitMessage="El archivo excede el tamaño permitido." 
+                                       allowTypes="/(\.|\/)(jpe?g|png|pdf|docx|txt)$/" 
+                                       uploadLabel="Confirmar" style="display: inline;width: 100%" label="Archivo." 
+                                       >
+
+                        </p:fileUpload>
+                    </p:panel>
+
+
+                    <p:panel id="files" style="border: none;background-color: transparent"> 
+                        <p:scrollPanel  id="scrollFiles" style="height:100px" mode="native" >
+                            <c:forEach   id="innerRepeat"  items="#{orderController.filesUpoloaded}" var="adj"  >
+                                <h:form prependId="false" style="display: inline-block">
+                                    <p:panel style="width: fit-content;display: inline-block;border: none">
+                                        <p:commandButton  style="border-radius:5px;border-color: #ffffff;background-color: #333333;display: inline-block;padding: 0.3em;width: fit-content" 
+                                                          value="#{adj.fileName}" 
+                                                          ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down">
+                                            <p:fileDownload value="#{orderController.setStreamedContent(adj)}" />
+                                        </p:commandButton>    
+                                        <br></br>
+                                        <p:commandButton process="@form"  style="border-radius:5px;border-color: #ffffff;background-color: #ff3333;display: inline-block;padding: 0.3em;width: 100%"  
+                                                         action="#{orderController.deleteAddedFile(adj)}"
+                                                         icon="fa fa-trash" 
+                                                         value="Eliminar">
+                                        </p:commandButton>  
+                                    </p:panel>
+                                </h:form>
+                            </c:forEach>     
+                        </p:scrollPanel>
+                    </p:panel>
+
+
+
+                </h:form>
+                <h:form prependId="false" style="display: inline-block">
+                    <p:panel  style="border: none;display: inline">
+
+                        <div style="display: inline-block">
+                            <p:outputLabel style="margin-left: 0.1em;display: inline;font-weight: bold;font-size: medium" 
+                                           for="fechaEntrega" 
+                                           value="Fecha de entrega">
+
+                            </p:outputLabel>
+                            <p:separator></p:separator>
+                            <p:datePicker value="#{orderController.fechaOrden }" style="display: inline" id="fechaEntrega"></p:datePicker>
+                        </div>
+                        <p:commandButton process="@form" icon="fa fa-cart-plus" value=" Levantar Orden " action="#{orderController.addOrder()}" style="border-radius:5px;border-color: #ffffff;background-color: #333333;display: inline-block;padding: 0.3em;width: fit-content; margin-left: 15px" >
+
+                        </p:commandButton>   
+                    </p:panel>
+                </h:form>
+            </p:panel>
+        </div>
+
+        <p:panel id="errorDialogPanel" widgetVar="errorDialogPanel">
+            <h:form>
+                <p:dialog id="errorDialog" widgetVar="errorDialog" >
+                    <p:outputLabel value="#{orderController.mensajeModal}" ></p:outputLabel>
+                </p:dialog>
+            </h:form>
+        </p:panel>
+    </ui:define>
+
+</ui:composition>

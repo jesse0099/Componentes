@@ -773,17 +773,28 @@ public class ScheduleController implements Serializable {
                     this.tipoSeleccionado = "Texto plano";
                 }
 
-                int arraySizePOcultos = c.getUsuarioscopiados().size();
-                pOcultosSeleccionados = new String[arraySizePOcultos];
-                int agregarPOculto = 0;
+                System.out.println("TIPO:"+this.tipoSeleccionado);
+                System.out.println(c.getUsuarioscopiados());
+                
+                
+                if(c.getUsuarioscopiados()!=null){
+                   
+                    int arraySizePOcultos = c.getUsuarioscopiados().size();
+                    pOcultosSeleccionados = new String[arraySizePOcultos];
+                    int agregarPOculto = 0;
 
-                for (Usuario UsuarioOculto : c.getUsuarioscopiados()) {
+                    for (Usuario UsuarioOculto : c.getUsuarioscopiados()) {
 
                     pOcultosSeleccionados[agregarPOculto] = UsuarioOculto.getCorreo();
 
                     agregarPOculto++;
 
+                    }
+                    
+                    
                 }
+                
+               
 
             }
 

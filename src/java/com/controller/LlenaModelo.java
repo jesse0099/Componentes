@@ -52,9 +52,9 @@ public void init(){
  
    Servicio.setServerURL("jdbc:mysql://localhost:3306/mensajeria?serverTimezone=UTC");
    Servicio.setUsername("root");
-   Servicio.setPassword("Leiasuri85");
+   Servicio.setPassword("wvjjk611");
    Servicio.setDriver("com.mysql.jdbc.Driver");
-   Servicio.setHbm2DDLprotocol("update");
+   Servicio.setHbm2DDLprotocol("create");
    Servicio.setDialect("org.hibernate.dialect.MySQLDialect");
    
    
@@ -105,8 +105,8 @@ public void init(){
 public static void poblarModelo() {
     	
     	//Colocar aquí el directorio en que está el archivo adjunto
-    	String directorioAdjunto = "C:/Users/Daniel/Desktop/MensajeriaInit/init1.txt";
-        String directorioAdjunto2 = "C:/Users/Daniel/Desktop/MensajeriaInit/init2.txt";
+    	String directorioAdjunto = "C:/Users/Lenovo/Desktop/s2.pdf";
+        String directorioAdjunto2 = "C:/Users/Lenovo/Desktop/prueba.docx";
     	 try {
              
 
@@ -200,14 +200,15 @@ public static void poblarModelo() {
             c.setFechaEnvio(cal.getTime());
             c.setTipo("html/text");
             c.setInifinito(Boolean.FALSE);
-
+            c.setTipoCorreo(1);
+            
             Correo c2 = new Correo();
             c2.setAsunto(" Reunión con accionistas - COPIA");
             c2.setCuerpo(" Es necesario llevar gráficas de los beneficios de la compañía - COPIA");
             c2.setFechaEnvio(cal.getTime());
             c2.setTipo("html/text");
             c2.setInifinito(Boolean.FALSE);
-
+            c2.setTipoCorreo(1);
             //Remitente
             Set<Usuario> usuarioList1 = new HashSet<>();
             usuarioList1.add(usuario);
@@ -280,7 +281,7 @@ public static void poblarModelo() {
          Set<Usuario> usuarioList2=new HashSet<>();
          usuarioList2.add(usuario);
          correo2.setUsuarios(usuarioList2);
-         
+         correo2.setTipoCorreo(1);
          //Destinatario
          Set<Contacto>contactList2=new HashSet<>();
          contactList2.add(cont);
@@ -300,7 +301,7 @@ public static void poblarModelo() {
          correo3.setFechaEnvio(cal3.getTime());
          correo3.setTipo("html/text");
          correo3.setInifinito(Boolean.FALSE);
-         
+         correo3.setTipoCorreo(1);
        //Remitente
          Set<Usuario> usuarioList3=new HashSet<>();
          usuarioList3.add(usuario2);
@@ -324,7 +325,7 @@ public static void poblarModelo() {
          correo4.setFechaEnvio(cal4.getTime());
          correo4.setTipo("html/text");
          correo4.setInifinito(Boolean.FALSE);
-         
+         correo4.setTipoCorreo(1);
        //Remitente
          Set<Usuario> usuarioList4=new HashSet<>();
          usuarioList4.add(usuario2);
@@ -341,15 +342,42 @@ public static void poblarModelo() {
          /* Productos */
          
         ProductoDao productoDao = new ProductoDao();
+        productoDao.setEm(Servicio.getEm());
         
-        productoDao.save(new Producto(1,"Producto 1",1500.00,"Descripcion",1));
-        productoDao.save(new Producto(2,"Producto 2",8500.00,"Descripcion",1));
-        productoDao.save(new Producto(3,"Producto 3",500.00,"Descripcion",1));
-        productoDao.save(new Producto(4,"Producto 4",2500.00,"Descripcion",1));
-        productoDao.save(new Producto(5,"Producto 5",1550.00,"Descripcion",1));
-        productoDao.save(new Producto(6,"Producto 6",3300.00,"Descripcion",1));
-             
+        Producto prod1 = new Producto();
+        Producto prod2 = new Producto();
+        Producto prod3 = new Producto();
+        
+        prod1.setDescripcion("Descripcion");
+        prod2.setDescripcion("Descripcion");
+        prod3.setDescripcion("Descripcion");
+        
+        prod1.setNombre("Producto 1");
+        prod2.setNombre("Producto 2");
+        prod3.setNombre("Producto 3");
+        
+        prod1.setPrecio(new Double(1500));
+        prod2.setPrecio(new Double(8500));
+        prod3.setPrecio(new Double(500));
+        
+        prod1.setTipo(1);
+        prod2.setTipo(1);
+        prod3.setTipo(1);
+        
+        
+        productoDao.save(prod1);
+        productoDao.save(prod2);
+        productoDao.save(prod3);
+        /*
+        productoDao.save(new Producto(1,"Producto 1",new Double(1500.00),"Descripcion",1));
+        productoDao.save(new Producto(2,"Producto 2",new Double(8500.00),"Descripcion",1));
+        productoDao.save(new Producto(3,"Producto 3",new Double(500.00),"Descripcion",1));
+        productoDao.save(new Producto(4,"Producto 4",new Double(2500.00),"Descripcion",1));
+        productoDao.save(new Producto(5,"Producto 5",new Double(1550.00),"Descripcion",1));
+        productoDao.save(new Producto(6,"Producto 6",new Double(3300.00),"Descripcion",1));
+        */     
          } catch (Exception e) {
+             System.out.println("XDXD");
              e.printStackTrace();
          }
     }

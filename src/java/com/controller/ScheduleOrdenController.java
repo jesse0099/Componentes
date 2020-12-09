@@ -767,16 +767,21 @@ public class ScheduleOrdenController {
                     this.tipoSeleccionado = "Texto plano";
                 }
 
-                int arraySizePOcultos = c.getUsuarioscopiados().size();
-                pOcultosSeleccionados = new String[arraySizePOcultos];
-                int agregarPOculto = 0;
+            if(c.getUsuarioscopiados()!=null){
+                   
+                    int arraySizePOcultos = c.getUsuarioscopiados().size();
+                    pOcultosSeleccionados = new String[arraySizePOcultos];
+                    int agregarPOculto = 0;
 
-                for (Usuario UsuarioOculto : c.getUsuarioscopiados()) {
+                    for (Usuario UsuarioOculto : c.getUsuarioscopiados()) {
 
                     pOcultosSeleccionados[agregarPOculto] = UsuarioOculto.getCorreo();
 
                     agregarPOculto++;
 
+                    }
+                    
+                    
                 }
 
             }

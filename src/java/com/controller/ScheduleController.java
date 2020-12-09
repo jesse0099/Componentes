@@ -706,11 +706,12 @@ public class ScheduleController implements Serializable {
             currentMail = cal.getTime();
             SimpleDateFormat DateCurrent = new SimpleDateFormat("dd/MM/yyyy");
             String CurrentMailStr = DateCurrent.format(currentMail);
-
+             System.out.println("AMF"); 
             if (c.getAsunto().equals(asunto) && fechaEvento.equals(CurrentMailStr)) {
-
+                   System.out.println("AMF33"); 
                 target = c;
-
+              
+                System.out.println("KLT"); 
                 //Extrayendo adjuntos de la BD
                 uploadedFilesAdj = new ArrayList<>();
                 AdjuntoDao daoMas = new AdjuntoDao();
@@ -718,13 +719,13 @@ public class ScheduleController implements Serializable {
                 (daoMas).getByMail(c).forEach((x) -> {
                     this.uploadedFilesAdj.add(x);
                 });
-
+                System.out.println("KLT33");
                 updateViewForFiles();
-
+                System.out.println("LLFD");
                 this.idCorreo = c.getId();
                 this.titulo = c.getAsunto();
                 this.descripcion = c.getCuerpo();
-
+                System.out.println("LLFD33");
                 try {
                     Date currentMailDate = new SimpleDateFormat("dd/MM/yyyy").parse(CurrentMailStr);
                     this.fecha = c.getFechaEnvio();
@@ -733,11 +734,11 @@ public class ScheduleController implements Serializable {
                     Logger.getLogger(ScheduleController.class
                             .getName()).log(Level.SEVERE, null, ex);
                 }
-
+                System.out.println(c.getDestinatarios());
                 int arraySize = c.getDestinatarios().size();
                 participantesSeleccionados = new String[arraySize];
                 int agregarParticipante = 0;
-
+              
                 for (Contacto dest : c.getDestinatarios()) {
 
                     participantesSeleccionados[agregarParticipante] = dest.getCorreo();
@@ -766,12 +767,19 @@ public class ScheduleController implements Serializable {
                         break;
 
                 }
-
-                if (c.getTipo().equals("html/text")) {
+                
+                
+                
+               if(c.getTipo().equals("")){
+                  if (c.getTipo().equals("html/text")) {
                     this.tipoSeleccionado = "HTML";
                 } else {
                     this.tipoSeleccionado = "Texto plano";
-                }
+                } 
+               }else{
+                   this.tipoSeleccionado="HTML";
+               }
+                
 
                 System.out.println("TIPO:"+this.tipoSeleccionado);
                 System.out.println(c.getUsuarioscopiados());

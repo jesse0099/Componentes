@@ -8,8 +8,13 @@ package com.controller;
 import com.r6.mensajeria.Bitacora;
 import com.r6.service.BitacoraDao;
 import com.r6.service.Servicio;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -31,6 +36,9 @@ public class BitacoraController {
     }
 
     public void onLoad() {
+
+        SimpleDateFormat format = new SimpleDateFormat("EEEE d 'de' MMMM 'de' yyyy",  Locale.forLanguageTag("es-ES"));
+        
         this.bitacoras = new ArrayList<>();
         BitacoraDao bDao = new BitacoraDao();
         bDao.setEm(Servicio.getEm());
@@ -49,7 +57,13 @@ public class BitacoraController {
             for (String cop : b.getCopiados().split(";")) {
                 copiadosFormateado += cop + "\n" + "  ";
             }
-
+            
+            try {
+                b.setFechaEnvio(format.parse(b.getFechaEnvio().toString()));
+            } catch (ParseException ex) {
+                Logger.getLogger(BitacoraController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
             b.setPara(paraFormateado);
             b.setCopiados(copiadosFormateado);
 

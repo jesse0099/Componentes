@@ -4,19 +4,20 @@
                 template="./WEB-INF/templateBitacora.xhtml"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:f="http://xmlns.jcp.org/jsf/core"
-                xmlns:h="http://xmlns.jcp.org/jsf/html">
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <ui:define name="head">
         <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
     </ui:define>
     <ui:define name="content">
-        <h:form>
+        <h:form id="form">
             <p:dataGrid var="bit" value="#{bitacoraController.bitacoras}" columns="3" layout="grid"
                         rows="12" paginator="true" id="bits"
                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                         rowsPerPageTemplate="6,12,16">
 
                 <f:facet name="header">
-                    Histórico de correos enviados
+                    Histórico De Correos Enviados
                 </f:facet>
 
                 <p:panel header="#{bit.asunto}" style="height: 350px;overflow: auto;text-align:center;background: rgb(173,177,182);
@@ -24,7 +25,7 @@
                     <h:panelGrid columns="1" style="width:100%">
 
                         <p:outputLabel  for="fecha" style="color: #186ba0;font-weight: 600" value="Fecha de envío: " ></p:outputLabel>
-                        <h:outputText  id="fecha" value=" #{bit.fechaEnvio}" />
+                        <h:outputText  id="fecha" value=" #{bit.fechaEnvio}" ></h:outputText>
                         <p:separator></p:separator>
 
 
@@ -55,9 +56,14 @@
 
             </p:dataGrid>
 
-            <p:dialog style="background: white" header="Detalle del Correo" widgetVar="bitDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+            <p:dialog style="overflow: auto;background: white" header="Detalle del Correo" widgetVar="bitDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <p:outputPanel  id="bitDetail" style="overflow: auto;text-align:center;">
-                    <p:outputLabel value="#{bitacoraController.selectedBitacora.cuerpo}" ></p:outputLabel>
+                    <p:panel header="Cuerpo">
+                        <p:outputLabel  value="#{bitacoraController.selectedBitacora.cuerpo}" ></p:outputLabel>
+                    </p:panel>
+                    <p:panel header="Adjuntos">
+
+                    </p:panel>
                 </p:outputPanel>
             </p:dialog>
 

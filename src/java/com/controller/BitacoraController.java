@@ -5,7 +5,9 @@
  */
 package com.controller;
 
+import com.r6.mensajeria.Adjunto;
 import com.r6.mensajeria.Bitacora;
+import com.r6.service.AdjuntoDao;
 import com.r6.service.BitacoraDao;
 import com.r6.service.Servicio;
 import java.text.ParseException;
@@ -17,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 
 /**
@@ -24,7 +27,7 @@ import javax.faces.bean.ViewScoped;
  * @author Nvidi
  */
 @ManagedBean(name = "bitacoraController")
-@ViewScoped
+@SessionScoped
 public class BitacoraController {
 
     private Bitacora selectedBitacora;
@@ -36,7 +39,9 @@ public class BitacoraController {
     }
 
     public void onLoad() {
-
+        
+        this.selectedBitacora = new  Bitacora();
+        
         SimpleDateFormat format = new SimpleDateFormat("EEEE d 'de' MMMM 'de' yyyy",  Locale.forLanguageTag("es-ES"));
         
         this.bitacoras = new ArrayList<>();
@@ -69,6 +74,12 @@ public class BitacoraController {
 
             this.bitacoras.add(b);
         }
+    }
+    
+    public List<Adjunto> getAdjuntoByBit(Bitacora bit){
+        AdjuntoDao aDao = new AdjuntoDao();
+        AdjuntoDao.setEm(Servicio.getEm());
+        return aDao.getByBit(bit);
     }
 
     public Bitacora getSelectedBitacora() {

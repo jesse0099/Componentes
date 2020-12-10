@@ -61,13 +61,32 @@
                     <p:panel header="Cuerpo">
                         <p:outputLabel  value="#{bitacoraController.selectedBitacora.cuerpo}" ></p:outputLabel>
                     </p:panel>
-                    <p:panel header="Adjuntos">
 
+
+                    <p:panel header="Adjuntos">
+                        <p:scrollPanel  style="text-align: left;padding: 0.3em;height: 30px" mode="native" >
+
+                            <!--Ciclo para iterar sobre los archivos adjuntos de una bitacora!-->
+
+                            <c:forEach id="innerRepeat"  items="#{bitacoraController.getAdjuntoByBit(bitacoraController.selectedBitacora)}" var="adj"  >
+
+
+                                <p:commandButton style="border-radius:5px;border-color: #ffffff;background-color: #333333;display: inline-block;padding: 0.3em;width: fit-content" 
+                                                 value="#{adj.id}.#{fileController.getMIMETypeFromByteArray(adj.archivo)}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down">
+                                    <p:fileDownload value="#{fileController.byteArrayToStreamedContent(adj.archivo,adj.id)}" />
+                                </p:commandButton>      
+
+
+                            </c:forEach>     
+                        </p:scrollPanel>
                     </p:panel>
+
+
                 </p:outputPanel>
             </p:dialog>
 
         </h:form> 
     </ui:define>
-
+    <h:outputStylesheet name="css/EventosCreados.css" library="omega-layout" />
+    <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
 </ui:composition>

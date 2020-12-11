@@ -30,6 +30,9 @@ import java.util.Properties;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 import org.primefaces.PrimeFaces;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -189,7 +192,11 @@ public class FilesController {
         FileInputStream in = null;
 
         try {
-            in = new FileInputStream("C:\\Users\\andya\\Downloads\\magicmimes.properties");
+            String relativePath = "/resources/omega-layout/helpers/magicmimes.properties";
+            ExternalContext externalContext = FacesContext.getCurrentInstance().getExternalContext();
+            ServletContext servletContext = (ServletContext) externalContext.getContext();
+            String absoluteDiskPath = servletContext.getRealPath(relativePath);
+            in = new FileInputStream(absoluteDiskPath);
             magicmimes.load(in);
             in.close();
         } catch (FileNotFoundException e) {

@@ -40,8 +40,12 @@
                
                     
                           <br></br>
-                          <p:commandButton id="save"  action="#{superUserController.guardarUser()}" value="Guardar" update="username pass" style="width:25%"/>
-                                   
+                          <p:commandButton id="save"  action="#{superUserController.guardarUser()}" value="Guardar"  update="username pass" style="width:25%"/>
+                           <p:dialog header="Usuario creado" widgetVar="dlg1" minHeight="40">
+                        </p:dialog> 
+                          
+                             <p:dialog header="No se pudo crear el usuario" widgetVar="dlgError" minHeight="40">
+                        </p:dialog> 
                     </h:form>
                        
                             

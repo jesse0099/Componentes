@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./WEB-INF/templateBitacora.xhtml"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:define name="head">
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces"/>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="form">
+            <p:dataGrid var="bit" value="#{bitacoraController.bitacoras}" columns="3" layout="grid"
+                        rows="12" paginator="true" id="bits"
+                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                        rowsPerPageTemplate="6,12,16">
+
+                <f:facet name="header">
+                    Histórico De Correos Enviados
+                </f:facet>
+
+                <p:panel header="#{bit.asunto}" style="height: 350px;overflow: auto;text-align:center;background: rgb(173,177,182);
+                         background: linear-gradient(90deg, rgba(173,177,182,0.6635730858468678) 0%, rgba(120,120,120,1) 84%, rgba(79,82,83,1) 100%); ">
+                    <h:panelGrid columns="1" style="width:100%">
+
+                        <p:outputLabel  for="fecha" style="color: #186ba0;font-weight: 600" value="Fecha de envío: " ></p:outputLabel>
+                        <h:outputText  id="fecha" value=" #{bit.fechaEnvio}" ></h:outputText>
+                        <p:separator></p:separator>
+
+
+                        <p:outputLabel  for="de" style="color: #186ba0;font-weight: 600" value="De: " ></p:outputLabel>
+                        <h:outputText  id="de" value=" #{bit.de}" />
+
+
+                        <p:separator></p:separator>
+                        <p:outputLabel  for="de" style="color: #186ba0;font-weight: 600" value="Para: " ></p:outputLabel>
+                        <h:outputText id="para" value=" #{bit.para}" />
+
+
+                        <p:separator></p:separator>
+                        <p:outputLabel for="de" style="color: #186ba0;font-weight: 600" value="Copiados: " ></p:outputLabel>
+                        <h:outputText id="usuariosCopiados" value="#{bit.copiados}" />
+
+
+                        <p:separator></p:separator>
+
+                        <p:commandLink  update=":form:bitDetail" oncomplete="PF('bitDialog').show()" title="View Detail">
+                            <h:outputText  styleClass="pi pi-search" style="font-weight: 600;margin:0 auto;"/>
+                            <h:outputText value="  Detalles" style="font-weight: 600;color: #186ba0;margin:0 auto;"/>
+                            <f:setPropertyActionListener value="#{bit}" target="#{bitacoraController.selectedBitacora}" />
+                        </p:commandLink>
+
+                    </h:panelGrid>
+                </p:panel>
+
+            </p:dataGrid>
+
+            <p:dialog style="overflow: auto;background: white" header="Detalle del Correo" widgetVar="bitDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel  id="bitDetail" style="overflow: auto;text-align:center;">
+                    <p:panel header="Cuerpo">
+                        <p:outputLabel  value="#{bitacoraController.selectedBitacora.cuerpo}" ></p:outputLabel>
+                    </p:panel>
+
+
+                    <p:panel header="Adjuntos">
+                        <p:scrollPanel  style="text-align: left;padding: 0.3em;height: 30px" mode="native" >
+
+                            <!--Ciclo para iterar sobre los archivos adjuntos de una bitacora!-->
+
+                            <c:forEach id="innerRepeat"  items="#{bitacoraController.getAdjuntoByBit(bitacoraController.selectedBitacora)}" var="adj"  >
+
+
+                                <p:commandButton style="border-radius:5px;border-color: #ffffff;background-color: #333333;display: inline-block;padding: 0.3em;width: fit-content" 
+                                                 value="#{adj.id}.#{fileController.getMIMETypeFromByteArray(adj.archivo)}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down">
+                                    <p:fileDownload value="#{fileController.byteArrayToStreamedContent(adj.archivo,adj.id)}" />
+                                </p:commandButton>      
+
+
+                            </c:forEach>     
+                        </p:scrollPanel>
+                    </p:panel>
+
+
+                </p:outputPanel>
+            </p:dialog>
+
+        </h:form> 
+    </ui:define>
+    <h:outputStylesheet name="css/EventosCreados.css" library="omega-layout" />
+    <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+</ui:composition>

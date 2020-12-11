@@ -8,14 +8,19 @@ package com.controller;
 import com.r6.funciones.CorreoFunc;
 import com.r6.funciones.RecordatorioFunc;
 import com.r6.mensajeria.Adjunto;
+import com.r6.mensajeria.Cliente;
+import com.r6.mensajeria.Compannia;
 import com.r6.mensajeria.Contacto;
 import com.r6.mensajeria.Correo;
+import com.r6.mensajeria.Individuo;
 import com.r6.mensajeria.Producto;
 import com.r6.mensajeria.Sistema;
 import com.r6.mensajeria.Usuario;
 import com.r6.service.AdjuntoDao;
+import com.r6.service.CompanniaDao;
 import com.r6.service.ContactoDao;
 import com.r6.service.Dao;
+import com.r6.service.IndividuoDao;
 import com.r6.service.IntervalosTiempo;
 import com.r6.service.ProductoDao;
 import com.r6.service.Servicio;
@@ -52,9 +57,9 @@ public void init(){
  
    Servicio.setServerURL("jdbc:mysql://localhost:3306/mensajeria?serverTimezone=UTC");
    Servicio.setUsername("root");
-   Servicio.setPassword("AndyMysql2601");
+   Servicio.setPassword("wvjjk611");
    Servicio.setDriver("com.mysql.jdbc.Driver");
-   Servicio.setHbm2DDLprotocol("update");
+   Servicio.setHbm2DDLprotocol("create");
    Servicio.setDialect("org.hibernate.dialect.MySQLDialect");
    
    
@@ -105,8 +110,8 @@ public void init(){
 public static void poblarModelo() {
     	
     	//Colocar aquí el directorio en que está el archivo adjunto
-    	String directorioAdjunto = "C:\\Users\\andya\\Downloads\\text.txt";
-        String directorioAdjunto2 = "C:\\Users\\andya\\Downloads\\text.txt";
+    	String directorioAdjunto = "C:/Users/Lenovo/Desktop/prueba.docx";
+        String directorioAdjunto2 = "C:/Users/Lenovo/Desktop/s2.pdf";
     	 try {
              
 
@@ -141,12 +146,33 @@ public static void poblarModelo() {
           
           Usuario usuario2 = new Usuario(3,"ventasestructurasulatina@gmail.com","wvjjk611",false,false,false);
           usuario2.setSistema(sist2);
-            usuario2.setActivo(Boolean.TRUE);
+          usuario2.setActivo(Boolean.TRUE);
+           
           uDao.save(usuario2);
           
           
           ContactoDao conc=new ContactoDao();
           conc.setEm(Servicio.getEm());
+          
+          IndividuoDao inDao=new IndividuoDao();
+          inDao.setEm(Servicio.getEm());
+          
+          Cliente cli=new Cliente();
+          cli.setNombre("Andrés Mora");
+          cli.setDireccion("Cartago");
+          cli.setTelefono("2754-3690");
+          cli.setTipo(1);
+          
+          Individuo indi=new Individuo();
+          indi.setCliente(cli);
+          indi.setNumeroLic("123456");
+          
+          cli.setIndividuo(indi);
+          
+          inDao.save(indi);
+          
+          
+          
           
           Contacto contacto1=new Contacto();
           contacto1.setNombre("Wes");
@@ -154,7 +180,30 @@ public static void poblarModelo() {
           contacto1.setCorreo("weslinmena@gmail.com");
           contacto1.setSuscriptor(true);
           contacto1.setUsuario(usuario);
+          contacto1.setCliente(cli);
           conc.save(contacto1);
+          
+         
+          
+          
+            
+          Cliente cli2=new Cliente();
+          cli2.setNombre("Luis Monge");
+          cli2.setDireccion("Puntarenas");
+          cli2.setTelefono("8850-6920");
+          cli2.setTipo(1);
+          
+          Individuo indi2=new Individuo();
+          indi2.setCliente(cli2);
+          indi2.setNumeroLic("98420");
+          
+          cli2.setIndividuo(indi2);
+          
+          inDao.save(indi2);
+          
+          
+          
+         
           
           Contacto cont=new Contacto();
           cont.setNombre("Jese");
@@ -162,7 +211,32 @@ public static void poblarModelo() {
           cont.setCorreo("jese.chavez@ulatina.net");
           cont.setSuscriptor(false);
           cont.setUsuario(usuario);
+          cont.setCliente(cli2);
           conc.save(cont);
+          
+          CompanniaDao comDao=new CompanniaDao();
+          comDao.setEm(Servicio.getEm());
+          
+          
+          Cliente cli3=new Cliente();
+          cli3.setNombre("Dos Cedros S.A");
+          cli3.setDireccion("San José");
+          //Llame al 1-800-POG
+          cli3.setTelefono("1-800-76664");
+          cli3.setTipo(2);
+          
+          Compannia com=new Compannia();
+          com.setCliente(cli3);
+          
+          com.setDescuento(10);
+          
+          
+       
+          cli3.setCompannia(com);
+          
+          comDao.save(com);
+          
+          
           
           Contacto contacto3=new Contacto();
           contacto3.setNombre("Jose");
@@ -170,7 +244,29 @@ public static void poblarModelo() {
           contacto3.setCorreo("josemcm85@gmail.com");
           contacto3.setSuscriptor(true);
           contacto3.setUsuario(usuario2);
+          contacto3.setCliente(cli3);
           conc.save(contacto3);
+          
+          
+          Cliente cli4=new Cliente();
+          cli4.setNombre("DEMADERA  S.A");
+          cli4.setDireccion("Heredia");
+       
+          cli4.setTelefono("2775-2464");
+          cli4.setTipo(2);
+          
+          Compannia com2=new Compannia();
+          com2.setCliente(cli4);
+          
+          com2.setDescuento(5);
+          
+          
+       
+          cli4.setCompannia(com2);
+          
+          comDao.save(com2);
+          
+          
           
           
           Contacto contacto4=new Contacto();
@@ -179,6 +275,7 @@ public static void poblarModelo() {
           contacto4.setCorreo("daniel.hernandez20@ulatina.net");
           contacto4.setSuscriptor(false);
           contacto4.setUsuario(usuario2);
+          contacto4.setCliente(cli4);
           conc.save(contacto4);
           
           

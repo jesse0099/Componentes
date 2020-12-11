@@ -198,7 +198,7 @@
 
                             </p:outputLabel>
                             <p:separator></p:separator>
-                            <p:datePicker value="#{orderController.fechaOrden }" style="display: inline" id="fechaEntrega"></p:datePicker>
+                            <p:datePicker value="#{orderController.fechaOrden }" style="display: inline" pattern="dd/MM/yyyy" id="fechaEntrega"></p:datePicker>
                         </div>
                         <p:commandButton process="@form" icon="fa fa-cart-plus" value=" Levantar Orden " action="#{orderController.addOrder()}" style="border-radius:5px;border-color: #ffffff;background-color: #333333;display: inline-block;padding: 0.3em;width: fit-content; margin-left: 15px" >
 

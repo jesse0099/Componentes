@@ -301,7 +301,7 @@ public class OrderController implements Serializable {
                 corr.setCuerpo(cuerpoCorreo);
                 corr.setAsunto(String.valueOf(newOrden.getIdOrden()));
                 corr.setTipoCorreo(2);
-                corr.setTipo("Texto plano");
+                corr.setTipo("Html/text");
                 corr.setFechaEnvio(this.fechaOrden);
                 corr.setOrden(newOrden);
 

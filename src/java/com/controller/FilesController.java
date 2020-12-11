@@ -189,7 +189,7 @@ public class FilesController {
         FileInputStream in = null;
 
         try {
-            in = new FileInputStream("C:/Users/Lenovo/Desktop/magicmimes.properties");
+            in = new FileInputStream("C:\\Users\\andya\\Downloads\\magicmimes.properties");
             magicmimes.load(in);
             in.close();
         } catch (FileNotFoundException e) {

@@ -21,6 +21,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import org.primefaces.PrimeFaces;
 
 /**
  *
@@ -100,8 +101,25 @@ public class SuperUserController {
           user.setAdmin(Boolean.FALSE);
           user.setSuperUser(Boolean.FALSE);
           
+          Boolean existeUsuario=false;
+          //Revisa si los campos están vacíos
           if(!correo.equals("") && !contraseña.equals("")){
-          uDao.save(user);     
+              //Revisa si el usuario ya existe en ese sistema 
+              for(Usuario u:uDao.getAll()){
+                  if(u.getCorreo().equals(correo) && u.getSistema().equals(sis)){
+                      existeUsuario=true;
+                  }
+              }
+              //Si existe el usuario, muestra error, si no, lo guarda 
+              if(existeUsuario){
+              PrimeFaces.current().executeScript("PF('dlgError').show();"); 
+              }else{
+              uDao.save(user);
+               PrimeFaces.current().executeScript("PF('dlg1').show();"); 
+              }
+        
+          }else{
+             PrimeFaces.current().executeScript("PF('dlgError').show();");  
           }
          
           
@@ -154,23 +172,36 @@ public class SuperUserController {
         Usuario userEdit=new Usuario();
         
         UsuarioDao uDao=new UsuarioDao(Servicio.getEm());
-          for(Usuario u:uDao.getAll()){
-              if(u.getSistema().getIdSistema()==sis.getIdSistema() && u.getCorreo().equals(usuarioElegido)){
+        
+        if(sistemaElegido.equals("")){
+          PrimeFaces.current().executeScript("PF('dlgError').show();"); 
+           setActivo(false);
+           contraseña="";
+          usuarioElegido="";   
+        }else{
+             for(Usuario u:uDao.getAll()){
+              if(u.getCorreo().equals(usuarioElegido)){
                   userEdit=u;
+                  
+                  if(!contraseña.equals("")){
+                     userEdit.setContrasenia(contraseña);   
+                     userEdit.setActivo(activo);
+                     uDao.update(userEdit);
+                     PrimeFaces.current().executeScript("PF('dlg1').show();");
+                    }else{
+                        PrimeFaces.current().executeScript("PF('dlgPass').show();");
+                  }
+          
+              
               }
           } 
-        if(!contraseña.equals("")){
-          userEdit.setContrasenia(contraseña);     
-        }
-          
-          userEdit.setActivo(activo);
+              setActivo(false);
+           contraseña="";
+          usuarioElegido="";   
         
-          contraseña="";
-          usuarioElegido="";
-          setActivo(false);
-        uDao.update(userEdit);
-            
-               
+        }
+       
+             
     }
     
     public void estadoUsuario(){

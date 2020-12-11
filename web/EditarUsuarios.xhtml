@@ -21,21 +21,21 @@
 
                             <p:outputLabel for="sistema" value="Sistema:" />
                             <p:selectOneMenu id="sistema" value="#{superUserController.sistemaElegido}"   style="width:150%; ">
-
+                                 <f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
                                 <p:ajax listener="#{superUserController.elegirSistema()}" update="user" />  
                                 <f:selectItems value="#{superUserController.sistemas}" />
                             </p:selectOneMenu>
 
                             <p:outputLabel for="user" value="Usuario: " />
-                            <p:selectOneMenu id="user" value="#{superUserController.usuarioElegido}" style="width:150%">
+                            <p:selectOneMenu id="user" widgetVar="user" value="#{superUserController.usuarioElegido}" style="width:150%">
                                 <p:ajax listener="#{superUserController.estadoUsuario()}" update="user activo" />  
-                                <f:selectItem itemLabel="Usuario" itemValue="" noSelectionOption="true" />
+                               
                                 <f:selectItems value="#{superUserController.usuarios}" />
                             </p:selectOneMenu>    
 
                             <p:outputLabel for="pass" value="Contraseña:" />
-                            <p:password id="pass" value="#{superUserController.contraseña}"  style="width:150%; " />
-                            <p:selectBooleanCheckbox id="activo" value="#{superUserController.activo}" itemLabel="Activo / Inactivo"/>
+                            <p:password id="pass" widgetVar="pass" value="#{superUserController.contraseña}"  style="width:150%; " />
+                            <p:selectBooleanCheckbox id="activo" widgetVar="activo" value="#{superUserController.activo}" itemLabel="Activo / Inactivo"/>
                         </h:panelGrid>
 
                         <br></br>
@@ -45,8 +45,14 @@
 
 
                         <br></br>
-                        <p:commandButton id="edit" ajax="true" action="#{superUserController.editUser()}" onclick="PF('dlg1').show();" value="Editar" update="user pass activo" style="width:25%"/>
+                        <p:commandButton id="edit" ajax="true" action="#{superUserController.editUser()}" value="Editar" update="user pass activo" style="width:25%">
+                       
+                        </p:commandButton>
                         <p:dialog header="Usuario actualizado" widgetVar="dlg1" minHeight="40">
+                        </p:dialog>
+                          <p:dialog header="Seleccione un sistema" widgetVar="dlgError" minHeight="40">
+                        </p:dialog>
+                           <p:dialog header="Debe introducir una contraseña" widgetVar="dlgPass" minHeight="40">
                         </p:dialog>
                     </h:form>
 

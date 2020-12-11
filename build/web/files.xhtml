@@ -1,0 +1,142 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/templatFiles.xhtml"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title">Adjuntos</ui:define>
+    <ui:define name="head">
+        <f:metadata>
+            <f:viewAction
+                action="#{fileController.onLoad()}">
+            </f:viewAction>
+        </f:metadata>
+        <script type="text/javascript">
+            //<![CDATA[
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.title = '';
+                this.cfg.seriesColors = ['#007be5', '#20d077'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#ffffff',
+                    gridLineColor: '#F5F5F5',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#666F77'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    lineWidth: 1,
+                    markerOptions: {
+                        shadow: false,
+                        size: 7,
+                        style: 'circle'
+                    }
+                };
+            }
+            //]]>  
+        </script>
+        <style type="text/css">
+            .main-content {
+                padding: 0;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+
+
+        <div class="ui-g ui-fluid dashboard"  >
+
+            <p:panel id="pricing">
+
+
+                <div class="margenTitulo " id="servicios" style="text-align: center">
+
+                    <c:forEach  id="repeat"  items="#{fileController.correos}" var="corr" varStatus="corrS"  >
+
+
+
+                        <div class="gridEventosSummary " style="   border-radius: 5px; display: inline-block ; width: 290px;
+                             margin: 8px;"  >
+
+                            <div style ="height: 100px;direction: ltr;margin-bottom: 0px; text-align: left !important;">
+                                <h:outputText  style="margin: 0.5em;display: contents;text-align: left;padding: 0.3em;font-weight: bold;font-size: x-large" value="#{corr.asunto}"></h:outputText>
+
+                            </div>
+
+
+                            <div style="text-align: left !important;margin-bottom: 0px;margin-top: 0px">
+                                <p:outputLabel style="font-weight: bold;padding: 0.3em" for="fechaEnvio" value="Fecha envío : " ></p:outputLabel>
+                                <h:outputText id = "fechaEnvio"
+                                              style="font-weight: 600;
+                                              color: #f05537;
+                                              padding: 0.3em;
+                                              text-align: center;
+                                              font-family: 'Raleway','latoregular','Trebuchet MS','Arial','Helvetica';
+                                              "
+
+                                              value= "#{corr.fechaEnvio}" >
+                                    <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+                                </h:outputText>
+                                <p:outputLabel style="font-weight: bold;padding: 0.3em" for="adjS" value="Archivos : " ></p:outputLabel>
+                                <h:outputText id="adjS" style="font-weight: 600;color: #f05537;padding: 0.3em" 
+                                              value="#{fileController.adjListSize(fileController.getFilesByMail(corr))}" >
+                                </h:outputText>
+                            </div>
+
+
+                            <!--Destinatarios!-->
+                            <div style="margin-top: 4px;  " >
+                                <p:scrollPanel style="height: 65px" mode="native" >
+                                    <c:forEach items="#{fileController.getDestinatariosByMail(corr)}" varStatus="true" var="dests">
+                                        <div style="padding: 0.3em;display: inline-block;background: #666666;overflow: hidden;border-radius:15px ">
+                                            <span
+                                                style="padding: 8px;color: #ffffff;font-family: latoregular,Trebuchet MS,Arial,Helvetica,sans-serif;">#{dests}</span>
+
+                                        </div>
+                                    </c:forEach>
+                                </p:scrollPanel>
+                            </div>
+                            <p:scrollPanel style="text-align: left;padding: 0.3em;height: 30px" mode="native" >
+
+                                <!--Ciclo para iterar sobre los archivos adjuntos de un correo!-->
+                                <c:forEach id="innerRepeat"  items="#{fileController.getFilesByMail(corr)}" var="adj"  >
+
+
+
+                                    <h:form style="display: inline-block">   
+                                        <p:commandButton style="border-radius:5px;border-color: #ffffff;background-color: #333333;display: inline-block;padding: 0.3em;width: fit-content" 
+                                                         value="#{adj.id}.#{fileController.getMIMETypeFromByteArray(adj.archivo)}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down">
+                                            <p:fileDownload value="#{fileController.byteArrayToStreamedContent(adj.archivo,adj.id)}" />
+                                        </p:commandButton>      
+                                    </h:form>
+
+
+
+
+                                </c:forEach>     
+                            </p:scrollPanel>
+
+
+                        </div>
+                    </c:forEach>
+                </div>
+
+            </p:panel>
+        </div>
+
+        <h:outputStylesheet name="css/EventosCreados.css" library="omega-layout" />
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+    </ui:define>
+
+</ui:composition>
+

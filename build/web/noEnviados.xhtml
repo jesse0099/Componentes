@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="./WEB-INF/templateBitacora.xhtml"
+                xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <ui:define name="title"> Nueva Orden </ui:define>
+    <ui:define name="head">
+
+        <f:metadata>
+            <f:viewAction
+                action="#{noEnviadosController.initBean()}">
+            </f:viewAction>
+        </f:metadata>
+
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="container" >
+
+            <p:dataGrid var="correo" value="#{noEnviadosController.listaLimpia}" columns="3" layout="grid"
+                        rows="12" paginator="true" id="correos"
+                        paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                        rowsPerPageTemplate="6,12,16">
+
+                <f:facet name="header">
+                    Correos por Enviar
+                </f:facet>
+
+                <p:panel header="#{correo.asunto}" style="height: 350px;overflow: auto;text-align:center;background: rgb(173,177,182);
+                         background: linear-gradient(90deg, rgba(173,177,182,0.6635730858468678) 0%, rgba(120,120,120,1) 84%, rgba(79,82,83,1) 100%); ">
+                    <h:panelGrid columns="1" style="width:100%">
+
+                        <p:outputLabel  for="fecha" style="color: #186ba0;font-weight: 600" value="Fecha de envío: " ></p:outputLabel>
+                        <h:outputText  id="fecha" value=" #{correo.fechaEnvio.toLocaleString()}" ></h:outputText>
+                       
+                        <p:separator></p:separator>
+                        <p:outputLabel  for="remitente" style="color: #186ba0;font-weight: 600" value="Remitentes: " ></p:outputLabel>
+                        <h:outputText id="remitente" value=" #{noEnviadosController.getRemitente(correo)}" />
+
+
+                        <p:separator></p:separator>
+                        <p:outputLabel  for="para" style="color: #186ba0;font-weight: 600" value="Para: " ></p:outputLabel>
+                        <h:outputText id="para" value=" #{noEnviadosController.getDestinatarios(correo)}" />
+
+
+                        <p:separator></p:separator>
+                        <p:outputLabel for="usuariosCopiados" style="color: #186ba0;font-weight: 600" value="Copiados: " ></p:outputLabel>
+                        <h:outputText id="usuariosCopiados" value="#{noEnviadosController.getCopiados(correo)}" />
+
+
+                        <p:separator></p:separator>
+                       
+                        <p:commandLink  update=":container:correoDetail" action="#{noEnviadosController.getAdjuntosCoreo(correo)}" oncomplete="PF('Dialog').show()" title="View Detail">
+                            <h:outputText  styleClass="pi pi-search" style="font-weight: 600;margin:0 auto;"/>
+                            <h:outputText value="Detalles" style="font-weight: 600;color: #186ba0;margin:0 auto;"/>
+                            <f:setPropertyActionListener value="#{correo}" target="#{noEnviadosController.target}" />
+                        </p:commandLink>
+
+                    </h:panelGrid>
+                </p:panel>
+
+            </p:dataGrid>
+
+
+
+            <p:dialog style="overflow: auto;background: white" header="Detalle del Correo" widgetVar="Dialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+                <p:outputPanel  id="correoDetail" style="overflow: auto;text-align:center;">
+                    
+                    <p:panel header="Cuerpo">
+                        <p:outputLabel  value="#{noEnviadosController.target.cuerpo}" ></p:outputLabel>
+                    </p:panel>
+
+                    <p:panel header="Adjuntos">
+                        <p:scrollPanel  style="text-align: left;padding: 0.3em;height: 30px" mode="native" >
+
+                            <c:forEach id="innerRepeat"  items="#{noEnviadosController.adjuntos}" var="adj"  >
+
+
+                                <p:commandButton style="border-radius:5px;border-color: #ffffff;background-color: #333333;display: inline-block;padding: 0.3em;width: fit-content" 
+                                                 value="#{adj.id}.#{fileController.getMIMETypeFromByteArray(adj.archivo)}" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="pi pi-arrow-down">
+                                    <p:fileDownload value="#{fileController.byteArrayToStreamedContent(adj.archivo,adj.id)}" />
+                                </p:commandButton>      
+
+
+                            </c:forEach>     
+                        </p:scrollPanel>
+                    </p:panel>
+                      
+
+
+                </p:outputPanel>
+            </p:dialog>
+
+
+
+        </h:form>
+    </ui:define>
+</ui:composition>

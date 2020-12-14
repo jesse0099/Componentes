@@ -85,7 +85,16 @@ public class NoEviadosController implements Serializable {
             this.listaLimpia.clear();
 
             System.out.println("noEviadosCOntroller: All set!");
-            correosUsuario = correoDao.getByUserAndSys(DatosUsuario.user, DatosUsuario.sis);
+           
+            for(Correo c:correoDao.getAll()){
+                for(Usuario u:c.getUsuarios()){
+                    if(u.getIdUsuario()==DatosUsuario.user.getIdUsuario() && u.getSistema().getId()==DatosUsuario.sis.getId()){
+                        correosUsuario.add(c);
+                    }
+                }
+            }
+            
+            //correosUsuario = correoDao.getByUserAndSys(DatosUsuario.user, DatosUsuario.sis);
             Date today = new Date();
             System.out.println("Today is: " + today);
             System.out.println("User: " + DatosUsuario.user.getIdUsuario());
@@ -159,20 +168,26 @@ public class NoEviadosController implements Serializable {
 
     public String getCopiados(Correo c) {
         String out = "";
-
-        for (Usuario copiado : c.getUsuarioscopiados()) {
+        if(c.getUsuarioscopiados()!=null){
+         for (Usuario copiado : c.getUsuarioscopiados()) {
             out += copiado.getCorreo() + ", ";
         }
 
+        }
+       
         return out;
     }
 
     public String getRemitente(Correo c) {
         String out = "";
-
-        for (Contacto remitente : c.getRemitentes()) {
-            out += remitente.getCorreo() + ", ";
+        if(c.getRemitentes()!=null){
+            for(Usuario u:c.getUsuarios()){
+                out+=u.getCorreo()+ " , ";
+            }
+           
+            
         }
+       
 
         return out;
     }

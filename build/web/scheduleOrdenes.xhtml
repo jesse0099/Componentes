@@ -73,13 +73,10 @@
                         <p:inputTextarea id="desc" rows="6" cols="33" value="#{scheduleOrdenController.descripcion}" required="true" style="width:95%; " />
 
 
-
+                       
                         <p:outputLabel for="tipo" value="Tipo de mensaje:" />
-                        <p:selectOneMenu id="tipo" value="#{scheduleOrdenController.tipoSeleccionado}"  required="true" style="width:87%; ">
-
-                            <f:selectItem itemLabel="" itemValue="" noSelectionOption="true" />
-                            <f:selectItems value="#{scheduleOrdenController.tipo}" />
-                        </p:selectOneMenu>
+                        <p:inputText id="tipo" value="#{scheduleOrdenController.tipoSeleccionado}" style="width:87%;" readonly="true"/>
+                        
 
                         <p:outputLabel value="Adjuntos: "></p:outputLabel>
                         <p:panel style="width: 100%;border: none !important">

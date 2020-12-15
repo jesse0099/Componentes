@@ -32,6 +32,7 @@ import com.r6.mensajeria.Sistema;
 import com.r6.service.AdjuntoDao;
 import com.r6.service.BitacoraDao;
 import com.r6.service.ClienteDao;
+import com.r6.service.Control;
 import com.r6.service.Dao;
 import com.r6.service.ItemOrdenDao;
 import com.r6.service.OrdenDao;
@@ -304,7 +305,7 @@ public class OrderController implements Serializable {
                 corr.setTipo("html/text");
                 corr.setFechaEnvio(this.fechaOrden);
                 corr.setOrden(newOrden);
-
+                corr.setInifinito(false);
                 //Remitente del correo
                 Set<Usuario> usuarioList1 = new HashSet<>();
                 usuarioList1.add(DatosUsuario.user);
@@ -323,7 +324,9 @@ public class OrderController implements Serializable {
 
                 masterDao = new CorreoDao();
                 ((CorreoDao) masterDao).save(corr);
+                
 
+                
                 //Limpiando la vista
                 initBean();
                 //PrimeFaces.current().executeScript("$('#myModalReject').modal();") ;
@@ -331,17 +334,25 @@ public class OrderController implements Serializable {
                 PrimeFaces.current().ajax().update("files");
                 PrimeFaces.current().ajax().update("panelProductos");
                 PrimeFaces.current().ajax().update("panelOrden");
-                PrimeFaces.current().ajax().update("dialogo");
+               // PrimeFaces.current().ajax().update("dialogo");
                 PrimeFaces.current().ajax().update("errorDialogPanel");
                 PrimeFaces.current().executeScript("PF('errorDialog').show()");
+                
+                Servicio.setEm(Servicio.getEntityManagerFactory().createEntityManager());
+                Control prueba = new Control();
+                prueba.setEm(Servicio.getEm());
+                prueba.controlCorreos();
+                
+                
 
             } catch (Exception e) {
                 e.printStackTrace();
+                
             }
 
         } else {
             this.setMensajeModal(" Error: Revise que todos los campos esten llenos");
-            PrimeFaces.current().ajax().update("dialogo");
+           // PrimeFaces.current().ajax().update("dialogo");
             PrimeFaces.current().ajax().update("errorDialogPanel");
             PrimeFaces.current().executeScript("PF('errorDialog').show()");
         }

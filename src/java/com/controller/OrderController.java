@@ -321,7 +321,12 @@ public class OrderController implements Serializable {
                 }
 
                 corr.setDestinatarios(contactos);
-
+                System.out.println("Pre-save");
+System.out.println(DatosUsuario.getUser().getCorreo()+ " "+ DatosUsuario.getUser().getIdUsuario());
+                System.out.println(DatosUsuario.getSis().getNombre()+" "+DatosUsuario.getSis().getId());
+                
+                
+                
                 masterDao = new CorreoDao();
                 ((CorreoDao) masterDao).save(corr);
                 
@@ -339,11 +344,23 @@ public class OrderController implements Serializable {
                 PrimeFaces.current().executeScript("PF('errorDialog').show()");
                 
                 Servicio.setEm(Servicio.getEntityManagerFactory().createEntityManager());
+                                System.out.println("Post-save");
+                System.out.println(DatosUsuario.getUser().getCorreo()+ " "+ DatosUsuario.getUser().getIdUsuario());
+                System.out.println(DatosUsuario.getSis().getNombre()+" "+DatosUsuario.getSis().getId());
                 Control prueba = new Control();
+                
+                
                 prueba.setEm(Servicio.getEm());
                 prueba.controlCorreos();
                 
+                UsuarioDao uDao=new UsuarioDao(Servicio.getEm());
+                for(Usuario u:uDao.getAll()){
+                    if(u.getIdUsuario()==DatosUsuario.getUser().getIdUsuario()){
+                        DatosUsuario.user=u;
+                    }
+                }
                 
+                setAllEms();
 
             } catch (Exception e) {
                 e.printStackTrace();

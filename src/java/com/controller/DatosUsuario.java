@@ -17,6 +17,7 @@ import static java.util.Collections.list;
 import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +28,7 @@ import org.primefaces.PrimeFaces;
  * @author Lenovo
  */
 @ManagedBean(name = "userController")
-@ViewScoped
+@SessionScoped
 public class DatosUsuario implements Serializable {
 
     //Estos son el usuario y el sistema seleccionados   

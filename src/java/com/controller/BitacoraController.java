@@ -47,7 +47,7 @@ public class BitacoraController {
         this.bitacoras = new ArrayList<>();
         BitacoraDao bDao = new BitacoraDao();
         bDao.setEm(Servicio.getEm());
-
+        
         for (Bitacora b : bDao.getByUserAndSys(String.valueOf(DatosUsuario.user.getIdUsuario()), String.valueOf(DatosUsuario.sis.getIdSistema()))) {
 
             String paraFormateado = "";
@@ -71,8 +71,9 @@ public class BitacoraController {
             
             b.setPara(paraFormateado);
             b.setCopiados(copiadosFormateado);
-
+            bDao.getEm().detach(b);
             this.bitacoras.add(b);
+            
         }
     }
     

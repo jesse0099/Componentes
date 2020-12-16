@@ -322,16 +322,13 @@ public class OrderController implements Serializable {
 
                 corr.setDestinatarios(contactos);
                 System.out.println("Pre-save");
-System.out.println(DatosUsuario.getUser().getCorreo()+ " "+ DatosUsuario.getUser().getIdUsuario());
-                System.out.println(DatosUsuario.getSis().getNombre()+" "+DatosUsuario.getSis().getId());
-                
-                
-                
-                masterDao = new CorreoDao();
-                ((CorreoDao) masterDao).save(corr);
-                
+                System.out.println(DatosUsuario.getUser().getCorreo() + " " + DatosUsuario.getUser().getIdUsuario());
+                System.out.println(DatosUsuario.getSis().getNombre() + " " + DatosUsuario.getSis().getId());
 
-                
+                masterDao = new CorreoDao();
+                ((CorreoDao) masterDao).setEm(Servicio.getEm());
+                ((CorreoDao) masterDao).save(corr);
+
                 //Limpiando la vista
                 initBean();
                 //PrimeFaces.current().executeScript("$('#myModalReject').modal();") ;
@@ -339,37 +336,34 @@ System.out.println(DatosUsuario.getUser().getCorreo()+ " "+ DatosUsuario.getUser
                 PrimeFaces.current().ajax().update("files");
                 PrimeFaces.current().ajax().update("panelProductos");
                 PrimeFaces.current().ajax().update("panelOrden");
-               // PrimeFaces.current().ajax().update("dialogo");
+                // PrimeFaces.current().ajax().update("dialogo");
                 PrimeFaces.current().ajax().update("errorDialogPanel");
                 PrimeFaces.current().executeScript("PF('errorDialog').show()");
-                
+
                 Servicio.setEm(Servicio.getEntityManagerFactory().createEntityManager());
-                                System.out.println("Post-save");
-                System.out.println(DatosUsuario.getUser().getCorreo()+ " "+ DatosUsuario.getUser().getIdUsuario());
-                System.out.println(DatosUsuario.getSis().getNombre()+" "+DatosUsuario.getSis().getId());
+                System.out.println("Post-save");
+                System.out.println(DatosUsuario.getUser().getCorreo() + " " + DatosUsuario.getUser().getIdUsuario());
+                System.out.println(DatosUsuario.getSis().getNombre() + " " + DatosUsuario.getSis().getId());
                 Control prueba = new Control();
-                
-                
+
                 prueba.setEm(Servicio.getEm());
                 prueba.controlCorreos();
-                
-                UsuarioDao uDao=new UsuarioDao(Servicio.getEm());
-                for(Usuario u:uDao.getAll()){
-                    if(u.getIdUsuario()==DatosUsuario.getUser().getIdUsuario()){
-                        DatosUsuario.user=u;
+                UsuarioDao uDao = new UsuarioDao(Servicio.getEm());
+                for (Usuario u : uDao.getAll()) {
+                    if (u.getIdUsuario() == DatosUsuario.getUser().getIdUsuario()) {
+                        DatosUsuario.user = u;
                     }
                 }
-                
-                setAllEms();
 
+                setAllEms();
             } catch (Exception e) {
                 e.printStackTrace();
-                
+
             }
 
         } else {
             this.setMensajeModal(" Error: Revise que todos los campos esten llenos");
-           // PrimeFaces.current().ajax().update("dialogo");
+            // PrimeFaces.current().ajax().update("dialogo");
             PrimeFaces.current().ajax().update("errorDialogPanel");
             PrimeFaces.current().executeScript("PF('errorDialog').show()");
         }

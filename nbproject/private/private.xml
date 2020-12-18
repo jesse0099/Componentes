@@ -3,25 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/WEB-INF/templateBitacora.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/bitacora.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/OrderController.java</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/SuperUserController.java</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/FilesController.java</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/NoEviadosController.java</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/DatosUsuario.java</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/login.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/WEB-INF/topbarBitacora.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/WEB-INF/topbar.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/noEnviados.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/files.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/resources/omega-layout/helpers/magicmimes.properties</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/scheduleOrdenes.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/WEB-INF/topbarFiles.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/LlenaModelo.java</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/WEB-INF/templateNoEnviados.xhtml</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/src/java/com/controller/BitacoraController.java</file>
-            <file>file:/C:/Users/Nvidi/Documents/NetBeansProjects/OmegaPls/Componentes/web/WEB-INF/templatFiles.xhtml</file>
+            <file>file:/E:/U/Cuatri%203-2020/Componentes/Componentes/web/AgregarUsuarios.xhtml</file>
+            <file>file:/E:/U/Cuatri%203-2020/Componentes/Componentes/src/java/com/controller/LlenaModelo.java</file>
+            <file>file:/E:/U/Cuatri%203-2020/Componentes/Componentes/web/bitacora.xhtml</file>
+            <file>file:/E:/U/Cuatri%203-2020/Componentes/Componentes/src/java/com/controller/OrderController.java</file>
+            <file>file:/E:/U/Cuatri%203-2020/Componentes/Componentes/src/java/com/controller/FilePickerController.java</file>
+            <file>file:/E:/U/Cuatri%203-2020/Componentes/Componentes/src/java/com/controller/ScheduleOrdenController.java</file>
+            <file>file:/E:/U/Cuatri%203-2020/Componentes/Componentes/src/java/com/controller/BitacoraController.java</file>
+            <file>file:/E:/U/Cuatri%203-2020/Componentes/Componentes/web/noEnviados.xhtml</file>
+            <file>file:/E:/U/Cuatri%203-2020/Componentes/Componentes/src/java/com/controller/ScheduleController.java</file>
+            <file>file:/E:/U/Cuatri%203-2020/Componentes/Componentes/src/java/com/controller/SuperUserController.java</file>
+            <file>file:/E:/U/Cuatri%203-2020/Componentes/Componentes/src/java/com/controller/DatosUsuario.java</file>
+            <file>file:/E:/U/Cuatri%203-2020/Componentes/Componentes/web/EditarUsuarios.xhtml</file>
+            <file>file:/E:/U/Cuatri%203-2020/Componentes/Componentes/src/java/com/controller/NoEviadosController.java</file>
         </group>
     </open-files>
 </project-private>

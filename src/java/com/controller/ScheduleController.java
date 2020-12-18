@@ -696,7 +696,10 @@ public class ScheduleController implements Serializable {
         String asunto = event.getTitle();
         Date fecha = event.getStartDate();
         String fechaEvento = new SimpleDateFormat("dd/MM/yyyy").format(fecha);
-
+        
+             System.out.println("Asunto:"+asunto);
+             System.out.println("Fecha:"+fechaEvento);
+             System.out.println("Tamanno:"+correoDao.getAll().size());
         for (Correo c : correoDao.getAll()) {
 
             Date currentMail = c.getFechaEnvio();
@@ -707,6 +710,7 @@ public class ScheduleController implements Serializable {
             SimpleDateFormat DateCurrent = new SimpleDateFormat("dd/MM/yyyy");
             String CurrentMailStr = DateCurrent.format(currentMail);
              System.out.println("AMF"); 
+        
             if (c.getAsunto().equals(asunto) && fechaEvento.equals(CurrentMailStr)) {
                    System.out.println("AMF33"); 
                 target = c;

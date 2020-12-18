@@ -73,6 +73,29 @@ public class NoEviadosController implements Serializable {
         this.onLoad();
 
     }
+    
+    enum Meses{
+        Enero(1), Febrero(2), Marzo(3), Abril(4), Mayo(5), Junio(6),Julio(7),Agosto(8),Septiembre(9),Octubre(10),Noviembre(11),Diciembre(12);
+        
+        private int numMes;
+        
+        Meses(int num){
+            this.numMes=num;
+        }
+        
+        public int getMes(){return numMes;}
+        
+        public static Meses getFromId(int mes){
+            for(Meses m:Meses.values()){
+                if(m.getMes()==mes){
+                    return m;
+                }
+                
+            }
+            return null;
+        }
+        
+    }
 
     public void onLoad() {
         boolean allSet = this.setAllEms();
@@ -100,13 +123,37 @@ public class NoEviadosController implements Serializable {
             System.out.println("User: " + DatosUsuario.user.getIdUsuario());
             System.out.println("System: " + DatosUsuario.sis.getNombreSistema());
             System.out.println("Size: " + this.correosUsuario.size());
-            this.cleanList();
-
+            //this.cleanList();
+            this.listaLimpia=this.correosUsuario;
         } else {
             System.out.println("noEviadosCOntroller: Error!");
         }
     }
 
+    //Método sobrecargado,porque noEnviados.xhtml a veces envía date y a veces envía timestamps
+    public String darFormatoFecha(java.util.Date fechaParam){
+        java.sql.Timestamp f = new java.sql.Timestamp(fechaParam.getTime());
+        String fecha=darFormatoFecha(f);
+        
+        return fecha;
+    }
+     public String darFormatoFecha(java.sql.Timestamp f){
+       
+         String fecha=f.toString();
+         
+           fecha=fecha.substring(0,fecha.indexOf(" "));
+         
+           String[] fechaArray=fecha.split("-");
+           
+           int anno=Integer.parseInt(fechaArray[0]);
+           int mes=Integer.parseInt(fechaArray[1]);; 
+           int dia=Integer.parseInt(fechaArray[2]);; 
+         
+         
+          String fechaAjustada=dia+" de " + Meses.getFromId(mes) +" del "+ anno;
+          
+          return fechaAjustada;
+    }
     //<editor-fold defaultstate="collapsed" desc="Funciones Extra">
     /* Settea todos los EM's*/
     public boolean setAllEms() {

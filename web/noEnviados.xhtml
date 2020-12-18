@@ -41,7 +41,7 @@ and open the template in the editor.
                     <h:panelGrid columns="1" style="width:100%">
 
                         <p:outputLabel  for="fecha" style="color: #186ba0;font-weight: 600" value="Fecha de envío: " ></p:outputLabel>
-                        <h:outputText  id="fecha" value=" #{correo.fechaEnvio.toLocaleString()}" ></h:outputText>
+                        <h:outputText  id="fecha" value=" #{noEnviadosController.darFormatoFecha(correo.fechaEnvio)}" ></h:outputText>
                        
                         <p:separator></p:separator>
                         <p:outputLabel  for="remitente" style="color: #186ba0;font-weight: 600" value="Remitentes: " ></p:outputLabel>

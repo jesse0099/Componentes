@@ -30,7 +30,7 @@
                     <h:panelGrid columns="1" style="width:100%">
 
                         <p:outputLabel  for="fecha" style="color: #186ba0;font-weight: 600" value="Fecha de envío: " ></p:outputLabel>
-                        <h:outputText  id="fecha" value=" #{bit.fechaEnvio}" ></h:outputText>
+                        <h:outputText  id="fecha" value=" #{bitacoraController.darFormatoFecha(bit.fechaEnvio)}" ></h:outputText>
                         <p:separator></p:separator>
 
 

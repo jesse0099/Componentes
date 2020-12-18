@@ -149,7 +149,7 @@ public class FilesController {
         inputStr = new ByteArrayInputStream(adj);
 
         returned = new DefaultStreamedContent(inputStr, getMIMETypeFromByteArray(adj), String.valueOf(name) + "." + getMIMETypeFromByteArray(adj).split("/")[1]);
-
+        
         return returned;
     }
 

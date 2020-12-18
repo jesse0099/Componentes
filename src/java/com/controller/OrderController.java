@@ -48,7 +48,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,6 +68,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.tomcat.util.http.fileupload.RequestContext;
 import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
@@ -249,6 +249,8 @@ public class OrderController implements Serializable {
     }
 
     public void addOrder() {
+        
+        
         if (this.ordenList.size() > 0 && (this.selectedClient.getIdCliente() != -1)
                 && (null != this.fechaOrden)) {
             try {
@@ -322,16 +324,30 @@ public class OrderController implements Serializable {
 
                 corr.setDestinatarios(contactos);
                 System.out.println("Pre-save");
-System.out.println(DatosUsuario.getUser().getCorreo()+ " "+ DatosUsuario.getUser().getIdUsuario());
-                System.out.println(DatosUsuario.getSis().getNombre()+" "+DatosUsuario.getSis().getId());
-                
-                
-                
-                masterDao = new CorreoDao();
-                ((CorreoDao) masterDao).save(corr);
-                
+                System.out.println(DatosUsuario.getUser().getCorreo() + " " + DatosUsuario.getUser().getIdUsuario());
+                System.out.println(DatosUsuario.getSis().getNombre() + " " + DatosUsuario.getSis().getId());
 
+                masterDao = new CorreoDao();
+                ((CorreoDao) masterDao).setEm(Servicio.getEm());
                 
+            Date fechaHoy=java.util.Date.from(LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+            
+                if(DateUtils.isSameDay(this.fechaOrden,fechaHoy)){
+                    System.out.println(corr.getUsuarios());
+                    System.out.println(corr.getUsuarioscopiados());
+                    System.out.println(corr.getDestinatarios());
+                    System.out.println(corr.getAsunto());
+                    System.out.println(corr.getCuerpo());
+                    System.out.println(corr.getTipo());
+                    System.out.println(corr.getAdjuntos());
+                   Control control=new Control();
+                   control.setEm(Servicio.getEm());
+                   control.enviarCorreo(corr);
+                   control.enviarBitacoraCorreoNBorra(corr);
+                }else{
+                 ((CorreoDao) masterDao).save(corr);
+                }
+               
                 //Limpiando la vista
                 initBean();
                 //PrimeFaces.current().executeScript("$('#myModalReject').modal();") ;
@@ -339,37 +355,36 @@ System.out.println(DatosUsuario.getUser().getCorreo()+ " "+ DatosUsuario.getUser
                 PrimeFaces.current().ajax().update("files");
                 PrimeFaces.current().ajax().update("panelProductos");
                 PrimeFaces.current().ajax().update("panelOrden");
-               // PrimeFaces.current().ajax().update("dialogo");
+                // PrimeFaces.current().ajax().update("dialogo");
                 PrimeFaces.current().ajax().update("errorDialogPanel");
                 PrimeFaces.current().executeScript("PF('errorDialog').show()");
-                
+/*
                 Servicio.setEm(Servicio.getEntityManagerFactory().createEntityManager());
-                                System.out.println("Post-save");
-                System.out.println(DatosUsuario.getUser().getCorreo()+ " "+ DatosUsuario.getUser().getIdUsuario());
-                System.out.println(DatosUsuario.getSis().getNombre()+" "+DatosUsuario.getSis().getId());
+                System.out.println("Post-save");
+                System.out.println(DatosUsuario.getUser().getCorreo() + " " + DatosUsuario.getUser().getIdUsuario());
+                System.out.println(DatosUsuario.getSis().getNombre() + " " + DatosUsuario.getSis().getId());
                 Control prueba = new Control();
-                
-                
+
                 prueba.setEm(Servicio.getEm());
                 prueba.controlCorreos();
-                
-                UsuarioDao uDao=new UsuarioDao(Servicio.getEm());
-                for(Usuario u:uDao.getAll()){
-                    if(u.getIdUsuario()==DatosUsuario.getUser().getIdUsuario()){
-                        DatosUsuario.user=u;
+                UsuarioDao uDao = new UsuarioDao(Servicio.getEm());
+                for (Usuario u : uDao.getAll()) {
+                    if (u.getIdUsuario() == DatosUsuario.getUser().getIdUsuario()) {
+                        DatosUsuario.user = u;
                     }
                 }
-                
-                setAllEms();
 
+                setAllEms();
+                
+                */
             } catch (Exception e) {
                 e.printStackTrace();
-                
+
             }
 
         } else {
             this.setMensajeModal(" Error: Revise que todos los campos esten llenos");
-           // PrimeFaces.current().ajax().update("dialogo");
+            // PrimeFaces.current().ajax().update("dialogo");
             PrimeFaces.current().ajax().update("errorDialogPanel");
             PrimeFaces.current().executeScript("PF('errorDialog').show()");
         }

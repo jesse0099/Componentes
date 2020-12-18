@@ -59,9 +59,9 @@ public void init(){
    Servicio.setUsername("root");
    Servicio.setPassword("wvjjk611");
    Servicio.setDriver("com.mysql.jdbc.Driver");
-   Servicio.setHbm2DDLprotocol("update");
+   Servicio.setHbm2DDLprotocol("create");
    Servicio.setDialect("org.hibernate.dialect.MySQLDialect");
-   
+   Servicio.setUbicacionMimes("C:/Users/Lenovo/Desktop/magicmimes.properties");
    
    
    try{
@@ -110,8 +110,8 @@ public void init(){
 public static void poblarModelo() {
     	
     	//Colocar aquí el directorio en que está el archivo adjunto
-    	String directorioAdjunto = "C:/Users/josem/Desktop/prueba.txt";
-        String directorioAdjunto2 = "C:/Users/josem/Desktop/prueba2.txt";
+    	String directorioAdjunto = "C:/Users/Lenovo/Desktop/prueba.docx";
+        String directorioAdjunto2 = "C:/Users/Lenovo/Desktop/s2.pdf";
     	 try {
              
 
@@ -290,7 +290,11 @@ public static void poblarModelo() {
           Calendar cal = new GregorianCalendar();
           cal.setTime(date);
           cal.add(Calendar.MONTH, 3);
-          cal.add(Calendar.DAY_OF_MONTH, 1);
+        
+          cal.set(Calendar.HOUR_OF_DAY, 0);
+          cal.set(Calendar.MINUTE, 0);
+          cal.set(Calendar.SECOND, 0);
+          //cal.add(Calendar.HOUR_OF_DAY, 6);
                      Correo c = new Correo();
             c.setAsunto(" Reunión con accionistas");
             c.setCuerpo(" Es necesario llevar gráficas de los beneficios de la compañía");
@@ -365,7 +369,12 @@ public static void poblarModelo() {
          //Correo 2 
          Date date2 = new Date();
          Calendar cal2 = new GregorianCalendar();
+     
          cal2.setTime(date2);
+            cal2.set(Calendar.HOUR_OF_DAY, 0);
+          cal2.set(Calendar.MINUTE, 0);
+          cal2.set(Calendar.SECOND, 0);
+         
          Correo correo2 = new Correo();
          correo2.setAsunto("Cumpleaños de empleado 1");
          correo2.setCuerpo(" Comprar una tarjeta");
@@ -392,6 +401,10 @@ public static void poblarModelo() {
          Date date3 = new Date();
          Calendar cal3 = new GregorianCalendar();
          cal3.setTime(date3);
+           cal3.set(Calendar.HOUR_OF_DAY, 0);
+          cal3.set(Calendar.MINUTE, 0);
+          cal3.set(Calendar.SECOND, 0);
+         
          Correo correo3 = new Correo();
          correo3.setAsunto(" Reunión con recursos humanos");
          correo3.setCuerpo(" llevar una lista de los salarios de empleados");
@@ -416,6 +429,10 @@ public static void poblarModelo() {
          Date date4 = new Date();
          Calendar cal4 = new GregorianCalendar();
          cal4.setTime(date4);
+          cal4.set(Calendar.HOUR_OF_DAY, 0);
+          cal4.set(Calendar.MINUTE, 0);
+          cal4.set(Calendar.SECOND, 0);
+        
          Correo correo4 = new Correo();
          correo4.setAsunto(" Charla SAP");
          correo4.setCuerpo(" Un técnico de SAP vendrá a mostrar como funcionan las herramientas de la compañía");
